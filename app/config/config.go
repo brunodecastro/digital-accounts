@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"github.com/brunodecastro/digital-accounts/app/util/conditional"
 	"github.com/kelseyhightower/envconfig"
+	"log"
 )
 
 type WebServerConfig struct {
@@ -31,9 +31,11 @@ type Config struct {
 // LoadConfigs loads environment variables to configure the api
 func LoadConfigs() *Config {
 	var config Config
-	err := envconfig.Process("", config)
-	conditional.MaybeFatal(err, "Unable to load api configuration")
+	err := envconfig.Process("", &config)
 
+	if err != nil {
+		log.Fatalln("Unable to load api configuration", err)
+	}
 	return &config
 }
 

@@ -2,7 +2,7 @@
 /shelf/
 /workspace.xml
 # Datasource local storage ignored files
-/../../../../../../../../../:\Users\Bruno\go\src\github.com\brunodecastro\digital-accounts\.idea/dataSources/
+/../../../../../:\go\projetos\digital-accounts\.idea/dataSources/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
