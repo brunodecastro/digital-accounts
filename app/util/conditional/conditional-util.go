@@ -1,9 +1,9 @@
-package error
+package conditional
 
 import "github.com/brunodecastro/digital-accounts/app/logger"
 
 func MaybeFatal(err error, errorMessage string) {
 	if err != nil {
-		logger.NewLogUtil().FatalError(errorMessage, err)
+		logger.LogApp.FatalError(errorMessage, err)
 	}
 }

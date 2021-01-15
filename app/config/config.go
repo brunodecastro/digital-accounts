@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
+	"github.com/brunodecastro/digital-accounts/app/util/conditional"
 	"github.com/kelseyhightower/envconfig"
 )
 
-type ServerConfig struct {
-	Host string `envconfig:"SERVER_HOST" default:"localhost"`
-	Port string `envconfig:"SERVER_PORT" default:"9090"`
+type WebServerConfig struct {
+	Host string `envconfig:"WEB_SERVER_HOST" default:"localhost"`
+	Port string `envconfig:"WEB_SERVER_PORT" default:"9090"`
 }
 
 type DatabaseConfig struct {
@@ -22,16 +23,18 @@ type DatabaseConfig struct {
 }
 
 type Config struct {
-	ServerConfig   ServerConfig
+	Profile string	`envconfig:"PROFILE" default:"dev"`
+	ServerConfig   WebServerConfig
 	DatabaseConfig DatabaseConfig
 }
 
 // LoadConfigs loads environment variables to configure the api
-func LoadConfigs() (*Config, error) {
+func LoadConfigs() *Config {
 	var config Config
 	err := envconfig.Process("", config)
+	conditional.MaybeFatal(err, "Unable to load api configuration")
 
-	return &config, err
+	return &config
 }
 
 func (databaseConfig DatabaseConfig) GetDatabaseDSN() string {
