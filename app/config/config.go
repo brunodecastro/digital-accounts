@@ -31,10 +31,10 @@ type Config struct {
 // LoadConfigs loads environment variables to configure the api
 func LoadConfigs() *Config {
 	var config Config
-	err := envconfig.Process("", &config)
+	err := envconfig.Process("", config)
 
 	if err != nil {
-		log.Fatalln("Unable to load api configuration", err)
+		log.Fatalln("Unable to load api configuration")
 	}
 	return &config
 }
