@@ -23,8 +23,8 @@ type DatabaseConfig struct {
 }
 
 type Config struct {
-	Profile string	`envconfig:"PROFILE" default:"dev"`
-	ServerConfig   WebServerConfig
+	Profile        string `envconfig:"PROFILE" default:"dev"`
+	WebServerConfig   WebServerConfig
 	DatabaseConfig DatabaseConfig
 }
 
@@ -35,6 +35,14 @@ func LoadConfigs() *Config {
 	conditional.MaybeFatal(err, "Unable to load api configuration")
 
 	return &config
+}
+
+func (webServerConfig WebServerConfig) GetWebServerAddress() string {
+	return fmt.Sprintf(
+		"%s:%s",
+		webServerConfig.Host,
+		webServerConfig.Port,
+	)
 }
 
 func (databaseConfig DatabaseConfig) GetDatabaseDSN() string {
