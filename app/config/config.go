@@ -6,11 +6,13 @@ import (
 	"log"
 )
 
+// Configurations of web server
 type WebServerConfig struct {
 	Host string `envconfig:"WEB_SERVER_HOST" default:"localhost"`
 	Port string `envconfig:"WEB_SERVER_PORT" default:"9090"`
 }
 
+// Configurations of database
 type DatabaseConfig struct {
 	Host         string `envconfig:"DATABASE_HOST" default:"localhost"`
 	Port         string `envconfig:"DATABASE_PORT" default:"5432"`
