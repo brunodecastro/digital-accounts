@@ -1,4 +1,4 @@
-package app
+package main
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// Initialize app configs
-	var apiConfig = config.LoadConfigs()
+	apiConfig := config.LoadConfigs()
 
 	// Initialize app log implementation
 	logger.InitLogFacade(apiConfig)
