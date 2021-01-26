@@ -15,16 +15,15 @@ func main() {
 
 	// Initialize app log implementation
 	logger.InitLogFacade(apiConfig)
-
 	logger.LogApp.Info("Starting Digital Accounts API...")
 
 	// Configure database pool connection
 	poolConfig := persistence.PoolConfig(&apiConfig.DatabaseConfig)
 	defer poolConfig.Close()
 
+	// Configure the webserver and serve
 	server := server.NewServer()
-	err := server.ListenAndServe(&apiConfig.WebServerConfig)
 	logger.LogApp.Info(fmt.Sprintf("Server running on %s ...", apiConfig.WebServerConfig.GetWebServerAddress()))
-
-	conditional.MaybeFatal(err, "Unable to start api.")
+	err := server.ListenAndServe(&apiConfig.WebServerConfig)
+	conditional.MaybeFatal(err, "Unable to start the web server.")
 }
