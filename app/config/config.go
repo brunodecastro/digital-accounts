@@ -11,7 +11,7 @@ type WebServerConfig struct {
 	Port string `envconfig:"WEB_SERVER_PORT" default:"9090"`
 }
 
-type DatabaseConfig struct {
+type DatabasePostgresConfig struct {
 	Host         string `envconfig:"DATABASE_HOST" default:"localhost"`
 	Port         string `envconfig:"DATABASE_PORT" default:"5434"`
 	UserName     string `envconfig:"DATABASE_USER" default:"postgres"`
@@ -25,7 +25,7 @@ type DatabaseConfig struct {
 type Config struct {
 	Profile         string `envconfig:"PROFILE" default:"dev"`
 	WebServerConfig WebServerConfig
-	DatabaseConfig  DatabaseConfig
+	DatabaseConfig  DatabasePostgresConfig
 }
 
 // LoadConfigs loads environment variables to configure the api
@@ -47,7 +47,7 @@ func (webServerConfig WebServerConfig) GetWebServerAddress() string {
 	)
 }
 
-func (databaseConfig DatabaseConfig) GetDatabaseDSN() string {
+func (databaseConfig DatabasePostgresConfig) GetDatabaseDSN() string {
 	return fmt.Sprintf(
 		"user=%s password=%s host=%s port=%s dbname=%s sslmode=%s pool_min_conns=%s pool_max_conns=%s",
 		databaseConfig.UserName,
@@ -58,5 +58,17 @@ func (databaseConfig DatabaseConfig) GetDatabaseDSN() string {
 		databaseConfig.SSLMode,
 		databaseConfig.PoolMinSize,
 		databaseConfig.PoolMaxSize,
+	)
+}
+
+func (databaseConfig DatabasePostgresConfig) GetDatabaseURL() string {
+	return fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		databaseConfig.UserName,
+		databaseConfig.Password,
+		databaseConfig.Host,
+		databaseConfig.Port,
+		databaseConfig.DatabaseName,
+		databaseConfig.SSLMode,
 	)
 }

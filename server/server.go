@@ -36,6 +36,7 @@ func (server *Server) setRoutes() {
 	router := server.Router
 	router.GET("/", indexPage)
 	router.GET("/health-check", healthCheck)
+	router.GET("/account", healthCheck)
 }
 
 func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {
