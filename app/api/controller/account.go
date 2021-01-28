@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/brunodecastro/digital-accounts/app/api/response"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/service"
 	"github.com/julienschmidt/httprouter"
@@ -18,38 +19,35 @@ func NewAccountController(service service.AccountService) AccountController {
 	}
 }
 
-func (controller AccountController) Create(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	defer request.Body.Close()
+func (controller AccountController) Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	defer r.Body.Close()
 
 	var accountInputVO input.CreateAccountInputVO
-	if err := json.NewDecoder(request.Body).Decode(&accountInputVO); err != nil {
-		// TODO: encapsular erros 400
-		http.Error(response, "Invalid JSON format", http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&accountInputVO); err != nil {
+		response.CreateErrorResponse(w, http.StatusBadRequest, "Invalid JSON format")
 		return
 	}
 
-	// TODO: validar campos
+	// TODO: validate fields
 
-	accountCreated, err := controller.service.Create(request.Context(), accountInputVO)
+	accountCreated, err := controller.service.Create(r.Context(), accountInputVO)
 	if err != nil {
-		// TODO: encapsular erros 500
-		http.Error(response, err.Error(), http.StatusInternalServerError)
+		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	response.Header().Set("Content-Type", "application/json")
-	response.WriteHeader(http.StatusCreated)
-	json.NewEncoder(response).Encode(accountCreated)
+	response.CreateSuccessResponse(w, http.StatusCreated, accountCreated)
 }
 
-func (controller AccountController) GetAll(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	//return controller.service.GetAll(ctx)
+func (controller AccountController) GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	accounts, err := controller.service.GetAll(r.Context())
+	if err != nil {
+		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	response.CreateSuccessResponse(w, http.StatusOK, accounts)
 }
 
 func (controller AccountController) GetBalance(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	//return controller.service.GetBalance(ctx, accountId)
-}
-
-func createJsonSuccessResponse(response http.ResponseWriter, statusCode int) {
-	// TODO: criar uma resposta generica
+	//TODO implement me
 }

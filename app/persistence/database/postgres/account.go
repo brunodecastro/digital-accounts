@@ -54,7 +54,32 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 }
 
 func (repositoryImpl accountRepositoryImpl) GetAll(ctx context.Context) ([]model.Account, error) {
-	panic("implement me")
+	var sqlQuery = `
+		SELECT id, name, cpf, secret, balance, created_at FROM accounts
+	`
+
+	rows, err := repositoryImpl.dataBasePool.Query(ctx, sqlQuery)
+	if err != nil {
+		return []model.Account{}, errors.Wrap(err, "error listing all accounts")
+	}
+	defer rows.Close()
+
+	var accounts = make([]model.Account, 0)
+	for rows.Next() {
+		var account = model.Account{}
+
+		if err = rows.Scan(&account.ID, &account.Name, &account.Cpf, &account.Secret, &account.Balance, &account.CreatedAt); err != nil {
+			return []model.Account{}, errors.Wrap(err, "error listing all accounts")
+		}
+
+		accounts = append(accounts, account)
+	}
+
+	if err = rows.Err(); err != nil {
+		return []model.Account{}, err
+	}
+
+	return accounts, nil
 }
 
 func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, accountId string) (*model.Account, error) {

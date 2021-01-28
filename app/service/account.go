@@ -13,7 +13,7 @@ import (
 
 type AccountService interface {
 	Create(ctx context.Context, accountInputVO input.CreateAccountInputVO) (output.CreateAccountOutputVO, error)
-	GetAll(ctx context.Context) ([]model.Account, error)
+	GetAll(ctx context.Context) ([]output.FindAllAccountOutputVO, error)
 	GetBalance(ctx context.Context, accountId string) (*model.Account, error)
 }
 
@@ -37,8 +37,20 @@ func (serviceImpl accountServiceImpl) Create(ctx context.Context, accountInputVO
 	return accountModelToVO(accountCreated), err
 }
 
-func (serviceImpl accountServiceImpl) GetAll(ctx context.Context, ) ([]model.Account, error) {
-	return serviceImpl.repository.GetAll(ctx)
+func (serviceImpl accountServiceImpl) GetAll(ctx context.Context, ) ([]output.FindAllAccountOutputVO, error) {
+	accounts, err := serviceImpl.repository.GetAll(ctx)
+	util.MaybeError(err, "error listing all accounts")
+
+	var accountsOutputVO = make([]output.FindAllAccountOutputVO, 0)
+	for _, account := range accounts {
+		accountsOutputVO = append(accountsOutputVO, output.FindAllAccountOutputVO{
+			Cpf:       util.FormatCpf(account.Cpf),
+			Name:      account.Name,
+			Balance:   account.Balance.GetFloat(),
+			CreatedAt: util.FormatDate(account.CreatedAt),
+		})
+	}
+	return accountsOutputVO, err
 }
 
 func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountId string) (*model.Account, error) {
@@ -59,8 +71,8 @@ func accountVOToModel(accountInputVO input.CreateAccountInputVO) model.Account {
 func accountModelToVO(account *model.Account) output.CreateAccountOutputVO {
 	return output.CreateAccountOutputVO{
 		Name:      account.Name,
-		Cpf:       util.CpfFormat(account.Cpf),
+		Cpf:       util.FormatCpf(account.Cpf),
 		Balance:   account.Balance.GetFloat(),
-		CreatedAt: account.CreatedAt.Format(time.RFC3339), // "2006-01-02T15:04:05Z07:00"
+		CreatedAt: util.FormatDate(account.CreatedAt),
 	}
 }

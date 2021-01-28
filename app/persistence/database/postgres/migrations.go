@@ -10,8 +10,8 @@ import (
 )
 
 func UpMigrations(databasePostgresConfig *config.DatabasePostgresConfig) error {
-	databaseConnection, err := sql.Open("postgres", databasePostgresConfig.GetDatabaseURL());
-	util.MaybeFatal(err,"Unable to open postgres connection to run migrations")
+	databaseConnection, err := sql.Open("postgres", databasePostgresConfig.GetDatabaseURL())
+	util.MaybeFatal(err, "Unable to open postgres connection to run migrations")
 
 	databaseDriver, err := postgres.WithInstance(databaseConnection, &postgres.Config{})
 	defer databaseDriver.Close()

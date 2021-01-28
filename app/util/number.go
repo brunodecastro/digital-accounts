@@ -12,8 +12,8 @@ func NumbersOnly(str string) string {
 	return reg.ReplaceAllString(str, "")
 }
 
-// CpfFormat format a cpf number
-func CpfFormat(str string) string {
+// FormatCpf format a cpf number
+func FormatCpf(str string) string {
 	reg, err := regexp.Compile(constants.CPFFormatPattern)
 	MaybeError(err, "error when compile cpf format regex")
 	return reg.ReplaceAllString(str, "$1.$2.$3-$4")

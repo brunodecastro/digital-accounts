@@ -9,4 +9,3 @@ func (m Money) GetInt() int64 {
 func (m Money) GetFloat() float64 {
 	return float64(m) / 100
 }
-

@@ -26,7 +26,7 @@ func InitLogFacade(config *config.Config) {
 	if err != nil {
 		log.Fatalf("Unable to initialize logger implementation")
 	}
-	LogApp = &LogFacade{logImpl : logZap}
+	LogApp = &LogFacade{logImpl: logZap}
 }
 
 // GetLogImplementation returns the zap log implementation
