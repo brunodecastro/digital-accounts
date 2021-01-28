@@ -1,11 +1,20 @@
 package util
 
 import (
+	"github.com/brunodecastro/digital-accounts/app/util/constants"
 	"regexp"
 )
 
-func NumbersOnly(s string) (string) {
+// NumbersOnly returns only numbers of string
+func NumbersOnly(str string) string {
 	reg, err := regexp.Compile("[^0-9]+")
 	MaybeError(err, "error when compile only number regex")
-	return reg.ReplaceAllString(s, "")
+	return reg.ReplaceAllString(str, "")
+}
+
+// CpfFormat format a cpf number
+func CpfFormat(str string) string {
+	reg, err := regexp.Compile(constants.CPFFormatPattern)
+	MaybeError(err, "error when compile cpf format regex")
+	return reg.ReplaceAllString(str, "$1.$2.$3-$4")
 }

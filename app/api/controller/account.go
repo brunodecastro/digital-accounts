@@ -42,7 +42,7 @@ func (controller AccountController) Create(response http.ResponseWriter, request
 	json.NewEncoder(response).Encode(accountCreated)
 }
 
-func (controller AccountController) GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (controller AccountController) GetAll(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	//return controller.service.GetAll(ctx)
 }
 

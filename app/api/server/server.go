@@ -28,7 +28,7 @@ func NewServer(accountController controller.AccountController) *Server {
 }
 
 func indexPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome!\n")
+	fmt.Fprint(w, "Digital Accounts Api!\n")
 }
 
 func healthCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -40,6 +40,7 @@ func (server *Server) setRoutes() {
 	router.GET("/", indexPage)
 	router.GET("/health-check", healthCheck)
 	router.POST("/accounts", server.accountController.Create)
+	router.GET("/accounts", server.accountController.GetAll)
 }
 
 func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {
