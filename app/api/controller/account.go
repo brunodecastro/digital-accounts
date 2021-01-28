@@ -48,6 +48,13 @@ func (controller AccountController) GetAll(w http.ResponseWriter, r *http.Reques
 	response.CreateSuccessResponse(w, http.StatusOK, accounts)
 }
 
-func (controller AccountController) GetBalance(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	//TODO implement me
+func (controller AccountController) GetBalance(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	var accountId = params.ByName("account_id")
+
+	account, err := controller.service.GetBalance(r.Context(), accountId)
+	if err != nil {
+		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	response.CreateSuccessResponse(w, http.StatusOK, account)
 }

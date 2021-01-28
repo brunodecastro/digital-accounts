@@ -2,19 +2,17 @@ package service
 
 import (
 	"context"
-	"github.com/brunodecastro/digital-accounts/app/common"
+	"github.com/brunodecastro/digital-accounts/app/common/converter"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	output "github.com/brunodecastro/digital-accounts/app/common/vo/output"
-	"github.com/brunodecastro/digital-accounts/app/model"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
 	"github.com/brunodecastro/digital-accounts/app/util"
-	"time"
 )
 
 type AccountService interface {
 	Create(ctx context.Context, accountInputVO input.CreateAccountInputVO) (output.CreateAccountOutputVO, error)
 	GetAll(ctx context.Context) ([]output.FindAllAccountOutputVO, error)
-	GetBalance(ctx context.Context, accountId string) (*model.Account, error)
+	GetBalance(ctx context.Context, accountId string) (output.FindAccountBalanceOutputVO, error)
 }
 
 type accountServiceImpl struct {
@@ -31,48 +29,22 @@ func (serviceImpl accountServiceImpl) Create(ctx context.Context, accountInputVO
 	//ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
 	//defer cancelFunc()
 
-	accountCreated, err := serviceImpl.repository.Create(ctx, accountVOToModel(accountInputVO))
+	accountCreated, err := serviceImpl.repository.Create(ctx, converter.CreateAccountInputVOToModel(accountInputVO))
 	util.MaybeError(err, "error on create accounts")
 
-	return accountModelToVO(accountCreated), err
+	return converter.AccountModelToCreateAccountOutputVO(accountCreated), err
 }
 
 func (serviceImpl accountServiceImpl) GetAll(ctx context.Context, ) ([]output.FindAllAccountOutputVO, error) {
 	accounts, err := serviceImpl.repository.GetAll(ctx)
 	util.MaybeError(err, "error listing all accounts")
 
-	var accountsOutputVO = make([]output.FindAllAccountOutputVO, 0)
-	for _, account := range accounts {
-		accountsOutputVO = append(accountsOutputVO, output.FindAllAccountOutputVO{
-			Cpf:       util.FormatCpf(account.Cpf),
-			Name:      account.Name,
-			Balance:   account.Balance.GetFloat(),
-			CreatedAt: util.FormatDate(account.CreatedAt),
-		})
-	}
-	return accountsOutputVO, err
+	return converter.AccountModelToFindAllAccountOutputVO(accounts), err
 }
 
-func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountId string) (*model.Account, error) {
-	return serviceImpl.repository.GetBalance(ctx, accountId)
-}
+func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountId string) (output.FindAccountBalanceOutputVO, error) {
+	account, err := serviceImpl.repository.GetBalance(ctx, accountId)
+	util.MaybeError(err, "error getting account balance")
 
-func accountVOToModel(accountInputVO input.CreateAccountInputVO) model.Account {
-	return model.Account{
-		ID:        model.AccountID(common.NewUUID()),
-		Name:      accountInputVO.Name,
-		Cpf:       util.NumbersOnly(accountInputVO.Cpf),
-		Secret:    util.EncryptPassword(accountInputVO.Secret),
-		Balance:   common.Money(accountInputVO.Balance),
-		CreatedAt: time.Now(),
-	}
-}
-
-func accountModelToVO(account *model.Account) output.CreateAccountOutputVO {
-	return output.CreateAccountOutputVO{
-		Name:      account.Name,
-		Cpf:       util.FormatCpf(account.Cpf),
-		Balance:   account.Balance.GetFloat(),
-		CreatedAt: util.FormatDate(account.CreatedAt),
-	}
+	return converter.AccountModelToFindAccountBalanceOutputVO(account), err
 }

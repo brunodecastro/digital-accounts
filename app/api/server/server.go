@@ -41,6 +41,7 @@ func (server *Server) setRoutes() {
 	router.GET("/health-check", healthCheck)
 	router.POST("/accounts", server.accountController.Create)
 	router.GET("/accounts", server.accountController.GetAll)
+	router.GET("/account/:account_id/balance", server.accountController.GetBalance)
 }
 
 func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {

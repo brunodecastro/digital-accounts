@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 	"github.com/brunodecastro/digital-accounts/app/model"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -83,5 +84,17 @@ func (repositoryImpl accountRepositoryImpl) GetAll(ctx context.Context) ([]model
 }
 
 func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, accountId string) (*model.Account, error) {
-	panic("implement me")
+	var sqlQuery = `
+		SELECT id, balance FROM accounts where id = $1
+	`
+	var account = model.Account{}
+
+	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, accountId)
+	err := row.Scan(&account.ID, &account.Balance)
+
+	if err != nil && err != sql.ErrNoRows {
+		return nil, nil
+	}
+
+	return &account, nil
 }
