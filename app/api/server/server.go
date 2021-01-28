@@ -2,20 +2,23 @@ package server
 
 import (
 	"fmt"
+	"github.com/brunodecastro/digital-accounts/app/api/controller"
 	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 )
 
 type Server struct {
-	Server http.Server
-	Router *httprouter.Router
+	Server            http.Server
+	Router            *httprouter.Router
+	accountController controller.AccountController
 }
 
-func NewServer() *Server {
+func NewServer(accountController controller.AccountController) *Server {
 	server := &Server{
-		Server: http.Server{},
-		Router: httprouter.New(),
+		Server:            http.Server{},
+		Router:            httprouter.New(),
+		accountController: accountController,
 	}
 
 	// Set the api routes
@@ -36,7 +39,7 @@ func (server *Server) setRoutes() {
 	router := server.Router
 	router.GET("/", indexPage)
 	router.GET("/health-check", healthCheck)
-	router.GET("/account", healthCheck)
+	router.POST("/accounts", server.accountController.Create)
 }
 
 func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {

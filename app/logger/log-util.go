@@ -39,6 +39,11 @@ func (logFacade *LogFacade) Info(infoMessage string) {
 	logFacade.logImpl.Info(infoMessage)
 }
 
+// Error generates a standard info log
+func (logFacade *LogFacade) Error(errorMessage string, err error) {
+	logFacade.logImpl.Error(errorMessage, zap.Error(err))
+}
+
 // FatalError generates a standard fatal error log
 func (logFacade *LogFacade) FatalError(errorMessage string, err error) {
 	logFacade.logImpl.Fatal(errorMessage, zap.Error(err))
