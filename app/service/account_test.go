@@ -14,26 +14,6 @@ import (
 	"time"
 )
 
-func TestNewAccountService(t *testing.T) {
-	type args struct {
-		repository repository.AccountRepository
-	}
-	tests := []struct {
-		name string
-		args args
-		want AccountService
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewAccountService(tt.args.repository); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewAccountService() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_accountServiceImpl_Create(t *testing.T) {
 	t.Parallel()
 
@@ -53,7 +33,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 	}{
 
 		{
-			name: "Create Account Success",
+			name: "Create Account test service Success",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
@@ -85,7 +65,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Create Account Error",
+			name: "Create Account test service Error",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{},
@@ -123,6 +103,8 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 }
 
 func Test_accountServiceImpl_GetAll(t *testing.T) {
+	t.Parallel()
+
 	type fields struct {
 		repository repository.AccountRepository
 	}
@@ -137,7 +119,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Get all accounts success",
+			name: "Get all accounts test service success",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Results: []model.Account{
@@ -183,7 +165,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Get all accounts error",
+			name: "Get all accounts test service error",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Results: []model.Account{},
@@ -215,6 +197,8 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 }
 
 func Test_accountServiceImpl_GetBalance(t *testing.T) {
+	t.Parallel()
+
 	type fields struct {
 		repository repository.AccountRepository
 	}
@@ -230,7 +214,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Get balance success",
+			name: "Get balance test service success",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
@@ -255,7 +239,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Get balance error",
+			name: "Get balance test service error",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{},
