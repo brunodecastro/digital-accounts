@@ -1,4 +1,4 @@
-package input
+package output
 
 type FindAllAccountOutputVO struct {
 	Id        string  `json:"id"`

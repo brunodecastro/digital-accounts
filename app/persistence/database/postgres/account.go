@@ -72,7 +72,6 @@ func (repositoryImpl accountRepositoryImpl) GetAll(ctx context.Context) ([]model
 		if err = rows.Scan(&account.ID, &account.Name, &account.Cpf, &account.Secret, &account.Balance, &account.CreatedAt); err != nil {
 			return []model.Account{}, errors.Wrap(err, "error listing all accounts")
 		}
-
 		accounts = append(accounts, account)
 	}
 

@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
+	"errors"
 	"github.com/brunodecastro/digital-accounts/app/common/converter"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
-	output "github.com/brunodecastro/digital-accounts/app/common/vo/output"
+	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
-	"github.com/brunodecastro/digital-accounts/app/util"
 )
 
 type AccountService interface {
@@ -30,21 +30,27 @@ func (serviceImpl accountServiceImpl) Create(ctx context.Context, accountInputVO
 	//defer cancelFunc()
 
 	accountCreated, err := serviceImpl.repository.Create(ctx, converter.CreateAccountInputVOToModel(accountInputVO))
-	util.MaybeError(err, "error on create accounts")
+	if err != nil {
+		return output.CreateAccountOutputVO{}, errors.New("error on create accounts")
+	}
 
 	return converter.AccountModelToCreateAccountOutputVO(accountCreated), err
 }
 
 func (serviceImpl accountServiceImpl) GetAll(ctx context.Context, ) ([]output.FindAllAccountOutputVO, error) {
 	accounts, err := serviceImpl.repository.GetAll(ctx)
-	util.MaybeError(err, "error listing all accounts")
+	if err != nil {
+		return []output.FindAllAccountOutputVO{}, errors.New("error listing all accounts")
+	}
 
 	return converter.AccountModelToFindAllAccountOutputVO(accounts), err
 }
 
 func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountId string) (output.FindAccountBalanceOutputVO, error) {
 	account, err := serviceImpl.repository.GetBalance(ctx, accountId)
-	util.MaybeError(err, "error getting account balance")
+	if err != nil {
+		return output.FindAccountBalanceOutputVO{}, errors.New("error getting account balance")
+	}
 
 	return converter.AccountModelToFindAccountBalanceOutputVO(account), err
 }

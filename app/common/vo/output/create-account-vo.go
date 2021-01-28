@@ -1,4 +1,4 @@
-package input
+package output
 
 type CreateAccountOutputVO struct {
 	Cpf       string  `json:"cpf""`

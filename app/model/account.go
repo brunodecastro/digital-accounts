@@ -8,12 +8,12 @@ import (
 type AccountID string
 
 type Account struct {
-	ID        AccountID    `json:"id"`
-	Cpf       string       `json:"cpf"`
-	Name      string       `json:"name"`
-	Secret    string       `json:"secret"`
-	Balance   common.Money `json:"balance"`
-	CreatedAt time.Time    `json:"created-at"`
+	ID        AccountID
+	Cpf       string
+	Name      string
+	Secret    string
+	Balance   common.Money
+	CreatedAt time.Time
 }
 
 func NewAccount(id AccountID, name string, cpf string, balance common.Money, createdAt time.Time) Account {
