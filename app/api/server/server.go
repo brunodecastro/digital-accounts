@@ -9,16 +9,18 @@ import (
 )
 
 type Server struct {
-	Server            http.Server
-	Router            *httprouter.Router
-	accountController controller.AccountController
+	Server             http.Server
+	Router             *httprouter.Router
+	accountController  controller.AccountController
+	transferController controller.TransferController
 }
 
-func NewServer(accountController controller.AccountController) *Server {
+func NewServer(accountController controller.AccountController, transferController controller.TransferController) *Server {
 	server := &Server{
-		Server:            http.Server{},
-		Router:            httprouter.New(),
-		accountController: accountController,
+		Server:             http.Server{},
+		Router:             httprouter.New(),
+		accountController:  accountController,
+		transferController: transferController,
 	}
 
 	// Set the api routes
@@ -40,8 +42,10 @@ func (server *Server) setRoutes() {
 	router.GET("/", indexPage)
 	router.GET("/health-check", healthCheck)
 	router.POST("/accounts", server.accountController.Create)
-	router.GET("/accounts", server.accountController.GetAll)
+	router.GET("/accounts", server.accountController.FindAll)
 	router.GET("/account/:account_id/balance", server.accountController.GetBalance)
+	router.POST("/transfers", server.transferController.Create)
+	router.GET("/transfers", server.transferController.FindAll)
 }
 
 func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {

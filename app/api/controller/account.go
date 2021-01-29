@@ -39,8 +39,8 @@ func (controller AccountController) Create(w http.ResponseWriter, r *http.Reques
 	response.CreateSuccessResponse(w, http.StatusCreated, accountCreated)
 }
 
-func (controller AccountController) GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	accounts, err := controller.service.GetAll(r.Context())
+func (controller AccountController) FindAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	accounts, err := controller.service.FindAll(r.Context())
 	if err != nil {
 		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return

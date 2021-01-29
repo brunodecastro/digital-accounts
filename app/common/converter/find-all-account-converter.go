@@ -10,7 +10,7 @@ func AccountModelToFindAllAccountOutputVO(accounts []model.Account) []output.Fin
 	var accountsOutputVO = make([]output.FindAllAccountOutputVO, 0)
 	for _, account := range accounts {
 		accountsOutputVO = append(accountsOutputVO, output.FindAllAccountOutputVO{
-			Id:        string(account.ID),
+			Id:        string(account.Id),
 			Cpf:       util.FormatCpf(account.Cpf),
 			Name:      account.Name,
 			Balance:   account.Balance.GetFloat(),

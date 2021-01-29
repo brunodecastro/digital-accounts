@@ -11,7 +11,7 @@ import (
 
 func CreateAccountInputVOToModel(accountInputVO input.CreateAccountInputVO) model.Account {
 	return model.Account{
-		ID:        model.AccountID(common.NewUUID()),
+		Id:        model.AccountID(common.NewUUID()),
 		Name:      accountInputVO.Name,
 		Cpf:       util.NumbersOnly(accountInputVO.Cpf),
 		Secret:    util.EncryptPassword(accountInputVO.Secret),
@@ -20,7 +20,7 @@ func CreateAccountInputVOToModel(accountInputVO input.CreateAccountInputVO) mode
 	}
 }
 
-func AccountModelToCreateAccountOutputVO(account *model.Account) output.CreateAccountOutputVO {
+func ModelToCreateAccountOutputVO(account *model.Account) output.CreateAccountOutputVO {
 	return output.CreateAccountOutputVO{
 		Name:      account.Name,
 		Cpf:       util.FormatCpf(account.Cpf),

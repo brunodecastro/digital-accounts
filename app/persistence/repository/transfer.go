@@ -6,5 +6,6 @@ import (
 )
 
 type TransferRepository interface {
-	Create(ctx context.Context, transfer model.Transfer) (model.Transfer, error)
+	Create(ctx context.Context, transfer model.Transfer) (*model.Transfer, error)
+	FindAll(ctx context.Context) ([]model.Transfer, error)
 }

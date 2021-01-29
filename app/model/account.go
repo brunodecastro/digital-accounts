@@ -8,7 +8,7 @@ import (
 type AccountID string
 
 type Account struct {
-	ID        AccountID
+	Id        AccountID
 	Cpf       string
 	Name      string
 	Secret    string
@@ -18,7 +18,7 @@ type Account struct {
 
 func NewAccount(id AccountID, name string, cpf string, balance common.Money, createdAt time.Time) Account {
 	return Account{
-		ID:        id,
+		Id:        id,
 		Name:      name,
 		Cpf:       cpf,
 		Balance:   balance,

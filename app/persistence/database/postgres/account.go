@@ -35,7 +35,7 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 	_, err = tx.Exec(
 		ctx,
 		sqlQuery,
-		account.ID,
+		account.Id,
 		account.Name,
 		account.Cpf,
 		account.Secret,
@@ -54,14 +54,14 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 	return &account, nil
 }
 
-func (repositoryImpl accountRepositoryImpl) GetAll(ctx context.Context) ([]model.Account, error) {
+func (repositoryImpl accountRepositoryImpl) FindAll(ctx context.Context) ([]model.Account, error) {
 	var sqlQuery = `
 		SELECT id, name, cpf, secret, balance, created_at FROM accounts
 	`
 
 	rows, err := repositoryImpl.dataBasePool.Query(ctx, sqlQuery)
 	if err != nil {
-		return []model.Account{}, errors.Wrap(err, "error listing all accounts")
+		return []model.Account{}, errors.Wrap(err, "error executing listing all accounts query")
 	}
 	defer rows.Close()
 
@@ -69,8 +69,15 @@ func (repositoryImpl accountRepositoryImpl) GetAll(ctx context.Context) ([]model
 	for rows.Next() {
 		var account = model.Account{}
 
-		if err = rows.Scan(&account.ID, &account.Name, &account.Cpf, &account.Secret, &account.Balance, &account.CreatedAt); err != nil {
-			return []model.Account{}, errors.Wrap(err, "error listing all accounts")
+		err = rows.Scan(
+			&account.Id,
+			&account.Name,
+			&account.Cpf,
+			&account.Secret,
+			&account.Balance,
+			&account.CreatedAt)
+		if err != nil {
+			return []model.Account{}, errors.Wrap(err, "error scanning listing all accounts")
 		}
 		accounts = append(accounts, account)
 	}
@@ -89,10 +96,10 @@ func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, acco
 	var account = model.Account{}
 
 	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, accountId)
-	err := row.Scan(&account.ID, &account.Balance)
+	err := row.Scan(&account.Id, &account.Balance)
 
 	if err != nil && err != sql.ErrNoRows {
-		return nil, nil
+		return nil, errors.Wrap(err, "error scanning accounts balance")
 	}
 
 	return &account, nil

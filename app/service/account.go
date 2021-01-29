@@ -11,7 +11,7 @@ import (
 
 type AccountService interface {
 	Create(ctx context.Context, accountInputVO input.CreateAccountInputVO) (output.CreateAccountOutputVO, error)
-	GetAll(ctx context.Context) ([]output.FindAllAccountOutputVO, error)
+	FindAll(ctx context.Context) ([]output.FindAllAccountOutputVO, error)
 	GetBalance(ctx context.Context, accountId string) (output.FindAccountBalanceOutputVO, error)
 }
 
@@ -26,24 +26,21 @@ func NewAccountService(repository repository.AccountRepository) AccountService {
 }
 
 func (serviceImpl accountServiceImpl) Create(ctx context.Context, accountInputVO input.CreateAccountInputVO) (output.CreateAccountOutputVO, error) {
-	//ctx, cancelFunc := context.WithTimeout(ctx, 5*time.Second)
-	//defer cancelFunc()
-
 	accountCreated, err := serviceImpl.repository.Create(ctx, converter.CreateAccountInputVOToModel(accountInputVO))
 	if err != nil {
 		return output.CreateAccountOutputVO{}, errors.New("error on create accounts")
 	}
 
-	return converter.AccountModelToCreateAccountOutputVO(accountCreated), err
+	return converter.ModelToCreateAccountOutputVO(accountCreated), nil
 }
 
-func (serviceImpl accountServiceImpl) GetAll(ctx context.Context, ) ([]output.FindAllAccountOutputVO, error) {
-	accounts, err := serviceImpl.repository.GetAll(ctx)
+func (serviceImpl accountServiceImpl) FindAll(ctx context.Context, ) ([]output.FindAllAccountOutputVO, error) {
+	accounts, err := serviceImpl.repository.FindAll(ctx)
 	if err != nil {
 		return []output.FindAllAccountOutputVO{}, errors.New("error listing all accounts")
 	}
 
-	return converter.AccountModelToFindAllAccountOutputVO(accounts), err
+	return converter.AccountModelToFindAllAccountOutputVO(accounts), nil
 }
 
 func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountId string) (output.FindAccountBalanceOutputVO, error) {
@@ -52,5 +49,5 @@ func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountId 
 		return output.FindAccountBalanceOutputVO{}, errors.New("error getting account balance")
 	}
 
-	return converter.AccountModelToFindAccountBalanceOutputVO(account), err
+	return converter.ModelToFindAccountBalanceOutputVO(account), nil
 }

@@ -17,7 +17,7 @@ func (m MockAccountService) Create(ctx context.Context, accountInputVO input.Cre
 	return m.ResultCreateAccount, m.Err
 }
 
-func (m MockAccountService) GetAll(ctx context.Context, ) ([]output.FindAllAccountOutputVO, error) {
+func (m MockAccountService) FindAll(ctx context.Context, ) ([]output.FindAllAccountOutputVO, error) {
 	return m.ResultGetAll, m.Err
 }
 

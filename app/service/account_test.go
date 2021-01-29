@@ -37,7 +37,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
-						ID:        "0001",
+						Id:        "0001",
 						Cpf:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
@@ -122,7 +122,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 				repository: repository.MockAccountRepositoryImpl{
 					Results: []model.Account{
 						{
-							ID:        "0001",
+							Id:        "0001",
 							Cpf:       "00801246156",
 							Name:      "Bruno 1",
 							Secret:    "65O6G91K651",
@@ -130,7 +130,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 							CreatedAt: time.Time{},
 						},
 						{
-							ID:        "0002",
+							Id:        "0002",
 							Cpf:       "00801246157",
 							Name:      "Bruno 2",
 							Secret:    "65O6G91K6510",
@@ -182,13 +182,13 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 			serviceImpl := accountServiceImpl{
 				repository: tt.fields.repository,
 			}
-			got, err := serviceImpl.GetAll(tt.args.ctx)
+			got, err := serviceImpl.FindAll(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GetAll() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("FindAll() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetAll() got = %v, want %v", got, tt.want)
+				t.Errorf("FindAll() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -216,7 +216,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
-						ID:        "0001",
+						Id:        "0001",
 						Cpf:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",

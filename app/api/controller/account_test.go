@@ -189,7 +189,7 @@ func TestAccountController_GetAll(t *testing.T) {
 				service: tt.fields.service,
 			}
 
-			controller.GetAll(tt.args.w, tt.args.r, nil)
+			controller.FindAll(tt.args.w, tt.args.r, nil)
 
 			// Check the response status code
 			if statusCode := rec.Code; statusCode != tt.wantStatusCode {

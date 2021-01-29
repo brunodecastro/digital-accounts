@@ -15,7 +15,7 @@ func (m MockAccountRepositoryImpl) Create(ctx context.Context, account model.Acc
 	return &m.Result, m.Err
 }
 
-func (m MockAccountRepositoryImpl) GetAll(ctx context.Context) ([]model.Account, error) {
+func (m MockAccountRepositoryImpl) FindAll(ctx context.Context) ([]model.Account, error) {
 	return m.Results, m.Err
 }
 
