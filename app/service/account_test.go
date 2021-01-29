@@ -87,9 +87,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			serviceImpl := accountServiceImpl{
-				repository: tt.fields.repository,
-			}
+			serviceImpl := NewAccountService(tt.fields.repository)
 			got, err := serviceImpl.Create(tt.args.ctx, tt.args.accountInputVO)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)

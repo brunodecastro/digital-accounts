@@ -4,20 +4,23 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/brunodecastro/digital-accounts/app/common"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/brunodecastro/digital-accounts/app/service"
+	"github.com/brunodecastro/digital-accounts/app/util"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
+	"time"
 )
 
 var (
-	apiConfig          *config.Config
-	accountInputVOTest input.CreateAccountInputVO
-	urlApi             string
+	apiConfig *config.Config
+	urlApi    string
 )
 
 func init() {
@@ -26,19 +29,30 @@ func init() {
 
 	urlApi = apiConfig.WebServerConfig.GetWebServerAddress()
 
-	accountInputVOTest = input.CreateAccountInputVO{
-		Cpf:     "008.012.461-56",
-		Name:    "Bruno de Castro Oliveira",
-		Secret:  "123456",
-		Balance: 1050,
-	}
 }
 
 func TestAccountController_Create(t *testing.T) {
 	t.Parallel()
 
-	body, _ := json.Marshal(accountInputVOTest)
 	endPoint := fmt.Sprintf("%s/accounts", urlApi)
+
+	accountInputVOTest := input.CreateAccountInputVO{
+		Cpf:     "008.012.461-56",
+		Name:    "Bruno de Castro Oliveira",
+		Secret:  "123456",
+		Balance: 1050,
+	}
+	body, _ := json.Marshal(accountInputVOTest)
+
+	rec := httptest.NewRecorder()
+	resp := httptest.NewRequest(http.MethodPost, endPoint, bytes.NewReader(body))
+
+	accountOutputVO := output.CreateAccountOutputVO{
+		Cpf:       util.FormatCpf(accountInputVOTest.Cpf),
+		Name:      accountInputVOTest.Name,
+		Balance:   common.Money(accountInputVOTest.Balance).GetFloat(),
+		CreatedAt: util.FormatDate(time.Time{}),
+	}
 
 	type fields struct {
 		service service.AccountService
@@ -49,36 +63,93 @@ func TestAccountController_Create(t *testing.T) {
 		_ httprouter.Params
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
+		name           string
+		fields         fields
+		args           args
+		wantStatusCode int
+		wantResult     output.CreateAccountOutputVO
+		wantErr        bool
 	}{
 		{
 			name: "Create account controller success",
 			fields: fields{
 				service: service.MockAccountService{
-					ResultCreateAccount: output.CreateAccountOutputVO{},
+					ResultCreateAccount: accountOutputVO,
 					Err:                 nil,
 				},
 			},
 			args: args{
-				w: httptest.NewRecorder(),
-				r: httptest.NewRequest(http.MethodPost, endPoint, bytes.NewReader(body)),
+				w: rec,
+				r: resp,
 			},
+			wantStatusCode: http.StatusCreated,
+			wantResult:     accountOutputVO,
+			wantErr:        false,
 		},
+		/*{
+			name: "Create account controller error",
+			fields: fields{
+				service: service.MockAccountService{
+					ResultCreateAccount: output.CreateAccountOutputVO{},
+					Err:                 errors.New("error on create account controller"),
+				},
+			},
+			args: args{
+				w: rec,
+				r: resp,
+			},
+			wantStatusCode: http.StatusInternalServerError,
+			wantResult:     output.CreateAccountOutputVO{},
+			wantErr:        true,
+		},*/
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			controller := AccountController{
 				service: tt.fields.service,
 			}
+
 			controller.Create(tt.args.w, tt.args.r, nil)
 
+			// Check the response status code
+			if statusCode := rec.Code; statusCode != tt.wantStatusCode {
+				t.Errorf("Create() error = %v, wantErr %v", tt.wantStatusCode, statusCode)
+			}
+
+			// Check result response
+			var responseResult = output.CreateAccountOutputVO{}
+			_ = json.Unmarshal(rec.Body.Bytes(), &responseResult)
+			if !reflect.DeepEqual(responseResult, tt.wantResult) {
+				t.Errorf("Create() got = %v, wantResult %v", responseResult, tt.wantResult)
+			}
 		})
 	}
 }
 
 func TestAccountController_GetAll(t *testing.T) {
+	t.Parallel()
+
+	endPoint := fmt.Sprintf("%s/accounts", urlApi)
+	rec := httptest.NewRecorder()
+	resp := httptest.NewRequest(http.MethodGet, endPoint, nil)
+
+	accountsOutputVO := []output.FindAllAccountOutputVO{
+		{
+			Id:        "0001",
+			Cpf:       "008.012.461-56",
+			Name:      "Bruno 1",
+			Balance:   15,
+			CreatedAt: util.FormatDate(time.Time{}),
+		},
+		{
+			Id:        "0002",
+			Cpf:       "00801246157",
+			Name:      "Bruno 2",
+			Balance:   25.5,
+			CreatedAt: util.FormatDate(time.Time{}),
+		},
+	}
+
 	type fields struct {
 		service service.AccountService
 	}
@@ -88,12 +159,28 @@ func TestAccountController_GetAll(t *testing.T) {
 		in2 httprouter.Params
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
+		name           string
+		fields         fields
+		args           args
+		wantStatusCode int
+		wantResult     []output.FindAllAccountOutputVO
+		wantErr        bool
 	}{
 		{
-
+			name: "Create account controller success",
+			fields: fields{
+				service: service.MockAccountService{
+					ResultGetAll: accountsOutputVO,
+					Err:          nil,
+				},
+			},
+			args: args{
+				w: rec,
+				r: resp,
+			},
+			wantStatusCode: http.StatusOK,
+			wantResult:     accountsOutputVO,
+			wantErr:        false,
 		},
 	}
 	for _, tt := range tests {
@@ -101,12 +188,37 @@ func TestAccountController_GetAll(t *testing.T) {
 			controller := AccountController{
 				service: tt.fields.service,
 			}
-			fmt.Print(controller)
+
+			controller.GetAll(tt.args.w, tt.args.r, nil)
+
+			// Check the response status code
+			if statusCode := rec.Code; statusCode != tt.wantStatusCode {
+				t.Errorf("Create() error = %v, wantErr %v", tt.wantStatusCode, statusCode)
+			}
+
+			// Check result response
+			var responseResult []output.FindAllAccountOutputVO
+			_ = json.Unmarshal(rec.Body.Bytes(), &responseResult)
+			if !reflect.DeepEqual(responseResult, tt.wantResult) {
+				t.Errorf("Create() got = %v, wantResult %v", responseResult, tt.wantResult)
+			}
 		})
 	}
 }
 
 func TestAccountController_GetBalance(t *testing.T) {
+	t.Parallel()
+
+	var accountId = "0001"
+	endPoint := fmt.Sprintf("%s/account/%s/balance", urlApi, accountId)
+	rec := httptest.NewRecorder()
+	resp := httptest.NewRequest(http.MethodGet, endPoint, nil)
+
+	accountOutputVO := output.FindAccountBalanceOutputVO{
+		Id:      accountId,
+		Balance: common.Money(250).GetFloat(),
+	}
+
 	type fields struct {
 		service service.AccountService
 	}
@@ -116,20 +228,50 @@ func TestAccountController_GetBalance(t *testing.T) {
 		params httprouter.Params
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
+		name           string
+		fields         fields
+		args           args
+		wantStatusCode int
+		wantResult     output.FindAccountBalanceOutputVO
+		wantErr        bool
 	}{
 		{
-
+			name: "Get account balance controller success",
+			fields: fields{
+				service: service.MockAccountService{
+					ResultGetBalance: accountOutputVO,
+					Err:              nil,
+				},
+			},
+			args: args{
+				w: rec,
+				r: resp,
+			},
+			wantStatusCode: http.StatusOK,
+			wantResult:     accountOutputVO,
+			wantErr:        false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			controller := AccountController{
-				service: tt.fields.service,
+			controller := NewAccountController(tt.fields.service)
+
+			params := []httprouter.Param{
+				{Key: "account_id", Value: accountId},
 			}
-			fmt.Print(controller)
+			controller.GetBalance(tt.args.w, tt.args.r, params)
+
+			// Check the response status code
+			if statusCode := rec.Code; statusCode != tt.wantStatusCode {
+				t.Errorf("Create() error = %v, wantErr %v", tt.wantStatusCode, statusCode)
+			}
+
+			// Check result response
+			var responseResult output.FindAccountBalanceOutputVO
+			_ = json.Unmarshal(rec.Body.Bytes(), &responseResult)
+			if !reflect.DeepEqual(responseResult, tt.wantResult) {
+				t.Errorf("Create() got = %v, wantResult %v", responseResult, tt.wantResult)
+			}
 		})
 	}
 }
