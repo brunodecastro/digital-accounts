@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/brunodecastro/digital-accounts/app/common"
+	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"time"
 )
 
@@ -11,6 +11,6 @@ type Transfer struct {
 	Id                   TransferID
 	AccountOriginId      AccountID
 	AccountDestinationId AccountID
-	Amount               common.Money
+	Amount               types.Money
 	CreatedAt            time.Time
 }

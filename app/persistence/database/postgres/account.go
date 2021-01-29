@@ -104,3 +104,23 @@ func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, acco
 
 	return &account, nil
 }
+
+func (repositoryImpl accountRepositoryImpl) FindByCpf(ctx context.Context, cpf string) (*model.Account, error) {
+	var sqlQuery = `
+		SELECT id, name, cpf, secret, balance, created_at FROM accounts where cpf = $1
+	`
+	var account = model.Account{}
+
+	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, cpf)
+	err := row.Scan(
+		&account.Id,
+		&account.Name,
+		&account.Cpf,
+		&account.Secret,
+		&account.Balance,
+		&account.CreatedAt)
+	if err != nil {
+		return nil, errors.Wrap(err, "error scanning find account by cpf")
+	}
+	return &account, nil
+}

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/brunodecastro/digital-accounts/app/common"
+	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/config"
@@ -28,7 +28,6 @@ func init() {
 	apiConfig = config.LoadConfigs()
 
 	urlApi = apiConfig.WebServerConfig.GetWebServerAddress()
-
 }
 
 func TestAccountController_Create(t *testing.T) {
@@ -50,7 +49,7 @@ func TestAccountController_Create(t *testing.T) {
 	accountOutputVO := output.CreateAccountOutputVO{
 		Cpf:       util.FormatCpf(accountInputVOTest.Cpf),
 		Name:      accountInputVOTest.Name,
-		Balance:   common.Money(accountInputVOTest.Balance).GetFloat(),
+		Balance:   types.Money(accountInputVOTest.Balance).GetFloat(),
 		CreatedAt: util.FormatDate(time.Time{}),
 	}
 
@@ -216,7 +215,7 @@ func TestAccountController_GetBalance(t *testing.T) {
 
 	accountOutputVO := output.FindAccountBalanceOutputVO{
 		Id:      accountId,
-		Balance: common.Money(250).GetFloat(),
+		Balance: types.Money(250).GetFloat(),
 	}
 
 	type fields struct {

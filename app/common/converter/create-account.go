@@ -2,6 +2,7 @@ package converter
 
 import (
 	"github.com/brunodecastro/digital-accounts/app/common"
+	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	output "github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/model"
@@ -15,7 +16,7 @@ func CreateAccountInputVOToModel(accountInputVO input.CreateAccountInputVO) mode
 		Name:      accountInputVO.Name,
 		Cpf:       util.NumbersOnly(accountInputVO.Cpf),
 		Secret:    util.EncryptPassword(accountInputVO.Secret),
-		Balance:   common.Money(accountInputVO.Balance),
+		Balance:   types.Money(accountInputVO.Balance),
 		CreatedAt: time.Now(),
 	}
 }

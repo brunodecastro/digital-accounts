@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/brunodecastro/digital-accounts/app/common"
+	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"time"
 )
 
@@ -12,11 +12,11 @@ type Account struct {
 	Cpf       string
 	Name      string
 	Secret    string
-	Balance   common.Money
+	Balance   types.Money
 	CreatedAt time.Time
 }
 
-func NewAccount(id AccountID, name string, cpf string, balance common.Money, createdAt time.Time) Account {
+func NewAccount(id AccountID, name string, cpf string, balance types.Money, createdAt time.Time) Account {
 	return Account{
 		Id:        id,
 		Name:      name,

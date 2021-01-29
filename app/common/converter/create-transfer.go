@@ -2,6 +2,7 @@ package converter
 
 import (
 	"github.com/brunodecastro/digital-accounts/app/common"
+	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	output "github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/model"
@@ -14,7 +15,7 @@ func CreateTransferInputVOToModel(transferInputVO input.CreateTransferInputVO) m
 		Id:                   model.TransferID(common.NewUUID()),
 		AccountOriginId:      model.AccountID(transferInputVO.AccountOriginId),
 		AccountDestinationId: model.AccountID(transferInputVO.AccountDestinationId),
-		Amount:               common.Money(transferInputVO.Amount),
+		Amount:               types.Money(transferInputVO.Amount),
 		CreatedAt:            time.Now(),
 	}
 }
@@ -24,7 +25,7 @@ func ModelToCreateTransferOutputVO(transfer *model.Transfer) output.CreateTransf
 		Id:                   string(transfer.Id),
 		AccountOriginID:      string(transfer.AccountOriginId),
 		AccountDestinationID: string(transfer.AccountDestinationId),
-		Amount:               common.Money(transfer.Amount).GetFloat(),
+		Amount:               types.Money(transfer.Amount).GetFloat(),
 		CreatedAt:            util.FormatDate(transfer.CreatedAt),
 	}
 }

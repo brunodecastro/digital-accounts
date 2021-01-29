@@ -27,25 +27,31 @@ func main() {
 	err := postgres.UpMigrations(&apiConfig.DatabaseConfig)
 	util.MaybeFatal(err, "Unable to execute postgres migrations.")
 
-	// Configure the webserver and serve
-	server := server.NewServer(getAccountController(databaseConnection), getTransferController(databaseConnection))
+	server := createServer(databaseConnection)
 	logger.LogApp.Info(fmt.Sprintf("Server running on %s ...", apiConfig.WebServerConfig.GetWebServerAddress()))
 	err = server.ListenAndServe(&apiConfig.WebServerConfig)
 	util.MaybeFatal(err, "Unable to start the web server.")
 }
 
-func getAccountController(databaseConnection *pgxpool.Pool) controller.AccountController {
+func createServer(databaseConnection *pgxpool.Pool) *server.Server {
+	// Account services
 	accountRepository := postgres.NewAccountRepository(databaseConnection)
 	accountService := service.NewAccountService(accountRepository)
 	accountController := controller.NewAccountController(accountService)
 
-	return accountController
-}
+	// Authenticate services
+	authenticateService := service.NewAuthenticateService(accountRepository)
+	authenticateController := controller.NewAuthenticateController(authenticateService)
 
-func getTransferController(databaseConnection *pgxpool.Pool) controller.TransferController {
+	// Transfer services
 	transferRepository := postgres.NewTransferRepository(databaseConnection)
 	transferService := service.NewTransferService(transferRepository)
 	transferController := controller.NewTransferController(transferService)
 
-	return transferController
+	// Configure the webserver and serve
+	return server.NewServer(
+		authenticateController,
+		accountController,
+		transferController,
+	)
 }

@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/brunodecastro/digital-accounts/app/common"
+	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/model"
@@ -149,14 +149,14 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 					Id:        "0001",
 					Cpf:       util.FormatCpf("00801246156"),
 					Name:      "Bruno 1",
-					Balance:   common.Money(100).GetFloat(),
+					Balance:   types.Money(100).GetFloat(),
 					CreatedAt: util.FormatDate(time.Time{}),
 				},
 				{
 					Id:        "0002",
 					Cpf:       util.FormatCpf("00801246157"),
 					Name:      "Bruno 2",
-					Balance:   common.Money(250).GetFloat(),
+					Balance:   types.Money(250).GetFloat(),
 					CreatedAt: util.FormatDate(time.Time{}),
 				},
 			},
@@ -232,7 +232,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			},
 			want: output.FindAccountBalanceOutputVO{
 				Id:      "0001",
-				Balance: common.Money(100).GetFloat(),
+				Balance: types.Money(100).GetFloat(),
 			},
 			wantErr: false,
 		},
