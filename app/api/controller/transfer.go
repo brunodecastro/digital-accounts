@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/api/response"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/service"
@@ -19,7 +20,7 @@ func NewTransferController(service service.TransferService) TransferController {
 	}
 }
 
-func (controller TransferController) Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (controller TransferController) Create(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	var transferInputVO input.CreateTransferInputVO
@@ -29,6 +30,9 @@ func (controller TransferController) Create(w http.ResponseWriter, r *http.Reque
 	}
 
 	// TODO: validate fields
+
+	// get the account origin id from the auth token
+	transferInputVO.AccountOriginId = auth.GetAccountIdFromToken(r)
 
 	transferCreated, err := controller.service.Create(r.Context(), transferInputVO)
 	if err != nil {

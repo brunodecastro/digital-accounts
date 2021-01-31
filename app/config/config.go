@@ -24,7 +24,7 @@ type DatabasePostgresConfig struct {
 
 type Config struct {
 	Profile         string `envconfig:"PROFILE" default:"dev"`
-	JwtKey          string `envconfig:"JWT_KEY" default:"jwt-key"`
+	JwtSecretKey    string `envconfig:"JWT_SECRET_KEY" default:"jwt-secret-key"`
 	WebServerConfig WebServerConfig
 	DatabaseConfig  DatabasePostgresConfig
 }

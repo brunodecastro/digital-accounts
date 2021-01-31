@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/api/controller"
 	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/julienschmidt/httprouter"
@@ -9,23 +10,23 @@ import (
 )
 
 type Server struct {
-	Server                 http.Server
-	Router                 *httprouter.Router
-	authenticateController controller.AuthenticateController
-	accountController      controller.AccountController
-	transferController     controller.TransferController
+	Server                   http.Server
+	Router                   *httprouter.Router
+	authenticationController controller.AuthenticationController
+	accountController        controller.AccountController
+	transferController       controller.TransferController
 }
 
 func NewServer(
-	authenticateController controller.AuthenticateController,
+	authenticationController controller.AuthenticationController,
 	accountController controller.AccountController,
 	transferController controller.TransferController) *Server {
 	server := &Server{
-		Server:                 http.Server{},
-		Router:                 httprouter.New(),
-		authenticateController: authenticateController,
-		accountController:      accountController,
-		transferController:     transferController,
+		Server:                   http.Server{},
+		Router:                   httprouter.New(),
+		authenticationController: authenticationController,
+		accountController:        accountController,
+		transferController:       transferController,
 	}
 
 	// Set the api routes
@@ -49,9 +50,9 @@ func (server *Server) setRoutes() {
 	router.POST("/accounts", server.accountController.Create)
 	router.GET("/accounts", server.accountController.FindAll)
 	router.GET("/account/:account_id/balance", server.accountController.GetBalance)
-	router.POST("/transfers", server.transferController.Create)
+	router.POST("/transfers", auth.AuthorizeMiddleware(server.transferController.Create))
 	router.GET("/transfers", server.transferController.FindAll)
-	router.POST("/login", server.authenticateController.Authenticate)
+	router.POST("/login", server.authenticationController.Authenticate)
 }
 
 func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {

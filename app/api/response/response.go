@@ -7,13 +7,13 @@ import (
 )
 
 func CreateSuccessResponse(w http.ResponseWriter, statusCode int, result interface{}) error {
-	w.Header().Set("Content-Type", constants.JSON_CONTENT_TYPE)
+	w.Header().Set("Content-Type", constants.JsonContentType)
 	w.WriteHeader(statusCode)
 	return json.NewEncoder(w).Encode(result)
 }
 
 func CreateErrorResponse(w http.ResponseWriter, statusCode int, errorMsg string) error {
-	w.Header().Set("Content-Type", constants.JSON_CONTENT_TYPE)
+	w.Header().Set("Content-Type", constants.JsonContentType)
 	w.WriteHeader(statusCode)
 	return json.NewEncoder(w).Encode(errorMsg)
 }
