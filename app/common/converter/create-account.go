@@ -25,7 +25,7 @@ func ModelToCreateAccountOutputVO(account *model.Account) output.CreateAccountOu
 	return output.CreateAccountOutputVO{
 		Name:      account.Name,
 		Cpf:       util.FormatCpf(account.Cpf),
-		Balance:   account.Balance.GetFloat(),
+		Balance:   account.Balance.GetFloat64(),
 		CreatedAt: util.FormatDate(account.CreatedAt),
 	}
 }

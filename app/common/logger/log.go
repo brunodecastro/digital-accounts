@@ -13,7 +13,7 @@ type LogFacade struct {
 	logImpl *zap.Logger
 }
 
-func InitLogFacade(config *config.Config) {
+func InitLog(config *config.Config) {
 	var err error
 	var logZap *zap.Logger
 

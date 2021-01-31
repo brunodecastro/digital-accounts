@@ -49,7 +49,7 @@ func TestAccountController_Create(t *testing.T) {
 	accountOutputVO := output.CreateAccountOutputVO{
 		Cpf:       util.FormatCpf(accountInputVOTest.Cpf),
 		Name:      accountInputVOTest.Name,
-		Balance:   types.Money(accountInputVOTest.Balance).GetFloat(),
+		Balance:   types.Money(accountInputVOTest.Balance).GetFloat64(),
 		CreatedAt: util.FormatDate(time.Time{}),
 	}
 
@@ -215,7 +215,7 @@ func TestAccountController_GetBalance(t *testing.T) {
 
 	accountOutputVO := output.FindAccountBalanceOutputVO{
 		Id:      accountId,
-		Balance: types.Money(250).GetFloat(),
+		Balance: types.Money(250).GetFloat64(),
 	}
 
 	type fields struct {

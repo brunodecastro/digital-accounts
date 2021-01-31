@@ -53,8 +53,8 @@ func (controller AuthenticateController) Authenticate(w http.ResponseWriter, req
 
 func signedTokenString(credentialOutput output.CredentialOutputVO) string {
 
-	// Token expiration time (10 minutes)
-	var maxTokenExpirationTime time.Duration = 10
+	// Token expiration time (15 minutes)
+	var maxTokenExpirationTime time.Duration = 15
 	tokenExpirationTime := time.Now().Add(maxTokenExpirationTime * time.Minute)
 
 	credentialClaims := vo.CredentialClaims{

@@ -2,8 +2,8 @@ package postgres
 
 import (
 	"context"
+	"github.com/brunodecastro/digital-accounts/app/common/logger"
 	"github.com/brunodecastro/digital-accounts/app/config"
-	"github.com/brunodecastro/digital-accounts/app/logger"
 	"github.com/brunodecastro/digital-accounts/app/util"
 	"github.com/jackc/pgx/v4/log/zapadapter"
 	"github.com/jackc/pgx/v4/pgxpool"

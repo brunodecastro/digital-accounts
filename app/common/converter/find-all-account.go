@@ -13,7 +13,7 @@ func AccountModelToFindAllAccountOutputVO(accounts []model.Account) []output.Fin
 			Id:        string(account.Id),
 			Cpf:       util.FormatCpf(account.Cpf),
 			Name:      account.Name,
-			Balance:   account.Balance.GetFloat(),
+			Balance:   account.Balance.GetFloat64(),
 			CreatedAt: util.FormatDate(account.CreatedAt),
 		})
 	}

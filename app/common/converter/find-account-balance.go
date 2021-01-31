@@ -8,6 +8,6 @@ import (
 func ModelToFindAccountBalanceOutputVO(account *model.Account) output.FindAccountBalanceOutputVO {
 	return output.FindAccountBalanceOutputVO{
 		Id:      string(account.Id),
-		Balance: account.Balance.GetFloat(),
+		Balance: account.Balance.GetFloat64(),
 	}
 }

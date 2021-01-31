@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/model"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -54,9 +55,43 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 	return &account, nil
 }
 
+func (repositoryImpl accountRepositoryImpl) UpdateBalance(ctx context.Context, accountOriginId model.AccountID, balance types.Money) (int64, error) {
+	tx, err := repositoryImpl.dataBasePool.Begin(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	var sqlQuery = `
+		UPDATE accounts
+			SET balance = $1
+		WHERE
+			id = $2
+	`
+
+	result, err := tx.Exec(
+		ctx,
+		sqlQuery,
+		balance,
+		accountOriginId,
+	)
+	if err != nil {
+		return 0, errors.Wrap(err, "error updating account balance")
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.RowsAffected(), nil
+}
+
 func (repositoryImpl accountRepositoryImpl) FindAll(ctx context.Context) ([]model.Account, error) {
 	var sqlQuery = `
-		SELECT id, name, cpf, secret, balance, created_at FROM accounts
+		SELECT
+			id, name, cpf, secret, balance, created_at
+		FROM
+			accounts
 	`
 
 	rows, err := repositoryImpl.dataBasePool.Query(ctx, sqlQuery)
@@ -91,7 +126,12 @@ func (repositoryImpl accountRepositoryImpl) FindAll(ctx context.Context) ([]mode
 
 func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, accountId string) (*model.Account, error) {
 	var sqlQuery = `
-		SELECT id, balance FROM accounts where id = $1
+		SELECT
+			id, balance
+		FROM
+			accounts
+		where
+			id = $1
 	`
 	var account = model.Account{}
 
@@ -107,11 +147,41 @@ func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, acco
 
 func (repositoryImpl accountRepositoryImpl) FindByCpf(ctx context.Context, cpf string) (*model.Account, error) {
 	var sqlQuery = `
-		SELECT id, name, cpf, secret, balance, created_at FROM accounts where cpf = $1
+		SELECT
+			id, name, cpf, secret, balance, created_at
+		FROM
+			accounts
+		where
+			cpf = $1
 	`
 	var account = model.Account{}
 
 	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, cpf)
+	err := row.Scan(
+		&account.Id,
+		&account.Name,
+		&account.Cpf,
+		&account.Secret,
+		&account.Balance,
+		&account.CreatedAt)
+	if err != nil {
+		return nil, errors.Wrap(err, "error scanning find account by cpf")
+	}
+	return &account, nil
+}
+
+func (repositoryImpl accountRepositoryImpl) FindById(ctx context.Context, accountId string) (*model.Account, error) {
+	var sqlQuery = `
+		SELECT
+			id, name, cpf, secret, balance, created_at
+		FROM
+			accounts
+		where
+			id = $1
+	`
+	var account = model.Account{}
+
+	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, accountId)
 	err := row.Scan(
 		&account.Id,
 		&account.Name,

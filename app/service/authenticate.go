@@ -35,7 +35,7 @@ func (serviceImpl authenticateServiceImpl) Authenticate(ctx context.Context, cre
 	}
 
 	return output.CredentialOutputVO{
-		AccountId: account.Id,
+		AccountId: string(account.Id),
 		Cpf:       account.Cpf,
 		Username:  account.Name,
 	}, nil

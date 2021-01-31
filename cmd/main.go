@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/brunodecastro/digital-accounts/app/api/controller"
 	"github.com/brunodecastro/digital-accounts/app/api/server"
+	"github.com/brunodecastro/digital-accounts/app/common/logger"
 	"github.com/brunodecastro/digital-accounts/app/config"
-	"github.com/brunodecastro/digital-accounts/app/logger"
 	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres"
 	"github.com/brunodecastro/digital-accounts/app/service"
 	"github.com/brunodecastro/digital-accounts/app/util"
@@ -17,7 +17,7 @@ func main() {
 	apiConfig := config.LoadConfigs()
 
 	// Initialize app log implementation
-	logger.InitLogFacade(apiConfig)
+	logger.InitLog(apiConfig)
 	logger.LogApp.Info("Starting Digital Accounts API...")
 
 	// Configure database pool connection
@@ -45,7 +45,7 @@ func createServer(databaseConnection *pgxpool.Pool) *server.Server {
 
 	// Transfer services
 	transferRepository := postgres.NewTransferRepository(databaseConnection)
-	transferService := service.NewTransferService(transferRepository)
+	transferService := service.NewTransferService(transferRepository, accountRepository)
 	transferController := controller.NewTransferController(transferService)
 
 	// Configure the webserver and serve

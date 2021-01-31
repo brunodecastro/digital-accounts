@@ -13,7 +13,7 @@ func ModelToFindAllTransferOutputVO(transfers []model.Transfer) []output.FindAll
 			Id:                   string(transfer.Id),
 			AccountOriginID:      string(transfer.AccountOriginId),
 			AccountDestinationID: string(transfer.AccountDestinationId),
-			Amount:               transfer.Amount.GetFloat(),
+			Amount:               transfer.Amount.GetFloat64(),
 			CreatedAt:            util.FormatDate(transfer.CreatedAt),
 		})
 	}

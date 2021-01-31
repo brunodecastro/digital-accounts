@@ -1,6 +1,6 @@
 package util
 
-import "github.com/brunodecastro/digital-accounts/app/logger"
+import "github.com/brunodecastro/digital-accounts/app/common/logger"
 
 func MaybeFatal(err error, errorMessage string) {
 	if err != nil {

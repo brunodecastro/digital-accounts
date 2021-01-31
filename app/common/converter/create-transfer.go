@@ -25,7 +25,7 @@ func ModelToCreateTransferOutputVO(transfer *model.Transfer) output.CreateTransf
 		Id:                   string(transfer.Id),
 		AccountOriginID:      string(transfer.AccountOriginId),
 		AccountDestinationID: string(transfer.AccountDestinationId),
-		Amount:               types.Money(transfer.Amount).GetFloat(),
+		Amount:               types.Money(transfer.Amount).GetFloat64(),
 		CreatedAt:            util.FormatDate(transfer.CreatedAt),
 	}
 }
