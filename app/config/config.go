@@ -6,6 +6,8 @@ import (
 	"log"
 )
 
+var ConfigApp *Config
+
 type WebServerConfig struct {
 	Host string `envconfig:"WEB_SERVER_HOST" default:"localhost"`
 	Port string `envconfig:"WEB_SERVER_PORT" default:"9090"`
@@ -37,7 +39,8 @@ func LoadConfigs() *Config {
 	if err != nil {
 		log.Fatalln("Unable to load api configuration")
 	}
-	return &config
+	ConfigApp = &config
+	return ConfigApp
 }
 
 func (webServerConfig WebServerConfig) GetWebServerAddress() string {

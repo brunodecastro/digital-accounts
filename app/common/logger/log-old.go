@@ -48,3 +48,5 @@ func (logFacade *LogFacade) Error(errorMessage string, err error) {
 func (logFacade *LogFacade) FatalError(errorMessage string, err error) {
 	logFacade.logImpl.Fatal(errorMessage, zap.Error(err))
 }
+
+

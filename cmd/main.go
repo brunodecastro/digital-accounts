@@ -17,8 +17,7 @@ func main() {
 	apiConfig := config.LoadConfigs()
 
 	// Initialize app log implementation
-	logger.InitLog(apiConfig)
-	logger.LogApp.Info("Starting Digital Accounts API...")
+	logger.GetLogger().Info("Starting Digital Accounts API...")
 
 	// Configure database pool connection
 	databaseConnection := postgres.ConnectPoolConfig(&apiConfig.DatabaseConfig)
@@ -28,7 +27,7 @@ func main() {
 	util.MaybeFatal(err, "Unable to execute postgres migrations.")
 
 	server := createServer(databaseConnection, apiConfig)
-	logger.LogApp.Info(fmt.Sprintf("Server running on %s ...", apiConfig.WebServerConfig.GetWebServerAddress()))
+	logger.GetLogger().Info(fmt.Sprintf("Server running on %s ...", apiConfig.WebServerConfig.GetWebServerAddress()))
 	err = server.ListenAndServe(&apiConfig.WebServerConfig)
 	util.MaybeFatal(err, "Unable to start the web server.")
 }

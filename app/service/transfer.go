@@ -5,11 +5,13 @@ import (
 	"errors"
 	"github.com/brunodecastro/digital-accounts/app/common/converter"
 	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	"github.com/brunodecastro/digital-accounts/app/common/logger"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
+	"go.uber.org/zap"
 )
 
 type TransferService interface {
@@ -35,8 +37,13 @@ func NewTransferService(
 }
 
 func (serviceImpl transferServiceImpl) Create(ctx context.Context, transferInputVO input.CreateTransferInputVO) (output.CreateTransferOutputVO, error) {
+	logApi := logger.GetLogger().With(
+		zap.String("resource", "TransferService"),
+		zap.String("method", "Create"))
+
 	ctx, err := serviceImpl.transactionHelper.StartTransaction(ctx)
 	if err != nil {
+		logApi.Error(err.Error())
 		return output.CreateTransferOutputVO{}, custom_errors.ErrorStartTransaction
 	}
 
@@ -45,19 +52,23 @@ func (serviceImpl transferServiceImpl) Create(ctx context.Context, transferInput
 	if err != nil {
 		errT := serviceImpl.transactionHelper.RollbackTransaction(ctx)
 		if errT != nil {
+			logApi.Error(errT.Error())
 			return output.CreateTransferOutputVO{}, custom_errors.ErrorRollbackTransaction
 		}
+		logApi.Error(err.Error())
 		return output.CreateTransferOutputVO{}, err
 	}
 
 	// Create the transfer record
 	transferCreated, err := serviceImpl.transferRepository.Create(ctx, converter.CreateTransferInputVOToModel(transferInputVO))
 	if err != nil {
+		logApi.Error(err.Error())
 		return output.CreateTransferOutputVO{}, custom_errors.ErrorCreateTransfer
 	}
 
-	serviceImpl.transactionHelper.CommitTransaction(ctx)
+	err = serviceImpl.transactionHelper.CommitTransaction(ctx)
 	if err != nil {
+		logApi.Error(err.Error())
 		return output.CreateTransferOutputVO{}, custom_errors.ErrorCommitTransaction
 	}
 
@@ -65,7 +76,6 @@ func (serviceImpl transferServiceImpl) Create(ctx context.Context, transferInput
 }
 
 func (serviceImpl transferServiceImpl) transferAmountBetweenAccount(ctx context.Context, transferInputVO input.CreateTransferInputVO) error {
-
 	if transferInputVO.Amount <= 0 {
 		return custom_errors.ErrorAmountValue
 	}
@@ -107,8 +117,13 @@ func (serviceImpl transferServiceImpl) transferAmountBetweenAccount(ctx context.
 }
 
 func (serviceImpl transferServiceImpl) FindAll(ctx context.Context) ([]output.FindAllTransferOutputVO, error) {
+	logApi := logger.GetLogger().With(
+		zap.String("resource", "TransferService"),
+		zap.String("method", "FindAll"))
+
 	transfers, err := serviceImpl.transferRepository.FindAll(ctx)
 	if err != nil {
+		logApi.Error(err.Error())
 		return []output.FindAllTransferOutputVO{}, errors.New("error listing all transfers")
 	}
 

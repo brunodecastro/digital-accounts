@@ -14,7 +14,7 @@ func ConnectPoolConfig(databaseConfig *config.DatabasePostgresConfig) *pgxpool.P
 	databaseConnectionConfig, err := pgxpool.ParseConfig(databaseConfig.GetDatabaseDSN())
 	util.MaybeFatal(err, "Unable to parse the pool config")
 
-	databaseConnectionConfig.ConnConfig.Logger = zapadapter.NewLogger(logger.LogApp.GetZapLogImplementation())
+	databaseConnectionConfig.ConnConfig.Logger = zapadapter.NewLogger(logger.GetLogger())
 
 	databaseConnection, err := pgxpool.ConnectConfig(context.Background(), databaseConnectionConfig)
 	util.MaybeFatal(err, "Unable to connect the pool config")
