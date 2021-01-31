@@ -1,8 +1,8 @@
 package auth
 
 import (
+	"github.com/brunodecastro/digital-accounts/app/common/constants"
 	"github.com/brunodecastro/digital-accounts/app/common/vo"
-	"github.com/brunodecastro/digital-accounts/app/util/constants"
 	"github.com/dgrijalva/jwt-go"
 	"log"
 	"time"

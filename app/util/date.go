@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/brunodecastro/digital-accounts/app/util/constants"
+	"github.com/brunodecastro/digital-accounts/app/common/constants"
 	"time"
 )
 

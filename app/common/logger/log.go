@@ -1,8 +1,8 @@
 package logger
 
 import (
+	"github.com/brunodecastro/digital-accounts/app/common/constants"
 	"github.com/brunodecastro/digital-accounts/app/config"
-	"github.com/brunodecastro/digital-accounts/app/util/constants"
 	"go.uber.org/zap"
 	"log"
 )

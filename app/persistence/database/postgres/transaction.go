@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"context"
-	"github.com/brunodecastro/digital-accounts/app/util/constants"
+	"github.com/brunodecastro/digital-accounts/app/common/constants"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
