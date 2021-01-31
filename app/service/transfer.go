@@ -8,6 +8,7 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
+	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
 )
 
@@ -19,19 +20,35 @@ type TransferService interface {
 type transferServiceImpl struct {
 	transferRepository repository.TransferRepository
 	accountRepository  repository.AccountRepository
+	transactionHelper  postgres.TransactionHelper
 }
 
-func NewTransferService(transferRepository repository.TransferRepository, accountRepository repository.AccountRepository) TransferService {
+func NewTransferService(
+	transferRepository repository.TransferRepository,
+	accountRepository repository.AccountRepository,
+	transactionHelper postgres.TransactionHelper) TransferService {
 	return &transferServiceImpl{
 		transferRepository: transferRepository,
 		accountRepository:  accountRepository,
+		transactionHelper:  transactionHelper,
 	}
 }
 
 func (serviceImpl transferServiceImpl) Create(ctx context.Context, transferInputVO input.CreateTransferInputVO) (output.CreateTransferOutputVO, error) {
+	ctx, err := serviceImpl.transactionHelper.StartTransaction(ctx)
+	if err != nil {
+		return output.CreateTransferOutputVO{}, custom_errors.ErrorStartTransaction
+	}
 
 	// Transfer amount between accounts
-	err := serviceImpl.transferAmountBetweenAccount(ctx, transferInputVO)
+	err = serviceImpl.transferAmountBetweenAccount(ctx, transferInputVO)
+	if err != nil {
+		errT := serviceImpl.transactionHelper.RollbackTransaction(ctx)
+		if errT != nil {
+			return output.CreateTransferOutputVO{}, custom_errors.ErrorRollbackTransaction
+		}
+		return output.CreateTransferOutputVO{}, err
+	}
 
 	// Create the transfer record
 	transferCreated, err := serviceImpl.transferRepository.Create(ctx, converter.CreateTransferInputVOToModel(transferInputVO))
@@ -39,10 +56,16 @@ func (serviceImpl transferServiceImpl) Create(ctx context.Context, transferInput
 		return output.CreateTransferOutputVO{}, custom_errors.ErrorCreateTransfer
 	}
 
+	serviceImpl.transactionHelper.CommitTransaction(ctx)
+	if err != nil {
+		return output.CreateTransferOutputVO{}, custom_errors.ErrorCommitTransaction
+	}
+
 	return converter.ModelToCreateTransferOutputVO(transferCreated), nil
 }
 
 func (serviceImpl transferServiceImpl) transferAmountBetweenAccount(ctx context.Context, transferInputVO input.CreateTransferInputVO) error {
+
 	if transferInputVO.Amount <= 0 {
 		return custom_errors.ErrorAmountValue
 	}

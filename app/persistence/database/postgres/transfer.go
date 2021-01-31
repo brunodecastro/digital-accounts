@@ -9,20 +9,19 @@ import (
 )
 
 type transferRepositoryImpl struct {
-	dataBasePool *pgxpool.Pool
+	dataBasePool      *pgxpool.Pool
+	transactionHelper TransactionHelper
 }
 
-func NewTransferRepository(dataBasePool *pgxpool.Pool) repository.TransferRepository {
+func NewTransferRepository(dataBasePool *pgxpool.Pool, transactionHelper TransactionHelper) repository.TransferRepository {
 	return &transferRepositoryImpl{
-		dataBasePool: dataBasePool,
+		dataBasePool:      dataBasePool,
+		transactionHelper: transactionHelper,
 	}
 }
 
 func (repositoryImpl transferRepositoryImpl) Create(ctx context.Context, transfer model.Transfer) (*model.Transfer, error) {
-	tx, err := repositoryImpl.dataBasePool.Begin(ctx)
-	if err != nil {
-		return nil, err
-	}
+	tx := repositoryImpl.transactionHelper.GetTransactionFromContext(ctx)
 
 	var sqlQuery = `
 		INSERT INTO 
@@ -31,7 +30,7 @@ func (repositoryImpl transferRepositoryImpl) Create(ctx context.Context, transfe
 			($1, $2, $3, $4, $5)
 	`
 
-	_, err = tx.Exec(
+	_, err := tx.Exec(
 		ctx,
 		sqlQuery,
 		transfer.Id,
@@ -42,11 +41,6 @@ func (repositoryImpl transferRepositoryImpl) Create(ctx context.Context, transfe
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "error executing creating transfer query")
-	}
-
-	err = tx.Commit(ctx)
-	if err != nil {
-		return nil, err
 	}
 
 	return &transfer, nil

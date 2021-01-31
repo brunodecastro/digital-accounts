@@ -11,20 +11,19 @@ import (
 )
 
 type accountRepositoryImpl struct {
-	dataBasePool *pgxpool.Pool
+	dataBasePool      *pgxpool.Pool
+	transactionHelper TransactionHelper
 }
 
-func NewAccountRepository(dataBasePool *pgxpool.Pool) repository.AccountRepository {
+func NewAccountRepository(dataBasePool *pgxpool.Pool, transactionHelper TransactionHelper) repository.AccountRepository {
 	return &accountRepositoryImpl{
-		dataBasePool: dataBasePool,
+		dataBasePool:      dataBasePool,
+		transactionHelper: transactionHelper,
 	}
 }
 
 func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account model.Account) (*model.Account, error) {
-	tx, err := repositoryImpl.dataBasePool.Begin(ctx)
-	if err != nil {
-		return nil, err
-	}
+	tx := repositoryImpl.transactionHelper.GetTransactionFromContext(ctx)
 
 	var sqlQuery = `
 		INSERT INTO 
@@ -33,7 +32,7 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 			($1, $2, $3, $4, $5, $6)
 	`
 
-	_, err = tx.Exec(
+	_, err := tx.Exec(
 		ctx,
 		sqlQuery,
 		account.Id,
@@ -47,19 +46,11 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 		return nil, errors.Wrap(err, "error creating account")
 	}
 
-	err = tx.Commit(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	return &account, nil
 }
 
 func (repositoryImpl accountRepositoryImpl) UpdateBalance(ctx context.Context, accountOriginId model.AccountID, balance types.Money) (int64, error) {
-	tx, err := repositoryImpl.dataBasePool.Begin(ctx)
-	if err != nil {
-		return 0, err
-	}
+	tx := repositoryImpl.transactionHelper.GetTransactionFromContext(ctx)
 
 	var sqlQuery = `
 		UPDATE accounts
@@ -76,11 +67,6 @@ func (repositoryImpl accountRepositoryImpl) UpdateBalance(ctx context.Context, a
 	)
 	if err != nil {
 		return 0, errors.Wrap(err, "error updating account balance")
-	}
-
-	err = tx.Commit(ctx)
-	if err != nil {
-		return 0, err
 	}
 
 	return result.RowsAffected(), nil

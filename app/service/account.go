@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"github.com/brunodecastro/digital-accounts/app/common/converter"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
+	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
 )
 
@@ -16,19 +18,36 @@ type AccountService interface {
 }
 
 type accountServiceImpl struct {
-	repository repository.AccountRepository
+	repository        repository.AccountRepository
+	transactionHelper postgres.TransactionHelper
 }
 
-func NewAccountService(repository repository.AccountRepository) AccountService {
+func NewAccountService(repository repository.AccountRepository,
+	transactionHelper postgres.TransactionHelper) AccountService {
 	return &accountServiceImpl{
-		repository: repository,
+		repository:        repository,
+		transactionHelper: transactionHelper,
 	}
 }
 
 func (serviceImpl accountServiceImpl) Create(ctx context.Context, accountInputVO input.CreateAccountInputVO) (output.CreateAccountOutputVO, error) {
+	ctx, err := serviceImpl.transactionHelper.StartTransaction(ctx)
+	if err != nil {
+		return output.CreateAccountOutputVO{}, custom_errors.ErrorStartTransaction
+	}
+
 	accountCreated, err := serviceImpl.repository.Create(ctx, converter.CreateAccountInputVOToModel(accountInputVO))
 	if err != nil {
+		errT := serviceImpl.transactionHelper.RollbackTransaction(ctx)
+		if errT != nil {
+			return output.CreateAccountOutputVO{}, custom_errors.ErrorRollbackTransaction
+		}
 		return output.CreateAccountOutputVO{}, errors.New("error on create accounts")
+	}
+
+	serviceImpl.transactionHelper.CommitTransaction(ctx)
+	if err != nil {
+		return output.CreateAccountOutputVO{}, custom_errors.ErrorCommitTransaction
 	}
 
 	return converter.ModelToCreateAccountOutputVO(accountCreated), nil

@@ -34,9 +34,11 @@ func main() {
 }
 
 func createServer(databaseConnection *pgxpool.Pool, apiConfig *config.Config) *server.Server {
+	transactionHelper := postgres.NewTransactionHelper(databaseConnection)
+
 	// Account services
-	accountRepository := postgres.NewAccountRepository(databaseConnection)
-	accountService := service.NewAccountService(accountRepository)
+	accountRepository := postgres.NewAccountRepository(databaseConnection, transactionHelper)
+	accountService := service.NewAccountService(accountRepository, transactionHelper)
 	accountController := controller.NewAccountController(accountService)
 
 	// Authentication services
@@ -44,8 +46,8 @@ func createServer(databaseConnection *pgxpool.Pool, apiConfig *config.Config) *s
 	authenticationController := controller.NewAuthenticationController(authenticationService)
 
 	// Transfer services
-	transferRepository := postgres.NewTransferRepository(databaseConnection)
-	transferService := service.NewTransferService(transferRepository, accountRepository)
+	transferRepository := postgres.NewTransferRepository(databaseConnection, transactionHelper)
+	transferService := service.NewTransferService(transferRepository, accountRepository, transactionHelper)
 	transferController := controller.NewTransferController(transferService)
 
 	// Configure the webserver and serve

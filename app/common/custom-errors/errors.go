@@ -13,4 +13,7 @@ var (
 	ErrorAccountDestinationNotFound      = errors.New("account destination not found")
 	ErrorUpdateAccountOriginBalance      = errors.New("error on update account origin balance")
 	ErrorUpdateAccountDestinationBalance = errors.New("error on update account destination balance")
+	ErrorStartTransaction                = errors.New("error when trying to start transaction")
+	ErrorCommitTransaction               = errors.New("error when trying to commit transaction")
+	ErrorRollbackTransaction             = errors.New("error when trying to rollback transaction")
 )

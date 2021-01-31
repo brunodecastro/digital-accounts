@@ -10,4 +10,5 @@ const (
 	JsonContentType            string = "application/json"
 	JwtSecretKey               string = "jwt-secret-key" //TODO: move to config
 	CredentialClaimsContextKey string = "credentialClaims"
+	TransactionContextKey      int    = iota
 )
