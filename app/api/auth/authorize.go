@@ -1,13 +1,13 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/brunodecastro/digital-accounts/app/api/response"
 	"github.com/brunodecastro/digital-accounts/app/common/vo"
 	"github.com/brunodecastro/digital-accounts/app/util/constants"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/context"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strings"
@@ -30,8 +30,9 @@ func AuthorizeMiddleware(next http.HandlerFunc) httprouter.Handle {
 						AccountId: claims["account_id"].(string),
 						Username:  claims["username"].(string),
 					}
-					context.Set(req, "credentialClaims", credentialClaims)
-					next(w, req)
+					// create a new context with credential claims value
+					newContext := context.WithValue(req.Context(), constants.CredentialClaimsContextKey, credentialClaims)
+					next(w, req.WithContext(newContext))
 					return
 				}
 				json.NewEncoder(w).Encode(Exception{Message: "Invalid Authorization token"})
