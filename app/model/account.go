@@ -12,16 +12,6 @@ type Account struct {
 	Cpf       string
 	Name      string
 	Secret    string
-	Balance   types.Money
+	Balance   types.Money // Brazilian real cents
 	CreatedAt time.Time
-}
-
-func NewAccount(id AccountID, name string, cpf string, balance types.Money, createdAt time.Time) Account {
-	return Account{
-		Id:        id,
-		Name:      name,
-		Cpf:       cpf,
-		Balance:   balance,
-		CreatedAt: createdAt,
-	}
 }

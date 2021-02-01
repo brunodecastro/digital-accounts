@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/api/response"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/service"
@@ -25,14 +26,14 @@ func (controller AuthenticationController) Authenticate(w http.ResponseWriter, r
 	var credentialInput input.CredentialInputVO
 	err := json.NewDecoder(req.Body).Decode(&credentialInput)
 	if err != nil {
-		response.CreateErrorResponse(w, http.StatusBadRequest, "Invalid JSON format")
+		response.CreateErrorResponse(w, http.StatusBadRequest, custom_errors.ErrorInvalidJsonFormat.Error())
 		return
 	}
 
 	// Validate credentials
 	credentialOutputVO, err := controller.service.Authenticate(req.Context(), credentialInput)
 	if err != nil {
-		response.CreateErrorResponse(w, http.StatusForbidden, "invalid credentials")
+		response.CreateErrorResponse(w, http.StatusForbidden, custom_errors.ErrInvalidAccessCredentials.Error())
 		return
 	}
 

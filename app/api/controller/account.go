@@ -3,6 +3,8 @@ package controller
 import (
 	"encoding/json"
 	"github.com/brunodecastro/digital-accounts/app/api/response"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	"github.com/brunodecastro/digital-accounts/app/common/validator"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/service"
 	"github.com/julienschmidt/httprouter"
@@ -24,11 +26,15 @@ func (controller AccountController) Create(w http.ResponseWriter, r *http.Reques
 
 	var accountInputVO input.CreateAccountInputVO
 	if err := json.NewDecoder(r.Body).Decode(&accountInputVO); err != nil {
-		response.CreateErrorResponse(w, http.StatusBadRequest, "Invalid JSON format")
+		response.CreateErrorResponse(w, http.StatusBadRequest, custom_errors.ErrorInvalidJsonFormat.Error())
 		return
 	}
 
-	// TODO: validate fields
+	// Validate input fields
+	if err := validator.ValidateCreateAccountInput(accountInputVO); err != nil {
+		response.CreateErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	accountCreated, err := controller.service.Create(r.Context(), accountInputVO)
 	if err != nil {
@@ -50,6 +56,12 @@ func (controller AccountController) FindAll(w http.ResponseWriter, r *http.Reque
 
 func (controller AccountController) GetBalance(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	var accountId = params.ByName("account_id")
+
+	// Validate input fields
+	if err := validator.ValidateFindAccountBalanceInput(accountId); err != nil {
+		response.CreateErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	account, err := controller.service.GetBalance(r.Context(), accountId)
 	if err != nil {

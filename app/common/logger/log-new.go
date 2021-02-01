@@ -20,15 +20,18 @@ func GetLogger() *zap.Logger {
 		var err error
 		var zapConfig zap.Config
 
-		if config.ConfigApp.Profile == constants.ProfileProd {
-			zapConfig= zap.NewProductionConfig()
+		if config.AppConfig.Profile == constants.ProfileProd {
+			zapConfig = zap.NewProductionConfig()
 		} else {
-			zapConfig= zap.NewDevelopmentConfig()
+			zapConfig = zap.NewDevelopmentConfig()
 		}
 
 		zapConfig.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 
-		logImpl, err = zapConfig.Build()
+		logImpl, err = zapConfig.Build(
+			zap.AddCaller(),
+			zap.AddStacktrace(zapcore.ErrorLevel),
+		)
 		if err != nil {
 			log.Fatalf("Unable to initialize logger implementation")
 		}

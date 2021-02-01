@@ -2,12 +2,15 @@ package controller
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/brunodecastro/digital-accounts/app/api/response"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/config"
+	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres"
 	"github.com/brunodecastro/digital-accounts/app/service"
 	"github.com/brunodecastro/digital-accounts/app/util"
 	"github.com/julienschmidt/httprouter"
@@ -19,8 +22,9 @@ import (
 )
 
 var (
-	apiConfig *config.Config
-	urlApi    string
+	apiConfig             *config.Config
+	urlApi                string
+	transactionHelperMock postgres.MockTransactionHelper
 )
 
 func init() {
@@ -28,6 +32,11 @@ func init() {
 	apiConfig = config.LoadConfigs()
 
 	urlApi = apiConfig.WebServerConfig.GetWebServerAddress()
+
+	transactionHelperMock = postgres.MockTransactionHelper{
+		Result: context.Background(),
+		Err:    nil,
+	}
 }
 
 func TestAccountController_Create(t *testing.T) {
@@ -54,7 +63,8 @@ func TestAccountController_Create(t *testing.T) {
 	}
 
 	type fields struct {
-		service service.AccountService
+		service           service.AccountService
+		transactionHelper postgres.TransactionHelper
 	}
 	type args struct {
 		w http.ResponseWriter
@@ -66,7 +76,7 @@ func TestAccountController_Create(t *testing.T) {
 		fields         fields
 		args           args
 		wantStatusCode int
-		wantResult     output.CreateAccountOutputVO
+		wantResult     response.ApiHttpResponse
 		wantErr        bool
 	}{
 		{
@@ -76,14 +86,19 @@ func TestAccountController_Create(t *testing.T) {
 					ResultCreateAccount: accountOutputVO,
 					Err:                 nil,
 				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				w: rec,
 				r: resp,
 			},
 			wantStatusCode: http.StatusCreated,
-			wantResult:     accountOutputVO,
-			wantErr:        false,
+			wantResult: response.ApiHttpResponse{
+				Error:      nil,
+				StatusCode: http.StatusCreated,
+				Result:     accountOutputVO,
+			},
+			wantErr: false,
 		},
 		/*{
 			name: "Create account controller error",
@@ -98,8 +113,13 @@ func TestAccountController_Create(t *testing.T) {
 				r: resp,
 			},
 			wantStatusCode: http.StatusInternalServerError,
-			wantResult:     output.CreateAccountOutputVO{},
-			wantErr:        true,
+			wantResult: response.ApiHttpResponse{
+				Error: &response.ErrorResponse{
+					Message: "error on create account controller",
+				},
+				StatusCode: http.StatusInternalServerError,
+			},
+			wantErr: true,
 		},*/
 	}
 	for _, tt := range tests {
@@ -116,10 +136,15 @@ func TestAccountController_Create(t *testing.T) {
 			}
 
 			// Check result response
-			var responseResult = output.CreateAccountOutputVO{}
-			_ = json.Unmarshal(rec.Body.Bytes(), &responseResult)
-			if !reflect.DeepEqual(responseResult, tt.wantResult) {
-				t.Errorf("Create() got = %v, wantResult %v", responseResult, tt.wantResult)
+			var apiHttpResponse = response.ApiHttpResponse{}
+			_ = json.Unmarshal(rec.Body.Bytes(), &apiHttpResponse)
+
+			resultByte, _ := json.Marshal(apiHttpResponse.Result)
+			var resultOutputVO = output.CreateAccountOutputVO{}
+			_ = json.Unmarshal(resultByte, &resultOutputVO)
+
+			if !reflect.DeepEqual(resultOutputVO, tt.wantResult.Result) {
+				t.Errorf("Create() got = %v, wantResult %v", resultOutputVO, tt.wantResult.Result)
 			}
 		})
 	}
@@ -150,7 +175,8 @@ func TestAccountController_GetAll(t *testing.T) {
 	}
 
 	type fields struct {
-		service service.AccountService
+		service           service.AccountService
+		transactionHelper postgres.TransactionHelper
 	}
 	type args struct {
 		w   http.ResponseWriter
@@ -172,6 +198,7 @@ func TestAccountController_GetAll(t *testing.T) {
 					ResultGetAll: accountsOutputVO,
 					Err:          nil,
 				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				w: rec,
@@ -219,7 +246,8 @@ func TestAccountController_GetBalance(t *testing.T) {
 	}
 
 	type fields struct {
-		service service.AccountService
+		service           service.AccountService
+		transactionHelper postgres.TransactionHelper
 	}
 	type args struct {
 		w      http.ResponseWriter
@@ -241,6 +269,7 @@ func TestAccountController_GetBalance(t *testing.T) {
 					ResultGetBalance: accountOutputVO,
 					Err:              nil,
 				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				w: rec,

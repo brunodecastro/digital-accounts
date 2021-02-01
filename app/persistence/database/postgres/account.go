@@ -2,10 +2,10 @@ package postgres
 
 import (
 	"context"
-	"database/sql"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/model"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 )
@@ -124,7 +124,7 @@ func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, acco
 	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, accountId)
 	err := row.Scan(&account.Id, &account.Balance)
 
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil && err != pgx.ErrNoRows {
 		return nil, errors.Wrap(err, "error scanning accounts balance")
 	}
 
@@ -150,7 +150,8 @@ func (repositoryImpl accountRepositoryImpl) FindByCpf(ctx context.Context, cpf s
 		&account.Secret,
 		&account.Balance,
 		&account.CreatedAt)
-	if err != nil {
+
+	if err != nil && err != pgx.ErrNoRows {
 		return nil, errors.Wrap(err, "error scanning find account by cpf")
 	}
 	return &account, nil
@@ -175,7 +176,8 @@ func (repositoryImpl accountRepositoryImpl) FindById(ctx context.Context, accoun
 		&account.Secret,
 		&account.Balance,
 		&account.CreatedAt)
-	if err != nil {
+
+	if err != nil && err != pgx.ErrNoRows {
 		return nil, errors.Wrap(err, "error scanning find account by cpf")
 	}
 	return &account, nil

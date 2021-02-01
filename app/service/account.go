@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"github.com/brunodecastro/digital-accounts/app/common/converter"
 	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
 	"github.com/brunodecastro/digital-accounts/app/common/logger"
@@ -10,6 +9,7 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
+	"github.com/brunodecastro/digital-accounts/app/util"
 	"go.uber.org/zap"
 )
 
@@ -24,8 +24,7 @@ type accountServiceImpl struct {
 	transactionHelper postgres.TransactionHelper
 }
 
-func NewAccountService(repository repository.AccountRepository,
-	transactionHelper postgres.TransactionHelper) AccountService {
+func NewAccountService(repository repository.AccountRepository, transactionHelper postgres.TransactionHelper) AccountService {
 	return &accountServiceImpl{
 		repository:        repository,
 		transactionHelper: transactionHelper,
@@ -37,27 +36,37 @@ func (serviceImpl accountServiceImpl) Create(ctx context.Context, accountInputVO
 		zap.String("resource", "AccountService"),
 		zap.String("method", "Create"))
 
+	var emptyCreateAccountOutputVO = output.CreateAccountOutputVO{}
+
 	ctx, err := serviceImpl.transactionHelper.StartTransaction(ctx)
 	if err != nil {
 		logApi.Error(err.Error())
-		return output.CreateAccountOutputVO{}, custom_errors.ErrorStartTransaction
+		return emptyCreateAccountOutputVO, custom_errors.ErrorStartTransaction
+	}
+
+	accountExists, err := serviceImpl.repository.FindByCpf(ctx, util.NumbersOnly(accountInputVO.Cpf))
+	if err != nil {
+		logApi.Error(err.Error())
+		return emptyCreateAccountOutputVO, custom_errors.ErrorUnexpected
+	}
+	// Check if there is an account with the same cpf
+	if accountExists != nil && accountExists.Id != "" {
+		return emptyCreateAccountOutputVO, custom_errors.ErrorAccountCpfExists
 	}
 
 	accountCreated, err := serviceImpl.repository.Create(ctx, converter.CreateAccountInputVOToModel(accountInputVO))
 	if err != nil {
-		errT := serviceImpl.transactionHelper.RollbackTransaction(ctx)
-		if errT != nil {
+		if errT := serviceImpl.transactionHelper.RollbackTransaction(ctx); errT != nil {
 			logApi.Error(errT.Error())
-			return output.CreateAccountOutputVO{}, custom_errors.ErrorRollbackTransaction
+			return emptyCreateAccountOutputVO, custom_errors.ErrorRollbackTransaction
 		}
 		logApi.Error(err.Error())
-		return output.CreateAccountOutputVO{}, errors.New("error on create accounts")
+		return emptyCreateAccountOutputVO, custom_errors.ErrorCreateAccount
 	}
 
-	err = serviceImpl.transactionHelper.CommitTransaction(ctx)
-	if err != nil {
+	if err := serviceImpl.transactionHelper.CommitTransaction(ctx); err != nil {
 		logApi.Error(err.Error())
-		return output.CreateAccountOutputVO{}, custom_errors.ErrorCommitTransaction
+		return emptyCreateAccountOutputVO, custom_errors.ErrorCommitTransaction
 	}
 
 	return converter.ModelToCreateAccountOutputVO(accountCreated), nil
@@ -71,7 +80,7 @@ func (serviceImpl accountServiceImpl) FindAll(ctx context.Context, ) ([]output.F
 	accounts, err := serviceImpl.repository.FindAll(ctx)
 	if err != nil {
 		logApi.Error(err.Error())
-		return []output.FindAllAccountOutputVO{}, errors.New("error listing all accounts")
+		return []output.FindAllAccountOutputVO{}, custom_errors.ErrorListingAllAccounts
 	}
 
 	return converter.AccountModelToFindAllAccountOutputVO(accounts), nil
@@ -85,7 +94,11 @@ func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountId 
 	account, err := serviceImpl.repository.GetBalance(ctx, accountId)
 	if err != nil {
 		logApi.Error(err.Error())
-		return output.FindAccountBalanceOutputVO{}, errors.New("error getting account balance")
+		return output.FindAccountBalanceOutputVO{}, custom_errors.ErrorGettingAccountBalance
+	}
+
+	if account == nil || account.Id == "" {
+		return output.FindAccountBalanceOutputVO{}, custom_errors.ErrorAccountNotFound
 	}
 
 	return converter.ModelToFindAccountBalanceOutputVO(account), nil

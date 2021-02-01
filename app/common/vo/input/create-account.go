@@ -1,8 +1,8 @@
 package input
 
 type CreateAccountInputVO struct {
-	Cpf     string `json:"cpf" validate:"required"`
-	Name    string `json:"name" validate:"required"`
-	Secret  string `json:"secret" validate:"required"`
+	Cpf     string `json:"cpf"`
+	Name    string `json:"name"`
+	Secret  string `json:"secret"`
 	Balance int    `json:"balance"`
 }

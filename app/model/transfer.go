@@ -11,6 +11,6 @@ type Transfer struct {
 	Id                   TransferID
 	AccountOriginId      AccountID
 	AccountDestinationId AccountID
-	Amount               types.Money
+	Amount               types.Money // Brazilian real cents
 	CreatedAt            time.Time
 }

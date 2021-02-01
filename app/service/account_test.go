@@ -3,10 +3,13 @@ package service
 import (
 	"context"
 	"errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
+	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/brunodecastro/digital-accounts/app/model"
+	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres"
 	"github.com/brunodecastro/digital-accounts/app/persistence/repository"
 	"github.com/brunodecastro/digital-accounts/app/util"
 	"reflect"
@@ -14,11 +17,27 @@ import (
 	"time"
 )
 
+var (
+	apiConfig             *config.Config
+	transactionHelperMock postgres.MockTransactionHelper
+)
+
+func init() {
+	// Initialize app configs
+	apiConfig = config.LoadConfigs()
+
+	transactionHelperMock = postgres.MockTransactionHelper{
+		Result: context.Background(),
+		Err:    nil,
+	}
+}
+
 func Test_accountServiceImpl_Create(t *testing.T) {
 	t.Parallel()
 
 	type fields struct {
-		repository repository.AccountRepository
+		repository        repository.AccountRepository
+		transactionHelper postgres.TransactionHelper
 	}
 	type args struct {
 		ctx            context.Context
@@ -44,8 +63,10 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 						Balance:   0,
 						CreatedAt: time.Time{},
 					},
-					Err: nil,
+					ResultFindByCpf: nil,
+					Err:             nil,
 				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -69,8 +90,45 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{},
-					Err:    errors.New("error on create account"),
+					Err:    custom_errors.ErrorCreateAccount,
 				},
+				transactionHelper: transactionHelperMock,
+			},
+			args: args{
+				ctx: context.Background(),
+				accountInputVO: input.CreateAccountInputVO{
+					Cpf:     "008.012.461-99",
+					Name:    "Bruno 1",
+					Secret:  "65O6G91K651",
+					Balance: 0,
+				},
+			},
+			want:    output.CreateAccountOutputVO{},
+			wantErr: true,
+		},
+		{
+			name: "Create Account with the same cpf error",
+			fields: fields{
+				repository: repository.MockAccountRepositoryImpl{
+					Result: model.Account{
+						Id:        "0001",
+						Cpf:       "00801246156",
+						Name:      "Bruno 1",
+						Secret:    "65O6G91K651",
+						Balance:   0,
+						CreatedAt: time.Time{},
+					},
+					ResultFindByCpf: &model.Account{
+						Id:        "0001",
+						Cpf:       "00801246156",
+						Name:      "Bruno 1",
+						Secret:    "65O6G91K651",
+						Balance:   0,
+						CreatedAt: time.Time{},
+					},
+					Err: nil,
+				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -87,7 +145,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			serviceImpl := NewAccountService(tt.fields.repository)
+			serviceImpl := NewAccountService(tt.fields.repository, tt.fields.transactionHelper)
 			got, err := serviceImpl.Create(tt.args.ctx, tt.args.accountInputVO)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
@@ -104,7 +162,8 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 	t.Parallel()
 
 	type fields struct {
-		repository repository.AccountRepository
+		repository        repository.AccountRepository
+		transactionHelper postgres.TransactionHelper
 	}
 	type args struct {
 		ctx context.Context
@@ -140,6 +199,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 					},
 					Err: nil,
 				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -169,6 +229,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 					Results: []model.Account{},
 					Err:     errors.New("error on get all accounts"),
 				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -198,7 +259,8 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 	t.Parallel()
 
 	type fields struct {
-		repository repository.AccountRepository
+		repository        repository.AccountRepository
+		transactionHelper postgres.TransactionHelper
 	}
 	type args struct {
 		ctx       context.Context
@@ -225,6 +287,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 					},
 					Err: nil,
 				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				ctx:       context.Background(),
@@ -243,6 +306,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 					Result: model.Account{},
 					Err:    errors.New("error get balance"),
 				},
+				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				ctx:       context.Background(),

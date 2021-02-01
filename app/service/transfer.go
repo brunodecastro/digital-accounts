@@ -48,10 +48,9 @@ func (serviceImpl transferServiceImpl) Create(ctx context.Context, transferInput
 	}
 
 	// Transfer amount between accounts
-	err = serviceImpl.transferAmountBetweenAccount(ctx, transferInputVO)
+	err = serviceImpl.transferAmountBetweenAccounts(ctx, transferInputVO)
 	if err != nil {
-		errT := serviceImpl.transactionHelper.RollbackTransaction(ctx)
-		if errT != nil {
+		if errT := serviceImpl.transactionHelper.RollbackTransaction(ctx); errT != nil {
 			logApi.Error(errT.Error())
 			return output.CreateTransferOutputVO{}, custom_errors.ErrorRollbackTransaction
 		}
@@ -66,8 +65,7 @@ func (serviceImpl transferServiceImpl) Create(ctx context.Context, transferInput
 		return output.CreateTransferOutputVO{}, custom_errors.ErrorCreateTransfer
 	}
 
-	err = serviceImpl.transactionHelper.CommitTransaction(ctx)
-	if err != nil {
+	if err := serviceImpl.transactionHelper.CommitTransaction(ctx); err != nil {
 		logApi.Error(err.Error())
 		return output.CreateTransferOutputVO{}, custom_errors.ErrorCommitTransaction
 	}
@@ -75,9 +73,9 @@ func (serviceImpl transferServiceImpl) Create(ctx context.Context, transferInput
 	return converter.ModelToCreateTransferOutputVO(transferCreated), nil
 }
 
-func (serviceImpl transferServiceImpl) transferAmountBetweenAccount(ctx context.Context, transferInputVO input.CreateTransferInputVO) error {
+func (serviceImpl transferServiceImpl) transferAmountBetweenAccounts(ctx context.Context, transferInputVO input.CreateTransferInputVO) error {
 	if transferInputVO.Amount <= 0 {
-		return custom_errors.ErrorAmountValue
+		return custom_errors.ErrorTransferAmountValue
 	}
 
 	// Chek if the account origin exists

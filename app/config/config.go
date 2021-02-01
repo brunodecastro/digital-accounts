@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-var ConfigApp *Config
+var AppConfig *Config
 
 type WebServerConfig struct {
 	Host string `envconfig:"WEB_SERVER_HOST" default:"localhost"`
@@ -24,9 +24,14 @@ type DatabasePostgresConfig struct {
 	PoolMaxSize  string `envconfig:"DATABASE_POOL_MAX_SIZE" default:"10"`
 }
 
+type AuthConfig struct {
+	JwtSecretKey     string `envconfig:"JWT_SECRET_KEY" default:"jwt-digital-accounts-secret-key"`
+	MaxTokenLiveTime string `envconfig:"JWT_MAX_TOKEN_LIVE_TIME" default:"10"` // Minutes
+}
+
 type Config struct {
 	Profile         string `envconfig:"PROFILE" default:"dev"`
-	JwtSecretKey    string `envconfig:"JWT_SECRET_KEY" default:"jwt-secret-key"`
+	AuthConfig      AuthConfig
 	WebServerConfig WebServerConfig
 	DatabaseConfig  DatabasePostgresConfig
 }
@@ -39,8 +44,8 @@ func LoadConfigs() *Config {
 	if err != nil {
 		log.Fatalln("Unable to load api configuration")
 	}
-	ConfigApp = &config
-	return ConfigApp
+	AppConfig = &config
+	return AppConfig
 }
 
 func (webServerConfig WebServerConfig) GetWebServerAddress() string {

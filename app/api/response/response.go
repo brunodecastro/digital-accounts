@@ -10,7 +10,7 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-type ApiHttpResponseSuccess struct {
+type ApiHttpResponse struct {
 	Error      *ErrorResponse `json:"error,omitempty"`
 	StatusCode int            `json:"statusCode"`
 	Result     interface{}    `json:"result,omitempty"`
@@ -20,7 +20,7 @@ func CreateSuccessResponse(w http.ResponseWriter, statusCode int, result interfa
 	w.Header().Set("Content-Type", constants.JsonContentType)
 	w.WriteHeader(statusCode)
 
-	return json.NewEncoder(w).Encode(ApiHttpResponseSuccess{
+	return json.NewEncoder(w).Encode(ApiHttpResponse{
 		StatusCode: statusCode,
 		Result:     result,
 	})
@@ -30,7 +30,7 @@ func CreateErrorResponse(w http.ResponseWriter, statusCode int, errorMsg string)
 	w.Header().Set("Content-Type", constants.JsonContentType)
 	w.WriteHeader(statusCode)
 
-	return json.NewEncoder(w).Encode(ApiHttpResponseSuccess{
+	return json.NewEncoder(w).Encode(ApiHttpResponse{
 		Error: &ErrorResponse{
 			Message: errorMsg,
 		},
