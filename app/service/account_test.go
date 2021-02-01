@@ -44,11 +44,12 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 		accountInputVO input.CreateAccountInputVO
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    output.CreateAccountOutputVO
-		wantErr bool
+		name         string
+		fields       fields
+		args         args
+		want         output.CreateAccountOutputVO
+		wantErr      bool
+		wantErrorMsg string
 	}{
 
 		{
@@ -86,11 +87,12 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Create Account test service Error",
+			name: "Create Account test service Error - repository error",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{},
 					Err:    custom_errors.ErrorCreateAccount,
+					ResultFindByCpf: nil,
 				},
 				transactionHelper: transactionHelperMock,
 			},
@@ -103,8 +105,9 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 					Balance: 0,
 				},
 			},
-			want:    output.CreateAccountOutputVO{},
-			wantErr: true,
+			want:         output.CreateAccountOutputVO{},
+			wantErr:      true,
+			wantErrorMsg: custom_errors.ErrorCreateAccount.Error(),
 		},
 		{
 			name: "Create Account with the same cpf error",
@@ -139,15 +142,16 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 					Balance: 0,
 				},
 			},
-			want:    output.CreateAccountOutputVO{},
-			wantErr: true,
+			want:         output.CreateAccountOutputVO{},
+			wantErr:      true,
+			wantErrorMsg: custom_errors.ErrorAccountCpfExists.Error(),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			serviceImpl := NewAccountService(tt.fields.repository, tt.fields.transactionHelper)
 			got, err := serviceImpl.Create(tt.args.ctx, tt.args.accountInputVO)
-			if (err != nil) != tt.wantErr {
+			if tt.wantErr && err.Error() != tt.wantErrorMsg {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
@@ -169,11 +173,12 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    []output.FindAllAccountOutputVO
-		wantErr bool
+		name         string
+		fields       fields
+		args         args
+		want         []output.FindAllAccountOutputVO
+		wantErr      bool
+		wantErrorMsg string
 	}{
 		{
 			name: "Get all accounts test service success",
@@ -223,7 +228,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Get all accounts test service error",
+			name: "Get all accounts test service error - repository error",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Results: []model.Account{},
@@ -234,8 +239,9 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 			},
-			want:    []output.FindAllAccountOutputVO{},
-			wantErr: true,
+			want:         []output.FindAllAccountOutputVO{},
+			wantErr:      true,
+			wantErrorMsg: custom_errors.ErrorListingAllAccounts.Error(),
 		},
 	}
 	for _, tt := range tests {
@@ -244,7 +250,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 				repository: tt.fields.repository,
 			}
 			got, err := serviceImpl.FindAll(tt.args.ctx)
-			if (err != nil) != tt.wantErr {
+			if tt.wantErr && err.Error() != tt.wantErrorMsg {
 				t.Errorf("FindAll() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
@@ -267,11 +273,12 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 		accountId string
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    output.FindAccountBalanceOutputVO
-		wantErr bool
+		name         string
+		fields       fields
+		args         args
+		want         output.FindAccountBalanceOutputVO
+		wantErr      bool
+		wantErrorMsg string
 	}{
 		{
 			name: "Get balance test service success",
@@ -300,7 +307,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Get balance test service error",
+			name: "Get balance test service - repository error",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{},
@@ -312,8 +319,26 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 				ctx:       context.Background(),
 				accountId: "0001",
 			},
-			want:    output.FindAccountBalanceOutputVO{},
-			wantErr: true,
+			want:         output.FindAccountBalanceOutputVO{},
+			wantErr:      true,
+			wantErrorMsg: custom_errors.ErrorGettingAccountBalance.Error(),
+		},
+		{
+			name: "Get balance test service error - account not found",
+			fields: fields{
+				repository: repository.MockAccountRepositoryImpl{
+					Result: model.Account{},
+					Err:    nil,
+				},
+				transactionHelper: transactionHelperMock,
+			},
+			args: args{
+				ctx:       context.Background(),
+				accountId: "0001",
+			},
+			want:         output.FindAccountBalanceOutputVO{},
+			wantErr:      true,
+			wantErrorMsg: custom_errors.ErrorAccountNotFound.Error(),
 		},
 	}
 	for _, tt := range tests {
@@ -322,7 +347,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 				repository: tt.fields.repository,
 			}
 			got, err := serviceImpl.GetBalance(tt.args.ctx, tt.args.accountId)
-			if (err != nil) != tt.wantErr {
+			if tt.wantErr && err.Error() != tt.wantErrorMsg {
 				t.Errorf("GetBalance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}

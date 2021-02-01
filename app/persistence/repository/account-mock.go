@@ -13,6 +13,7 @@ type MockAccountRepositoryImpl struct {
 	ResultFindByCpf *model.Account
 	ResultFindById  *model.Account
 	Err             error
+	ErrFindByCpf    error
 }
 
 func (m MockAccountRepositoryImpl) Create(ctx context.Context, account model.Account) (*model.Account, error) {
@@ -32,7 +33,7 @@ func (m MockAccountRepositoryImpl) UpdateBalance(ctx context.Context, accountOri
 }
 
 func (m MockAccountRepositoryImpl) FindByCpf(ctx context.Context, cpf string) (*model.Account, error) {
-	return m.ResultFindByCpf, m.Err
+	return m.ResultFindByCpf, m.ErrFindByCpf
 }
 
 func (m MockAccountRepositoryImpl) FindById(ctx context.Context, accountId string) (*model.Account, error) {

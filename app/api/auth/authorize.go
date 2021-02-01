@@ -38,11 +38,11 @@ func AuthorizeMiddleware(next http.HandlerFunc) httprouter.Handle {
 					next(w, req.WithContext(newContext))
 					return
 				}
-				response.CreateErrorResponse(w, http.StatusForbidden, custom_errors.ErrInvalidAuthorizationToken.Error())
+				response.CreateErrorResponse(w, http.StatusUnauthorized, custom_errors.ErrInvalidAuthorizationToken.Error())
 				return
 			}
 		}
-		response.CreateErrorResponse(w, http.StatusBadRequest, custom_errors.ErrAuthorizationHeader.Error())
+		response.CreateErrorResponse(w, http.StatusUnauthorized, custom_errors.ErrAuthorizationHeader.Error())
 	}
 }
 

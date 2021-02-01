@@ -32,6 +32,10 @@ func (serviceImpl authenticationServiceImpl) Authenticate(ctx context.Context, c
 
 	var emptyCredentialVO = vo.CredentialVO{}
 
+	if !util.IsCpfValid(credentialInputVO.Cpf) {
+		return emptyCredentialVO, custom_errors.ErrorCpfInvalid
+	}
+
 	account, err := serviceImpl.accountRepository.FindByCpf(ctx, util.NumbersOnly(credentialInputVO.Cpf))
 	if err != nil {
 		logApi.Error(err.Error())
