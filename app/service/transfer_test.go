@@ -358,7 +358,8 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 		transactionHelper  postgres.TransactionHelper
 	}
 	type args struct {
-		ctx context.Context
+		ctx       context.Context
+		accountId string
 	}
 	tests := []struct {
 		name         string
@@ -426,7 +427,8 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 				transactionHelper: transactionHelperMock,
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx:       context.Background(),
+				accountId: "0001",
 			},
 			want:         []output.FindAllTransferOutputVO{},
 			wantErr:      true,
@@ -440,7 +442,7 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 				accountRepository:  tt.fields.accountRepository,
 				transactionHelper:  tt.fields.transactionHelper,
 			}
-			got, err := serviceImpl.FindAll(tt.args.ctx)
+			got, err := serviceImpl.FindAll(tt.args.ctx, tt.args.accountId)
 			if tt.wantErr && err.Error() != tt.wantErrorMsg {
 				t.Errorf("FindAll() error = %v, wantErr %v", err, tt.wantErr)
 				return

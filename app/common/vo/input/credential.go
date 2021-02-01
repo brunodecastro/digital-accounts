@@ -1,6 +1,6 @@
 package input
 
 type CredentialInputVO struct {
-	Cpf      string `json:"cpf"`
-	Password string `json:"password"`
+	Cpf    string `json:"cpf"`
+	Secret string `json:"secret"`
 }

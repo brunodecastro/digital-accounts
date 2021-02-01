@@ -15,6 +15,6 @@ func (m MockATransferRepositoryImpl) Create(ctx context.Context, transfer model.
 	return &m.Result, m.Err
 }
 
-func (m MockATransferRepositoryImpl) FindAll(ctx context.Context) ([]model.Transfer, error) {
+func (m MockATransferRepositoryImpl) FindAll(ctx context.Context, accountId string) ([]model.Transfer, error) {
 	return m.Results, m.Err
 }

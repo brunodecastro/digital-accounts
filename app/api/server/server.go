@@ -51,7 +51,7 @@ func (server *Server) setRoutes() {
 	router.GET("/accounts", server.accountController.FindAll)
 	router.GET("/account/:account_id/balance", server.accountController.GetBalance)
 	router.POST("/transfers", auth.AuthorizeMiddleware(server.transferController.Create))
-	router.GET("/transfers", server.transferController.FindAll)
+	router.GET("/transfers", auth.AuthorizeMiddleware(server.transferController.FindAll))
 	router.POST("/login", server.authenticationController.Authenticate)
 }
 

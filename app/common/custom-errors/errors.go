@@ -6,13 +6,13 @@ import (
 
 var (
 	// Authentication
-	ErrorCredentialCpfRequired      = errors.New("credential cpf is required")
-	ErrorCredentialPasswordRequired = errors.New("credential password is required")
-	ErrorCredentialWrongPassword    = errors.New("wrong password")
-	ErrInvalidAccessCredentials     = errors.New("invalid access credentials")
-	ErrInvalidToken                 = errors.New("invalid token")
-	ErrAuthorizationHeader          = errors.New("an Authorization header is required")
-	ErrInvalidAuthorizationToken    = errors.New("invalid authorization token")
+	ErrorCredentialCpfRequired    = errors.New("credential cpf is required")
+	ErrorCredentialSecretRequired = errors.New("credential secret is required")
+	ErrorCredentialWrongSecret    = errors.New("wrong secret")
+	ErrInvalidAccessCredentials   = errors.New("invalid access credentials")
+	ErrInvalidToken               = errors.New("invalid token")
+	ErrAuthorizationHeader        = errors.New("an Authorization header is required")
+	ErrInvalidAuthorizationToken  = errors.New("invalid authorization token")
 
 	// Account
 	ErrorAccountIdRequired               = errors.New("account id is required")

@@ -55,8 +55,8 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				credentialInputVO: input.CredentialInputVO{
-					Cpf:      "008.012.461-56",
-					Password: "65O6G91K651",
+					Cpf:    "008.012.461-56",
+					Secret: "65O6G91K651",
 				},
 			},
 			want: vo.CredentialVO{
@@ -78,8 +78,8 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				credentialInputVO: input.CredentialInputVO{
-					Cpf:      "008.012.461-59",
-					Password: "65O6G91K651",
+					Cpf:    "008.012.461-59",
+					Secret: "65O6G91K651",
 				},
 			},
 			want:         vo.CredentialVO{},
@@ -104,13 +104,13 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				credentialInputVO: input.CredentialInputVO{
-					Cpf:      "008.012.461-56",
-					Password: "wrong-password",
+					Cpf:    "008.012.461-56",
+					Secret: "wrong-password",
 				},
 			},
 			want:         vo.CredentialVO{},
 			wantErr:      true,
-			wantErrorMsg: custom_errors.ErrorCredentialWrongPassword.Error(),
+			wantErrorMsg: custom_errors.ErrorCredentialWrongSecret.Error(),
 		},
 		{
 			name: "Authentication Failed - account not found",
@@ -123,8 +123,8 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				credentialInputVO: input.CredentialInputVO{
-					Cpf:      "008.012.461-56",
-					Password: "65O6G91K651",
+					Cpf:    "008.012.461-56",
+					Secret: "65O6G91K651",
 				},
 			},
 			want:         vo.CredentialVO{},

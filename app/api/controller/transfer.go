@@ -8,7 +8,6 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/common/validator"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/service"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 )
 
@@ -49,8 +48,12 @@ func (controller TransferController) Create(w http.ResponseWriter, r *http.Reque
 	response.CreateSuccessResponse(w, http.StatusCreated, transferCreated)
 }
 
-func (controller TransferController) FindAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	transfers, err := controller.service.FindAll(r.Context())
+func (controller TransferController) FindAll(w http.ResponseWriter, r *http.Request) {
+
+	// get the account id from the auth token
+	accountOriginId := auth.GetAccountIdFromToken(r)
+
+	transfers, err := controller.service.FindAll(r.Context(), accountOriginId)
 	if err != nil {
 		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return

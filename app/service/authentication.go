@@ -48,8 +48,8 @@ func (serviceImpl authenticationServiceImpl) Authenticate(ctx context.Context, c
 	}
 
 	// Check the password with secret
-	if !util.CheckPasswordHash(credentialInputVO.Password, account.Secret) {
-		return emptyCredentialVO, custom_errors.ErrorCredentialWrongPassword
+	if !util.CheckPasswordHash(credentialInputVO.Secret, account.Secret) {
+		return emptyCredentialVO, custom_errors.ErrorCredentialWrongSecret
 	}
 
 	return vo.CredentialVO{

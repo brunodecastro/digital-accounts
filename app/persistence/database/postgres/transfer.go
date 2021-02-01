@@ -46,12 +46,17 @@ func (repositoryImpl transferRepositoryImpl) Create(ctx context.Context, transfe
 	return &transfer, nil
 }
 
-func (repositoryImpl transferRepositoryImpl) FindAll(ctx context.Context) ([]model.Transfer, error) {
+func (repositoryImpl transferRepositoryImpl) FindAll(ctx context.Context, accountOriginId string) ([]model.Transfer, error) {
 	var sqlQuery = `
-		SELECT id, account_origin_id, account_destination_id, amount, created_at FROM transfers
+		SELECT 
+			id, account_origin_id, account_destination_id, amount, created_at 
+		FROM 
+			transfers
+		where
+			account_origin_id = $1
 	`
 
-	rows, err := repositoryImpl.dataBasePool.Query(ctx, sqlQuery)
+	rows, err := repositoryImpl.dataBasePool.Query(ctx, sqlQuery, accountOriginId)
 	if err != nil {
 		return []model.Transfer{}, errors.Wrap(err, "error executing listing transfers query")
 	}

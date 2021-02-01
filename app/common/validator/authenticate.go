@@ -12,8 +12,8 @@ func ValidateAuthenticate(credentialInput input.CredentialInputVO) error {
 		return custom_errors.ErrorCredentialCpfRequired
 	}
 
-	if credentialInput.Password == "" {
-		return custom_errors.ErrorCredentialPasswordRequired
+	if credentialInput.Secret == "" {
+		return custom_errors.ErrorCredentialSecretRequired
 	}
 
 	if !util.IsCpfValid(credentialInput.Cpf) {

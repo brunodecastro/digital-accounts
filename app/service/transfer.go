@@ -15,7 +15,7 @@ import (
 
 type TransferService interface {
 	Create(ctx context.Context, transferInputVO input.CreateTransferInputVO) (output.CreateTransferOutputVO, error)
-	FindAll(ctx context.Context) ([]output.FindAllTransferOutputVO, error)
+	FindAll(ctx context.Context, accountOriginId string) ([]output.FindAllTransferOutputVO, error)
 }
 
 type transferServiceImpl struct {
@@ -118,12 +118,12 @@ func (serviceImpl transferServiceImpl) transferAmountBetweenAccounts(ctx context
 	return nil
 }
 
-func (serviceImpl transferServiceImpl) FindAll(ctx context.Context) ([]output.FindAllTransferOutputVO, error) {
+func (serviceImpl transferServiceImpl) FindAll(ctx context.Context, accountOriginId string) ([]output.FindAllTransferOutputVO, error) {
 	logApi := logger.GetLogger().With(
 		zap.String("resource", "TransferService"),
 		zap.String("method", "FindAll"))
 
-	transfers, err := serviceImpl.transferRepository.FindAll(ctx)
+	transfers, err := serviceImpl.transferRepository.FindAll(ctx, accountOriginId)
 	if err != nil {
 		logApi.Error(err.Error())
 		return []output.FindAllTransferOutputVO{}, custom_errors.ErrorListingAllTransfers
