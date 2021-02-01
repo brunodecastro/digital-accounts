@@ -18,13 +18,12 @@ import (
 )
 
 var (
-	apiConfig             *config.Config
 	transactionHelperMock postgres.MockTransactionHelper
 )
 
 func init() {
 	// Initialize app configs
-	apiConfig = config.LoadConfigs()
+	config.LoadConfigs()
 
 	transactionHelperMock = postgres.MockTransactionHelper{
 		Result: context.Background(),

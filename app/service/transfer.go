@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"github.com/brunodecastro/digital-accounts/app/common/converter"
 	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
 	"github.com/brunodecastro/digital-accounts/app/common/logger"
@@ -78,6 +77,11 @@ func (serviceImpl transferServiceImpl) transferAmountBetweenAccounts(ctx context
 		return custom_errors.ErrorTransferAmountValue
 	}
 
+	// Check if the transfer is to the same account
+	if transferInputVO.AccountOriginId == transferInputVO.AccountDestinationId {
+		return custom_errors.ErrorTransferSameAccount
+	}
+
 	// Chek if the account origin exists
 	accountOrigin, err := serviceImpl.accountRepository.FindById(ctx, transferInputVO.AccountOriginId)
 	if err != nil || accountOrigin == nil {
@@ -122,7 +126,7 @@ func (serviceImpl transferServiceImpl) FindAll(ctx context.Context) ([]output.Fi
 	transfers, err := serviceImpl.transferRepository.FindAll(ctx)
 	if err != nil {
 		logApi.Error(err.Error())
-		return []output.FindAllTransferOutputVO{}, errors.New("error listing all transfers")
+		return []output.FindAllTransferOutputVO{}, custom_errors.ErrorListingAllTransfers
 	}
 
 	return converter.ModelToFindAllTransferOutputVO(transfers), nil

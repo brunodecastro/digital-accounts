@@ -38,6 +38,8 @@ var (
 	ErrorAccountOriginNotFound        = errors.New("account origin not found")
 	ErrorAccountDestinationNotFound   = errors.New("account destination not found")
 	ErrorTransferAmountValue          = errors.New("the transfer amount must be greater than to 0")
+	ErrorListingAllTransfers          = errors.New("error listing all transfers")
+	ErrorTransferSameAccount          = errors.New("cannot transfer to the same account")
 
 	// Transaction
 	ErrorStartTransaction    = errors.New("error when trying to start transaction")
