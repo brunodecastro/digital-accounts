@@ -3,6 +3,7 @@ package validator
 import (
 	"github.com/brunodecastro/digital-accounts/app/common/custom-errors"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
+	"github.com/brunodecastro/digital-accounts/app/util"
 )
 
 func ValidateCreateAccountInput(createAccountInputVO input.CreateAccountInputVO) error {
@@ -17,6 +18,10 @@ func ValidateCreateAccountInput(createAccountInputVO input.CreateAccountInputVO)
 
 	if createAccountInputVO.Secret == "" {
 		return custom_errors.ErrorAccountSecretRequired
+	}
+
+	if !util.IsCpfValid(createAccountInputVO.Cpf) {
+		return custom_errors.ErrorCpfInvalid
 	}
 
 	if createAccountInputVO.Balance < 0 {

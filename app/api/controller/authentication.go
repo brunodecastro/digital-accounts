@@ -5,6 +5,7 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/api/response"
 	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	"github.com/brunodecastro/digital-accounts/app/common/validator"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
 	"github.com/brunodecastro/digital-accounts/app/service"
@@ -27,6 +28,12 @@ func (controller AuthenticationController) Authenticate(w http.ResponseWriter, r
 	err := json.NewDecoder(req.Body).Decode(&credentialInput)
 	if err != nil {
 		response.CreateErrorResponse(w, http.StatusBadRequest, custom_errors.ErrorInvalidJsonFormat.Error())
+		return
+	}
+
+	// Validate input fields
+	if err := validator.ValidateAuthenticate(credentialInput); err != nil {
+		response.CreateErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
