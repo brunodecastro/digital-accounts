@@ -19,6 +19,6 @@ func (m MockTransferService) Create(ctx context.Context, transferInputVO input.C
 }
 
 // FindAll - list all transfers mock
-func (m MockTransferService) FindAll(ctx context.Context, accountOriginId string) ([]output.FindAllTransferOutputVO, error) {
+func (m MockTransferService) FindAll(ctx context.Context, accountOriginID string) ([]output.FindAllTransferOutputVO, error) {
 	return m.ResultFindAll, m.Err
 }

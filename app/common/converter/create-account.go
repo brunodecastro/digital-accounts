@@ -15,7 +15,7 @@ func CreateAccountInputVOToModel(accountInputVO input.CreateAccountInputVO) mode
 	return model.Account{
 		ID:        model.AccountID(common.NewUUID()),
 		Name:      accountInputVO.Name,
-		Cpf:       util.NumbersOnly(accountInputVO.Cpf),
+		CPF:       util.NumbersOnly(accountInputVO.CPF),
 		Secret:    util.EncryptPassword(accountInputVO.Secret),
 		Balance:   types.Money(accountInputVO.Balance),
 		CreatedAt: time.Now(),
@@ -26,7 +26,7 @@ func CreateAccountInputVOToModel(accountInputVO input.CreateAccountInputVO) mode
 func ModelToCreateAccountOutputVO(account *model.Account) output.CreateAccountOutputVO {
 	return output.CreateAccountOutputVO{
 		Name:      account.Name,
-		Cpf:       util.FormatCpf(account.Cpf),
+		CPF:       util.FormatCpf(account.CPF),
 		Balance:   account.Balance.ToFloat64(),
 		CreatedAt: util.FormatDate(account.CreatedAt),
 	}

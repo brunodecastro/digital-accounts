@@ -19,7 +19,7 @@ type HTTPErrorResponse struct {
 
 // CreateSuccessResponse - creates a success default response
 func CreateSuccessResponse(w http.ResponseWriter, statusCode int, result interface{}) error {
-	w.Header().Set("Content-Type", constants.JsonContentType)
+	w.Header().Set("Content-Type", constants.JSONContentType)
 	w.WriteHeader(statusCode)
 
 	return json.NewEncoder(w).Encode(result)
@@ -27,7 +27,7 @@ func CreateSuccessResponse(w http.ResponseWriter, statusCode int, result interfa
 
 // CreateErrorResponse - creates a error default response
 func CreateErrorResponse(w http.ResponseWriter, statusCode int, errorMsg string) error {
-	w.Header().Set("Content-Type", constants.JsonContentType)
+	w.Header().Set("Content-Type", constants.JSONContentType)
 	w.WriteHeader(statusCode)
 
 	return json.NewEncoder(w).Encode(HTTPErrorResponse{

@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"github.com/kelseyhightower/envconfig"
 	"log"
+	"sync"
 )
 
-var AppConfig *Config
+var (
+	apiConfig *Config
+	doOnce    sync.Once
+)
 
 // WebServerConfig - configs of web server
 type WebServerConfig struct {
@@ -28,7 +32,7 @@ type DatabasePostgresConfig struct {
 
 // AuthConfig - configs of authentication
 type AuthConfig struct {
-	JwtSecretKey     string `envconfig:"JWT_SECRET_KEY" default:"jwt-digital-accounts-secret-key"`
+	JWTSecretKey     string `envconfig:"JWT_SECRET_KEY" default:"jwt-digital-accounts-secret-key"`
 	MaxTokenLiveTime string `envconfig:"JWT_MAX_TOKEN_LIVE_TIME" default:"10"` // Minutes
 }
 
@@ -40,16 +44,19 @@ type Config struct {
 	DatabaseConfig  DatabasePostgresConfig
 }
 
-// LoadConfigs loads environment variables to configure the api
-func LoadConfigs() *Config {
+// GetAPIConfigs loads and get environment variables to configure the api
+func GetAPIConfigs() *Config {
 	var config Config
-	err := envconfig.Process("", &config)
 
-	if err != nil {
-		log.Fatalln("Unable to load api configuration")
-	}
-	AppConfig = &config
-	return AppConfig
+	doOnce.Do(func() {
+		err := envconfig.Process("", &config)
+
+		if err != nil {
+			log.Fatalln("Unable to load api configuration")
+		}
+		apiConfig = &config
+	})
+	return apiConfig
 }
 
 // GetWebServerAddress - returns the web server address

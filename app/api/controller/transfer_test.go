@@ -5,11 +5,10 @@ import (
 	"encoding/json"
 	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/api/response"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
-	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/brunodecastro/digital-accounts/app/service"
 	"github.com/brunodecastro/digital-accounts/app/util"
 	"net/http"
@@ -18,14 +17,6 @@ import (
 	"time"
 )
 
-var (
-	urlApiTransfer string
-)
-
-func init() {
-	// Initialize app configs
-	config.LoadConfigs()
-}
 
 func TestTransferController_Create_Success(t *testing.T) {
 	t.Parallel()

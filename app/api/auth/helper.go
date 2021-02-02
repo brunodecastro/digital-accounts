@@ -3,6 +3,7 @@ package auth
 import (
 	"github.com/brunodecastro/digital-accounts/app/common/constants"
 	"github.com/brunodecastro/digital-accounts/app/common/vo"
+	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
@@ -18,7 +19,7 @@ func GetAccountIDFromToken(req *http.Request) string {
 // GenerateToken generates a jwt token with claims information
 func GenerateToken(credentialClaims vo.CredentialClaimsVO) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, credentialClaims)
-	tokenString, err := token.SignedString([]byte(constants.JWTSecretKey))
+	tokenString, err := token.SignedString([]byte(config.GetAPIConfigs().AuthConfig.JWTSecretKey))
 	if err != nil {
 		log.Println(err)
 	}

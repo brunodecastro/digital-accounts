@@ -10,6 +10,22 @@ definitions:
       secret:
         type: string
     type: object
+  input.CreateTransferInputVO:
+    properties:
+      account_destination_id:
+        type: string
+      accountOriginID:
+        type: string
+      amount:
+        type: integer
+    type: object
+  input.CredentialInputVO:
+    properties:
+      cpf:
+        type: string
+      secret:
+        type: string
+    type: object
   output.CreateAccountOutputVO:
     properties:
       balance:
@@ -19,6 +35,19 @@ definitions:
       created_at:
         type: string
       name:
+        type: string
+    type: object
+  output.CreateTransferOutputVO:
+    properties:
+      account_destination_id:
+        type: string
+      account_origin_id:
+        type: string
+      amount:
+        type: number
+      created_at:
+        type: string
+      id:
         type: string
     type: object
   output.FindAccountBalanceOutputVO:
@@ -41,13 +70,26 @@ definitions:
       name:
         type: string
     type: object
+  output.FindAllTransferOutputVO:
+    properties:
+      account_destination_id:
+        type: string
+      account_origin_id:
+        type: string
+      amount:
+        type: number
+      created_at:
+        type: string
+      id:
+        type: string
+    type: object
   response.ErrorResponse:
     properties:
       message:
         example: internal server error
         type: string
     type: object
-  response.HttpErrorResponse:
+  response.HTTPErrorResponse:
     properties:
       error:
         $ref: '#/definitions/response.ErrorResponse'
@@ -68,7 +110,7 @@ paths:
       - application/json
       description: Gets the account balance
       parameters:
-      - description: Account Id
+      - description: Account ID
         in: path
         name: account_id
         required: true
@@ -83,14 +125,14 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.HttpErrorResponse'
+            $ref: '#/definitions/response.HTTPErrorResponse'
         "500":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.HttpErrorResponse'
+            $ref: '#/definitions/response.HTTPErrorResponse'
       summary: Gets the account balance
       tags:
-      - accounts
+      - Accounts
   /accounts:
     get:
       description: List all accounts
@@ -104,10 +146,10 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.HttpErrorResponse'
+            $ref: '#/definitions/response.HTTPErrorResponse'
       summary: List all accounts
       tags:
-      - accounts
+      - Accounts
     post:
       consumes:
       - application/json
@@ -129,12 +171,99 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.HttpErrorResponse'
+            $ref: '#/definitions/response.HTTPErrorResponse'
         "500":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.HttpErrorResponse'
+            $ref: '#/definitions/response.HTTPErrorResponse'
       summary: Creates a new account
       tags:
-      - accounts
+      - Accounts
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: authenticate the user in the api
+      parameters:
+      - description: Credential Input
+        in: body
+        name: credential
+        required: true
+        schema:
+          $ref: '#/definitions/input.CredentialInputVO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/output.CreateTransferOutputVO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HTTPErrorResponse'
+        "403":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HTTPErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: authenticate the user
+      tags:
+      - Authentication
+  /transfers:
+    get:
+      description: List all transfers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/output.FindAllTransferOutputVO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.HTTPErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List all transfers
+      tags:
+      - Transfers
+    post:
+      consumes:
+      - application/json
+      description: Creates a new transfer
+      parameters:
+      - description: Transfer Input
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/input.CreateTransferInputVO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/output.CreateTransferOutputVO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HTTPErrorResponse'
+        "500":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HTTPErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Creates a new transfer
+      tags:
+      - Transfers
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

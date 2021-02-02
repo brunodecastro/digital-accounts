@@ -1,5 +1,6 @@
 package types
 
+// Money - type that represents a Brazilian real cents in int format
 type Money int64
 
 // ToInt64 - money to int64

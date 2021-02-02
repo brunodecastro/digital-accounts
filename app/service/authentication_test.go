@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/vo"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/config"
@@ -16,7 +16,7 @@ import (
 
 func init() {
 	// Initialize app configs
-	config.LoadConfigs()
+	config.GetAPIConfigs()
 }
 
 func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
@@ -41,9 +41,9 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			name: "Authentication Success",
 			fields: fields{
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindByCpf: &model.Account{
+					ResultFindByCPF: &model.Account{
 						ID:        "0001",
-						Cpf:       "00801246156",
+						CPF:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    util.EncryptPassword("65O6G91K651"),
 						Balance:   0,
@@ -55,12 +55,12 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				credentialInputVO: input.CredentialInputVO{
-					Cpf:    "008.012.461-56",
+					CPF:    "008.012.461-56",
 					Secret: "65O6G91K651",
 				},
 			},
 			want: vo.CredentialVO{
-				Cpf:       "00801246156",
+				CPF:       "00801246156",
 				AccountID: "0001",
 				Username:  "Bruno 1",
 			},
@@ -71,14 +71,14 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			name: "Authentication Failed - invalid cpf",
 			fields: fields{
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindByCpf: nil,
+					ResultFindByCPF: nil,
 					Err:             nil,
 				},
 			},
 			args: args{
 				ctx: context.Background(),
 				credentialInputVO: input.CredentialInputVO{
-					Cpf:    "008.012.461-59",
+					CPF:    "008.012.461-59",
 					Secret: "65O6G91K651",
 				},
 			},
@@ -90,9 +90,9 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			name: "Authentication Failed - wrong password",
 			fields: fields{
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindByCpf: &model.Account{
+					ResultFindByCPF: &model.Account{
 						ID:        "0001",
-						Cpf:       "00801246156",
+						CPF:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    util.EncryptPassword("65O6G91K651"),
 						Balance:   0,
@@ -104,7 +104,7 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				credentialInputVO: input.CredentialInputVO{
-					Cpf:    "008.012.461-56",
+					CPF:    "008.012.461-56",
 					Secret: "wrong-password",
 				},
 			},
@@ -116,14 +116,14 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			name: "Authentication Failed - account not found",
 			fields: fields{
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindByCpf: nil,
+					ResultFindByCPF: nil,
 					Err:             nil,
 				},
 			},
 			args: args{
 				ctx: context.Background(),
 				credentialInputVO: input.CredentialInputVO{
-					Cpf:    "008.012.461-56",
+					CPF:    "008.012.461-56",
 					Secret: "65O6G91K651",
 				},
 			},

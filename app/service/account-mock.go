@@ -25,6 +25,6 @@ func (m MockAccountService) FindAll(ctx context.Context) ([]output.FindAllAccoun
 }
 
 // GetBalance - gets the account balance mock
-func (m MockAccountService) GetBalance(ctx context.Context, accountId string) (output.FindAccountBalanceOutputVO, error) {
+func (m MockAccountService) GetBalance(ctx context.Context, accountID string) (output.FindAccountBalanceOutputVO, error) {
 	return m.ResultGetBalance, m.Err
 }

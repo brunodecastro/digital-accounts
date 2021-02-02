@@ -12,7 +12,7 @@ import (
 func SignedTokenString(credentialOutput vo.CredentialVO) string {
 
 	// Token expiration time
-	var maxTokenLiveTime, err = time.ParseDuration(config.AppConfig.AuthConfig.MaxTokenLiveTime)
+	var maxTokenLiveTime, err = time.ParseDuration(config.GetAPIConfigs().AuthConfig.MaxTokenLiveTime)
 	if err != nil {
 		logger.GetLogger().Error("error parsing the token max live time", zap.Error(err))
 	}

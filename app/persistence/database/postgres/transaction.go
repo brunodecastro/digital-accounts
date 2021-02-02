@@ -62,7 +62,7 @@ func setTransactionInContext(ctx context.Context, tx pgx.Tx) context.Context {
 	return newContext
 }
 
-// setTransactionInContext - gets the transaction number in the context
+// GetTransactionFromContext - gets the transaction number in the context
 func (transaction transactionHelperImpl) GetTransactionFromContext(ctx context.Context) pgx.Tx {
 	return ctx.Value(constants.TransactionContextKey).(pgx.Tx)
 }

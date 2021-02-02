@@ -19,9 +19,12 @@ import (
 // @version 1.0
 // @contact.name Bruno de Castro Oliveira
 // @contact.email brunnodecastro@gmail.com
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	// Initialize app configs
-	apiConfig := config.LoadConfigs()
+	apiConfig := config.GetAPIConfigs()
 
 	// Initialize app log implementation
 	logger.GetLogger().Info("Starting Digital Accounts API...")

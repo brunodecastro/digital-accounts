@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"github.com/brunodecastro/digital-accounts/app/common/converter"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/logger"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// TransferService interface of Transfer Service
 type TransferService interface {
 	Create(ctx context.Context, transferInputVO input.CreateTransferInputVO) (output.CreateTransferOutputVO, error)
 	FindAll(ctx context.Context, accountOriginID string) ([]output.FindAllTransferOutputVO, error)
@@ -24,6 +25,7 @@ type transferServiceImpl struct {
 	transactionHelper  postgres.TransactionHelper
 }
 
+// NewTransferService new instance Transfer Service
 func NewTransferService(
 	transferRepository repository.TransferRepository,
 	accountRepository repository.AccountRepository,
@@ -85,7 +87,7 @@ func (serviceImpl transferServiceImpl) transferAmountBetweenAccounts(ctx context
 	}
 
 	// Chek if the account origin exists
-	accountOrigin, err := serviceImpl.accountRepository.FindById(ctx, transferInputVO.AccountOriginID)
+	accountOrigin, err := serviceImpl.accountRepository.FindByID(ctx, transferInputVO.AccountOriginID)
 	if err != nil || accountOrigin == nil {
 		return custom_errors.ErrorAccountOriginNotFound
 	}
@@ -96,7 +98,7 @@ func (serviceImpl transferServiceImpl) transferAmountBetweenAccounts(ctx context
 	}
 
 	// Chek if the account destination exists
-	accountDestination, err := serviceImpl.accountRepository.FindById(ctx, transferInputVO.AccountDestinationID)
+	accountDestination, err := serviceImpl.accountRepository.FindByID(ctx, transferInputVO.AccountDestinationID)
 	if err != nil || accountDestination == nil {
 		return custom_errors.ErrorAccountDestinationNotFound
 	}

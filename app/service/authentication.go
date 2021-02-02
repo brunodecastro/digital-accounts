@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/logger"
 	"github.com/brunodecastro/digital-accounts/app/common/vo"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
@@ -35,11 +35,11 @@ func (serviceImpl authenticationServiceImpl) Authenticate(ctx context.Context, c
 
 	var emptyCredentialVO = vo.CredentialVO{}
 
-	if !util.IsCpfValid(credentialInputVO.Cpf) {
+	if !util.IsCpfValid(credentialInputVO.CPF) {
 		return emptyCredentialVO, custom_errors.ErrorCpfInvalid
 	}
 
-	account, err := serviceImpl.accountRepository.FindByCpf(ctx, util.NumbersOnly(credentialInputVO.Cpf))
+	account, err := serviceImpl.accountRepository.FindByCPF(ctx, util.NumbersOnly(credentialInputVO.CPF))
 	if err != nil {
 		logAPI.Error(err.Error())
 		return emptyCredentialVO, custom_errors.ErrorUnexpected
@@ -57,7 +57,7 @@ func (serviceImpl authenticationServiceImpl) Authenticate(ctx context.Context, c
 
 	return vo.CredentialVO{
 		AccountID: string(account.ID),
-		Cpf:       account.Cpf,
+		CPF:       account.CPF,
 		Username:  account.Name,
 	}, nil
 }

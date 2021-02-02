@@ -1,7 +1,7 @@
 package validator
 
 import (
-	"github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	"github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/util"
 )
@@ -9,24 +9,24 @@ import (
 // ValidateCreateAccountInput - validates the input.CreateAccountInputVO to create a new account
 func ValidateCreateAccountInput(createAccountInputVO input.CreateAccountInputVO) error {
 
-	if createAccountInputVO.Cpf == "" {
-		return custom_errors.ErrorAccountCpfRequired
+	if createAccountInputVO.CPF == "" {
+		return errors.ErrorAccountCpfRequired
 	}
 
 	if createAccountInputVO.Name == "" {
-		return custom_errors.ErrorAccountNameRequired
+		return errors.ErrorAccountNameRequired
 	}
 
 	if createAccountInputVO.Secret == "" {
-		return custom_errors.ErrorAccountSecretRequired
+		return errors.ErrorAccountSecretRequired
 	}
 
-	if !util.IsCpfValid(createAccountInputVO.Cpf) {
-		return custom_errors.ErrorCpfInvalid
+	if !util.IsCpfValid(createAccountInputVO.CPF) {
+		return errors.ErrorCpfInvalid
 	}
 
 	if createAccountInputVO.Balance < 0 {
-		return custom_errors.ErrorAccountBalanceValue
+		return errors.ErrorAccountBalanceValue
 	}
 
 	return nil

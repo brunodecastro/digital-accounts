@@ -1,7 +1,7 @@
 package validator
 
 import (
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 )
 
@@ -9,7 +9,7 @@ import (
 func ValidateCreateTransferInput(createTransferInputVO input.CreateTransferInputVO) error {
 
 	if createTransferInputVO.AccountDestinationID == "" {
-		return custom_errors.ErrorAccountDestinationIdRequired
+		return custom_errors.ErrorAccountDestinationIDRequired
 	}
 
 	if createTransferInputVO.Amount <= 0 {

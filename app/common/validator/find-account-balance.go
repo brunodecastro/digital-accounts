@@ -1,13 +1,13 @@
 package validator
 
 import (
-	"github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	"github.com/brunodecastro/digital-accounts/app/common/errors"
 )
 
 // ValidateFindAccountBalanceInput - validate the accountId to find account balance
-func ValidateFindAccountBalanceInput(accountId string) error {
-	if accountId == "" {
-		return custom_errors.ErrorAccountIdRequired
+func ValidateFindAccountBalanceInput(accountID string) error {
+	if accountID == "" {
+		return errors.ErrorAccountIDRequired
 	}
 	return nil
 }

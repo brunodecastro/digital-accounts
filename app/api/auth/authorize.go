@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"github.com/brunodecastro/digital-accounts/app/api/response"
 	"github.com/brunodecastro/digital-accounts/app/common/constants"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/logger"
 	"github.com/brunodecastro/digital-accounts/app/common/vo"
+	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
@@ -53,6 +54,6 @@ func parseBearerToken(bearerToken string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("error on jwt parse")
 		}
-		return []byte(constants.JWTSecretKey), nil
+		return []byte(config.GetAPIConfigs().AuthConfig.JWTSecretKey), nil
 	})
 }

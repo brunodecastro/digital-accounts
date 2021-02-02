@@ -37,7 +37,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "Accounts"
                 ],
                 "summary": "Gets the account balance",
                 "parameters": [
@@ -59,13 +59,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.HttpErrorResponse"
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.HttpErrorResponse"
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
                     }
                 }
@@ -78,7 +78,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "Accounts"
                 ],
                 "summary": "List all accounts",
                 "responses": {
@@ -91,7 +91,7 @@ var doc = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/response.HttpErrorResponse"
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
                     }
                 }
@@ -105,7 +105,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "Accounts"
                 ],
                 "summary": "Creates a new account",
                 "parameters": [
@@ -129,13 +129,144 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.HttpErrorResponse"
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/response.HttpErrorResponse"
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "authenticate the user in the api",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "authenticate the user",
+                "parameters": [
+                    {
+                        "description": "Credential Input",
+                        "name": "credential",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/input.CredentialInputVO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/output.CreateTransferOutputVO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/transfers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List all transfers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "List all transfers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/output.FindAllTransferOutputVO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new transfer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "Creates a new transfer",
+                "parameters": [
+                    {
+                        "description": "Transfer Input",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/input.CreateTransferInputVO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/output.CreateTransferOutputVO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
                     }
                 }
@@ -160,6 +291,31 @@ var doc = `{
                 }
             }
         },
+        "input.CreateTransferInputVO": {
+            "type": "object",
+            "properties": {
+                "accountOriginID": {
+                    "type": "string"
+                },
+                "account_destination_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "input.CredentialInputVO": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                }
+            }
+        },
         "output.CreateAccountOutputVO": {
             "type": "object",
             "properties": {
@@ -173,6 +329,26 @@ var doc = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "output.CreateTransferOutputVO": {
+            "type": "object",
+            "properties": {
+                "account_destination_id": {
+                    "type": "string"
+                },
+                "account_origin_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "string"
                 }
             }
@@ -208,6 +384,26 @@ var doc = `{
                 }
             }
         },
+        "output.FindAllTransferOutputVO": {
+            "type": "object",
+            "properties": {
+                "account_destination_id": {
+                    "type": "string"
+                },
+                "account_origin_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "response.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -217,7 +413,7 @@ var doc = `{
                 }
             }
         },
-        "response.HttpErrorResponse": {
+        "response.HTTPErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -228,6 +424,13 @@ var doc = `{
                     "example": 500
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

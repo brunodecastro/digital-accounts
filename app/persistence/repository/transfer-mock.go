@@ -5,16 +5,19 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/model"
 )
 
-type MockATransferRepositoryImpl struct {
+// MockTransferRepositoryImpl struct of Transfer Service mock
+type MockTransferRepositoryImpl struct {
 	Result  model.Transfer
 	Results []model.Transfer
 	Err     error
 }
 
-func (m MockATransferRepositoryImpl) Create(ctx context.Context, transfer model.Transfer) (*model.Transfer, error) {
+// Create - creates a new transfer mock
+func (m MockTransferRepositoryImpl) Create(ctx context.Context, transfer model.Transfer) (*model.Transfer, error) {
 	return &m.Result, m.Err
 }
 
-func (m MockATransferRepositoryImpl) FindAll(ctx context.Context, accountId string) ([]model.Transfer, error) {
+// FindAll - list all transfers mock
+func (m MockTransferRepositoryImpl) FindAll(ctx context.Context, accountOriginID string) ([]model.Transfer, error) {
 	return m.Results, m.Err
 }

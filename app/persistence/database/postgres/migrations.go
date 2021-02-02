@@ -6,7 +6,7 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/util"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/golang-migrate/migrate/v4/source/file" // driver to get migrations file
 )
 
 // UpMigrations - up the database migrations

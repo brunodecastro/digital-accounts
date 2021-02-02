@@ -8,5 +8,5 @@ import (
 // TransferRepository - interface of transfer repository
 type TransferRepository interface {
 	Create(ctx context.Context, transfer model.Transfer) (*model.Transfer, error)
-	FindAll(ctx context.Context, accountId string) ([]model.Transfer, error)
+	FindAll(ctx context.Context, accountOriginID string) ([]model.Transfer, error)
 }

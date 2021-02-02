@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// TransferID entity transfer ID type
 type TransferID string
 
 // Transfer - struct of transfer entity

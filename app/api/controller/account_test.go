@@ -27,7 +27,7 @@ var (
 
 func init() {
 	// Initialize app configs
-	apiConfig := config.LoadConfigs()
+	apiConfig := config.GetAPIConfigs()
 
 	urlAPI = apiConfig.WebServerConfig.GetWebServerAddress()
 
@@ -43,7 +43,7 @@ func TestAccountController_Create(t *testing.T) {
 	endPoint := fmt.Sprintf("%s/accounts", urlAPI)
 
 	accountInputVOTest := input.CreateAccountInputVO{
-		Cpf:     "008.012.461-56",
+		CPF:     "008.012.461-56",
 		Name:    "Bruno de Castro Oliveira",
 		Secret:  "123456",
 		Balance: 1050,
@@ -54,7 +54,7 @@ func TestAccountController_Create(t *testing.T) {
 	resp := httptest.NewRequest(http.MethodPost, endPoint, bytes.NewReader(body))
 
 	accountOutputVO := output.CreateAccountOutputVO{
-		Cpf:       util.FormatCpf(accountInputVOTest.Cpf),
+		CPF:       util.FormatCpf(accountInputVOTest.CPF),
 		Name:      accountInputVOTest.Name,
 		Balance:   types.Money(accountInputVOTest.Balance).ToFloat64(),
 		CreatedAt: util.FormatDate(time.Time{}),

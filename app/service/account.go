@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"github.com/brunodecastro/digital-accounts/app/common/converter"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/logger"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
@@ -17,7 +17,7 @@ import (
 type AccountService interface {
 	Create(ctx context.Context, accountInputVO input.CreateAccountInputVO) (output.CreateAccountOutputVO, error)
 	FindAll(ctx context.Context) ([]output.FindAllAccountOutputVO, error)
-	GetBalance(ctx context.Context, accountId string) (output.FindAccountBalanceOutputVO, error)
+	GetBalance(ctx context.Context, accountID string) (output.FindAccountBalanceOutputVO, error)
 }
 
 type accountServiceImpl struct {
@@ -47,7 +47,7 @@ func (serviceImpl accountServiceImpl) Create(ctx context.Context, accountInputVO
 		return emptyCreateAccountOutputVO, custom_errors.ErrorStartTransaction
 	}
 
-	accountExists, err := serviceImpl.repository.FindByCpf(ctx, util.NumbersOnly(accountInputVO.Cpf))
+	accountExists, err := serviceImpl.repository.FindByCPF(ctx, util.NumbersOnly(accountInputVO.CPF))
 	if err != nil {
 		logAPI.Error(err.Error())
 		return emptyCreateAccountOutputVO, custom_errors.ErrorUnexpected
@@ -91,12 +91,12 @@ func (serviceImpl accountServiceImpl) FindAll(ctx context.Context) ([]output.Fin
 }
 
 // GetBalance - gets the account balance
-func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountId string) (output.FindAccountBalanceOutputVO, error) {
+func (serviceImpl accountServiceImpl) GetBalance(ctx context.Context, accountID string) (output.FindAccountBalanceOutputVO, error) {
 	logAPI := logger.GetLogger().With(
 		zap.String("resource", "AccountService"),
 		zap.String("method", "GetBalance"))
 
-	account, err := serviceImpl.repository.GetBalance(ctx, accountId)
+	account, err := serviceImpl.repository.GetBalance(ctx, accountID)
 	if err != nil {
 		logAPI.Error(err.Error())
 		return output.FindAccountBalanceOutputVO{}, custom_errors.ErrorGettingAccountBalance

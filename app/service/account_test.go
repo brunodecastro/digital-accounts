@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
@@ -23,7 +23,7 @@ var (
 
 func init() {
 	// Initialize app configs
-	config.LoadConfigs()
+	config.GetAPIConfigs()
 
 	transactionHelperMock = postgres.MockTransactionHelper{
 		Result: context.Background(),
@@ -57,13 +57,13 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
 						ID:        "0001",
-						Cpf:       "00801246156",
+						CPF:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
 						Balance:   0,
 						CreatedAt: time.Time{},
 					},
-					ResultFindByCpf: nil,
+					ResultFindByCPF: nil,
 					Err:             nil,
 				},
 				transactionHelper: transactionHelperMock,
@@ -71,14 +71,14 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				accountInputVO: input.CreateAccountInputVO{
-					Cpf:     "008.012.461-56",
+					CPF:     "008.012.461-56",
 					Name:    "Bruno 1",
 					Secret:  "65O6G91K651",
 					Balance: 0,
 				},
 			},
 			want: output.CreateAccountOutputVO{
-				Cpf:       util.FormatCpf("00801246156"),
+				CPF:       util.FormatCpf("00801246156"),
 				Name:      "Bruno 1",
 				Balance:   0,
 				CreatedAt: util.FormatDate(time.Time{}),
@@ -91,14 +91,14 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 				repository: repository.MockAccountRepositoryImpl{
 					Result:          model.Account{},
 					Err:             custom_errors.ErrorCreateAccount,
-					ResultFindByCpf: nil,
+					ResultFindByCPF: nil,
 				},
 				transactionHelper: transactionHelperMock,
 			},
 			args: args{
 				ctx: context.Background(),
 				accountInputVO: input.CreateAccountInputVO{
-					Cpf:     "008.012.461-99",
+					CPF:     "008.012.461-99",
 					Name:    "Bruno 1",
 					Secret:  "65O6G91K651",
 					Balance: 0,
@@ -114,15 +114,15 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
 						ID:        "0001",
-						Cpf:       "00801246156",
+						CPF:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
 						Balance:   0,
 						CreatedAt: time.Time{},
 					},
-					ResultFindByCpf: &model.Account{
+					ResultFindByCPF: &model.Account{
 						ID:        "0001",
-						Cpf:       "00801246156",
+						CPF:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
 						Balance:   0,
@@ -135,7 +135,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				accountInputVO: input.CreateAccountInputVO{
-					Cpf:     "008.012.461-56",
+					CPF:     "008.012.461-56",
 					Name:    "Bruno 1",
 					Secret:  "65O6G91K651",
 					Balance: 0,
@@ -186,7 +186,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 					Results: []model.Account{
 						{
 							ID:        "0001",
-							Cpf:       "00801246156",
+							CPF:       "00801246156",
 							Name:      "Bruno 1",
 							Secret:    "65O6G91K651",
 							Balance:   100,
@@ -194,7 +194,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 						},
 						{
 							ID:        "0002",
-							Cpf:       "00801246157",
+							CPF:       "00801246157",
 							Name:      "Bruno 2",
 							Secret:    "65O6G91K6510",
 							Balance:   250,
@@ -285,7 +285,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
 						ID:        "0001",
-						Cpf:       "00801246156",
+						CPF:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
 						Balance:   100,

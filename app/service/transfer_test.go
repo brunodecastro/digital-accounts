@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
@@ -18,7 +18,7 @@ import (
 
 func init() {
 	// Initialize app configs
-	config.LoadConfigs()
+	config.GetAPIConfigs()
 }
 
 func Test_transferServiceImpl_Create(t *testing.T) {
@@ -49,7 +49,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 		{
 			name: "Create transfer success",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Result: model.Transfer{
 						ID:                   "0001",
 						AccountOriginID:      "0001",
@@ -60,9 +60,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 					Err: nil,
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindById: &model.Account{
+					ResultFindByID: &model.Account{
 						ID:        "0002",
-						Cpf:       "00801246157",
+						CPF:       "00801246157",
 						Name:      "Bruno 2",
 						Secret:    "65O6G91K651",
 						Balance:   1000,
@@ -94,7 +94,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 		{
 			name: "Create transfer - repository create error",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Result: model.Transfer{
 						ID:                   "0001",
 						AccountOriginID:      "0001",
@@ -105,9 +105,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 					Err: custom_errors.ErrorCreateTransfer,
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindById: &model.Account{
+					ResultFindByID: &model.Account{
 						ID:        "0002",
-						Cpf:       "00801246157",
+						CPF:       "00801246157",
 						Name:      "Bruno 2",
 						Secret:    "65O6G91K651",
 						Balance:   1000,
@@ -133,7 +133,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 		{
 			name: "Create transfer - account origin not found",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Result: model.Transfer{
 						ID:                   "0001",
 						AccountOriginID:      "0001",
@@ -144,7 +144,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 					Err: nil,
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindById: nil,
+					ResultFindByID: nil,
 					Err:            nil,
 				},
 				transactionHelper: transactionHelperMock,
@@ -164,7 +164,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 		{
 			name: "Create transfer - amount <= 0",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Result: model.Transfer{
 						ID:                   "0001",
 						AccountOriginID:      "0001",
@@ -175,7 +175,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 					Err: nil,
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindById: nil,
+					ResultFindByID: nil,
 					Err:            nil,
 				},
 				transactionHelper: transactionHelperMock,
@@ -195,7 +195,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 		{
 			name: "Create transfer - insufficient balance",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Result: model.Transfer{
 						ID:                   "0001",
 						AccountOriginID:      "0001",
@@ -206,9 +206,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 					Err: nil,
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindById: &model.Account{
+					ResultFindByID: &model.Account{
 						ID:        "0002",
-						Cpf:       "00801246157",
+						CPF:       "00801246157",
 						Name:      "Bruno 2",
 						Secret:    "65O6G91K651",
 						Balance:   10,
@@ -233,7 +233,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 		{
 			name: "Create transfer - amount <= 0",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Result: model.Transfer{
 						ID:                   "0001",
 						AccountOriginID:      "0001",
@@ -244,7 +244,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 					Err: nil,
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindById: nil,
+					ResultFindByID: nil,
 					Err:            nil,
 				},
 				transactionHelper: transactionHelperMock,
@@ -264,7 +264,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 		{
 			name: "Create transfer error - transfer to the same account",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Result: model.Transfer{},
 					Err:    nil,
 				},
@@ -288,7 +288,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 		{
 			name: "Create transfer - update balance error",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Result: model.Transfer{
 						ID:                   "0001",
 						AccountOriginID:      "0001",
@@ -299,9 +299,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 					Err: nil,
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
-					ResultFindById: &model.Account{
+					ResultFindByID: &model.Account{
 						ID:        "0002",
-						Cpf:       "00801246157",
+						CPF:       "00801246157",
 						Name:      "Bruno 2",
 						Secret:    "65O6G91K651",
 						Balance:   1000,
@@ -372,7 +372,7 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 		{
 			name: "Find all transfers success",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Results: []model.Transfer{
 						{
 							ID:                   "0001",
@@ -419,7 +419,7 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 		{
 			name: "Find all transfers error",
 			fields: fields{
-				transferRepository: repository.MockATransferRepositoryImpl{
+				transferRepository: repository.MockTransferRepositoryImpl{
 					Results: []model.Transfer{},
 					Err:     custom_errors.ErrorListingAllTransfers,
 				},

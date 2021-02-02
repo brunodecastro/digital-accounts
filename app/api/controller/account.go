@@ -3,7 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"github.com/brunodecastro/digital-accounts/app/api/response"
-	custom_errors "github.com/brunodecastro/digital-accounts/app/common/custom-errors"
+	custom_errors "github.com/brunodecastro/digital-accounts/app/common/errors"
 	"github.com/brunodecastro/digital-accounts/app/common/validator"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/service"
@@ -26,7 +26,7 @@ func NewAccountController(service service.AccountService) AccountController {
 // Create godoc
 // @Summary Creates a new account
 // @Description Creates a new account
-// @tags accounts
+// @tags Accounts
 // @Accept  json
 // @Produce  json
 // @Param account body input.CreateAccountInputVO true "Account Input"
@@ -40,7 +40,7 @@ func (controller AccountController) Create(w http.ResponseWriter, r *http.Reques
 
 	var accountInputVO input.CreateAccountInputVO
 	if err := json.NewDecoder(r.Body).Decode(&accountInputVO); err != nil {
-		response.CreateErrorResponse(w, http.StatusBadRequest, custom_errors.ErrorInvalidJsonFormat.Error())
+		response.CreateErrorResponse(w, http.StatusBadRequest, custom_errors.ErrorInvalidJSONFormat.Error())
 		return
 	}
 
@@ -59,10 +59,10 @@ func (controller AccountController) Create(w http.ResponseWriter, r *http.Reques
 	response.CreateSuccessResponse(w, http.StatusCreated, accountCreated)
 }
 
-// Create godoc
+// FindAll godoc
 // @Summary List all accounts
 // @Description List all accounts
-// @tags accounts
+// @tags Accounts
 // @Produce  json
 // @Success 200 {object} output.FindAllAccountOutputVO
 // @Failure 500 {object} response.HTTPErrorResponse
@@ -78,10 +78,10 @@ func (controller AccountController) FindAll(w http.ResponseWriter, r *http.Reque
 	response.CreateSuccessResponse(w, http.StatusOK, accounts)
 }
 
-// Create godoc
+// GetBalance godoc
 // @Summary Gets the account balance
 // @Description Gets the account balance
-// @tags accounts
+// @tags Accounts
 // @Accept  json
 // @Produce  json
 // @Param account_id path string true "Account ID"

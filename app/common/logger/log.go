@@ -20,7 +20,7 @@ func GetLogger() *zap.Logger {
 		var err error
 		var zapConfig zap.Config
 
-		if config.AppConfig.Profile == constants.ProfileProd {
+		if config.GetAPIConfigs().Profile == constants.ProfileProd {
 			zapConfig = zap.NewProductionConfig()
 		} else {
 			zapConfig = zap.NewDevelopmentConfig()
