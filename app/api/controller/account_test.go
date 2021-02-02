@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/brunodecastro/digital-accounts/app/api/response"
 	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 	"github.com/brunodecastro/digital-accounts/app/common/vo/output"
@@ -22,14 +21,13 @@ import (
 )
 
 var (
-	apiConfig             *config.Config
 	urlApi                string
 	transactionHelperMock postgres.MockTransactionHelper
 )
 
 func init() {
 	// Initialize app configs
-	apiConfig = config.LoadConfigs()
+	apiConfig := config.LoadConfigs()
 
 	urlApi = apiConfig.WebServerConfig.GetWebServerAddress()
 
@@ -76,7 +74,7 @@ func TestAccountController_Create(t *testing.T) {
 		fields         fields
 		args           args
 		wantStatusCode int
-		wantResult     response.ApiHttpResponse
+		wantResult     output.CreateAccountOutputVO
 		wantErr        bool
 	}{
 		{
@@ -93,12 +91,8 @@ func TestAccountController_Create(t *testing.T) {
 				r: resp,
 			},
 			wantStatusCode: http.StatusCreated,
-			wantResult: response.ApiHttpResponse{
-				Error:      nil,
-				StatusCode: http.StatusCreated,
-				Result:     accountOutputVO,
-			},
-			wantErr: false,
+			wantResult:     accountOutputVO,
+			wantErr:        false,
 		},
 		/*{
 			name: "Create account controller error",
@@ -136,15 +130,11 @@ func TestAccountController_Create(t *testing.T) {
 			}
 
 			// Check result response
-			var apiHttpResponse = response.ApiHttpResponse{}
-			_ = json.Unmarshal(rec.Body.Bytes(), &apiHttpResponse)
+			var responseResult = output.CreateAccountOutputVO{}
+			_ = json.Unmarshal(rec.Body.Bytes(), &responseResult)
 
-			resultByte, _ := json.Marshal(apiHttpResponse.Result)
-			var resultOutputVO = output.CreateAccountOutputVO{}
-			_ = json.Unmarshal(resultByte, &resultOutputVO)
-
-			if !reflect.DeepEqual(resultOutputVO, tt.wantResult.Result) {
-				t.Errorf("Create() got = %v, wantResult %v", resultOutputVO, tt.wantResult.Result)
+			if !reflect.DeepEqual(responseResult, tt.wantResult) {
+				t.Errorf("Create() got = %v, wantResult %v", responseResult, tt.wantResult)
 			}
 		})
 	}

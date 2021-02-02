@@ -1,0 +1,140 @@
+definitions:
+  input.CreateAccountInputVO:
+    properties:
+      balance:
+        type: integer
+      cpf:
+        type: string
+      name:
+        type: string
+      secret:
+        type: string
+    type: object
+  output.CreateAccountOutputVO:
+    properties:
+      balance:
+        type: number
+      cpf:
+        type: string
+      created_at:
+        type: string
+      name:
+        type: string
+    type: object
+  output.FindAccountBalanceOutputVO:
+    properties:
+      balance:
+        type: number
+      id:
+        type: string
+    type: object
+  output.FindAllAccountOutputVO:
+    properties:
+      balance:
+        type: number
+      cpf:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  response.ErrorResponse:
+    properties:
+      message:
+        example: internal server error
+        type: string
+    type: object
+  response.HttpErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/response.ErrorResponse'
+      statusCode:
+        example: 500
+        type: integer
+    type: object
+info:
+  contact:
+    email: brunnodecastro@gmail.com
+    name: Bruno de Castro Oliveira
+  title: Digital Accounts API
+  version: "1.0"
+paths:
+  /account/{account_id}/balance:
+    get:
+      consumes:
+      - application/json
+      description: Gets the account balance
+      parameters:
+      - description: Account Id
+        in: path
+        name: account_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/output.FindAccountBalanceOutputVO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HttpErrorResponse'
+        "500":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HttpErrorResponse'
+      summary: Gets the account balance
+      tags:
+      - accounts
+  /accounts:
+    get:
+      description: List all accounts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/output.FindAllAccountOutputVO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.HttpErrorResponse'
+      summary: List all accounts
+      tags:
+      - accounts
+    post:
+      consumes:
+      - application/json
+      description: Creates a new account
+      parameters:
+      - description: Account Input
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/input.CreateAccountInputVO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/output.CreateAccountOutputVO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HttpErrorResponse'
+        "500":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HttpErrorResponse'
+      summary: Creates a new account
+      tags:
+      - accounts
+swagger: "2.0"

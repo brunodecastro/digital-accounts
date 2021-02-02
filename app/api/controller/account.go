@@ -21,6 +21,18 @@ func NewAccountController(service service.AccountService) AccountController {
 	}
 }
 
+// Create godoc
+// @Summary Creates a new account
+// @Description Creates a new account
+// @tags accounts
+// @Accept  json
+// @Produce  json
+// @Param account body input.CreateAccountInputVO true "Account Input"
+// @Success 201 {object} output.CreateAccountOutputVO
+// @Failure 400,500 {object} response.HttpErrorResponse
+// @Router /accounts [post]
+//
+// CreateAccount creates a new account
 func (controller AccountController) Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	defer r.Body.Close()
 
@@ -45,6 +57,16 @@ func (controller AccountController) Create(w http.ResponseWriter, r *http.Reques
 	response.CreateSuccessResponse(w, http.StatusCreated, accountCreated)
 }
 
+// Create godoc
+// @Summary List all accounts
+// @Description List all accounts
+// @tags accounts
+// @Produce  json
+// @Success 200 {object} output.FindAllAccountOutputVO
+// @Failure 500 {object} response.HttpErrorResponse
+// @Router /accounts [get]
+//
+// FindAll list all accounts
 func (controller AccountController) FindAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	accounts, err := controller.service.FindAll(r.Context())
 	if err != nil {
@@ -54,6 +76,18 @@ func (controller AccountController) FindAll(w http.ResponseWriter, r *http.Reque
 	response.CreateSuccessResponse(w, http.StatusOK, accounts)
 }
 
+// Create godoc
+// @Summary Gets the account balance
+// @Description Gets the account balance
+// @tags accounts
+// @Accept  json
+// @Produce  json
+// @Param account_id path string true "Account Id"
+// @Success 200 {object} output.FindAccountBalanceOutputVO
+// @Failure 400,500 {object} response.HttpErrorResponse
+// @Router /account/{account_id}/balance [get]
+//
+// GetBalance Gets the account balance
 func (controller AccountController) GetBalance(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	var accountId = params.ByName("account_id")
 

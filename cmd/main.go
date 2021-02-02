@@ -9,15 +9,26 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres"
 	"github.com/brunodecastro/digital-accounts/app/service"
 	"github.com/brunodecastro/digital-accounts/app/util"
+	"github.com/brunodecastro/digital-accounts/docs"
 	"github.com/jackc/pgx/v4/pgxpool"
+
+	_ "github.com/brunodecastro/digital-accounts/docs"
 )
 
+// @title Digital Accounts API
+// @version 1.0
+// @contact.name Bruno de Castro Oliveira
+// @contact.email brunnodecastro@gmail.com
 func main() {
 	// Initialize app configs
 	apiConfig := config.LoadConfigs()
 
 	// Initialize app log implementation
 	logger.GetLogger().Info("Starting Digital Accounts API...")
+
+	// Swagger configs.
+	docs.SwaggerInfo.Host = apiConfig.WebServerConfig.GetWebServerAddress()
+	docs.SwaggerInfo.BasePath = "/"
 
 	// Configure database pool connection
 	databaseConnection := postgres.ConnectPoolConfig(&apiConfig.DatabaseConfig)

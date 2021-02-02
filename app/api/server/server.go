@@ -1,11 +1,11 @@
 package server
 
 import (
-	"fmt"
 	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/api/controller"
 	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/julienschmidt/httprouter"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"net/http"
 )
 
@@ -36,8 +36,10 @@ func NewServer(
 }
 
 func indexPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Digital Accounts Api!\n")
+	// Redirect to swagger ui page
+	http.Redirect(w, r, "/swagger", http.StatusSeeOther)
 }
+
 
 func healthCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(http.StatusOK)
@@ -53,6 +55,9 @@ func (server *Server) setRoutes() {
 	router.POST("/transfers", auth.AuthorizeMiddleware(server.transferController.Create))
 	router.GET("/transfers", auth.AuthorizeMiddleware(server.transferController.FindAll))
 	router.POST("/login", server.authenticationController.Authenticate)
+
+	// Swagger UI
+	router.HandlerFunc(http.MethodGet, "/swagger/*any", httpSwagger.WrapHandler)
 }
 
 func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {
