@@ -13,16 +13,19 @@ import (
 	"net/http"
 )
 
+// AuthenticationController - struct of Authentication Controller
 type AuthenticationController struct {
 	service service.AuthenticationService
 }
 
+// NewAuthenticationController - new AuthenticationController instance
 func NewAuthenticationController(service service.AuthenticationService) AuthenticationController {
 	return AuthenticationController{
 		service: service,
 	}
 }
 
+// Authenticate - authenticate the user in the api
 func (controller AuthenticationController) Authenticate(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	var credentialInput input.CredentialInputVO
 	err := json.NewDecoder(req.Body).Decode(&credentialInput)

@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// AuthenticationService - interface of Authentication Service
 type AuthenticationService interface {
 	Authenticate(ctx context.Context, credentialInputVO input.CredentialInputVO) (vo.CredentialVO, error)
 }
@@ -19,14 +20,16 @@ type authenticationServiceImpl struct {
 	accountRepository repository.AccountRepository
 }
 
+// NewAuthenticationService - new instance of Authentication Service impl
 func NewAuthenticationService(accountRepository repository.AccountRepository) AuthenticationService {
 	return &authenticationServiceImpl{
 		accountRepository: accountRepository,
 	}
 }
 
+// Authenticate - authenticate the user with credentials
 func (serviceImpl authenticationServiceImpl) Authenticate(ctx context.Context, credentialInputVO input.CredentialInputVO) (vo.CredentialVO, error) {
-	logApi := logger.GetLogger().With(
+	logAPI := logger.GetLogger().With(
 		zap.String("resource", "AuthenticationService"),
 		zap.String("method", "Authenticate"))
 
@@ -38,12 +41,12 @@ func (serviceImpl authenticationServiceImpl) Authenticate(ctx context.Context, c
 
 	account, err := serviceImpl.accountRepository.FindByCpf(ctx, util.NumbersOnly(credentialInputVO.Cpf))
 	if err != nil {
-		logApi.Error(err.Error())
+		logAPI.Error(err.Error())
 		return emptyCredentialVO, custom_errors.ErrorUnexpected
 	}
 
 	// Check if the account exists
-	if account == nil || account.Id == "" {
+	if account == nil || account.ID == "" {
 		return emptyCredentialVO, custom_errors.ErrorAccountNotFound
 	}
 
@@ -53,7 +56,7 @@ func (serviceImpl authenticationServiceImpl) Authenticate(ctx context.Context, c
 	}
 
 	return vo.CredentialVO{
-		AccountId: string(account.Id),
+		AccountID: string(account.ID),
 		Cpf:       account.Cpf,
 		Username:  account.Name,
 	}, nil

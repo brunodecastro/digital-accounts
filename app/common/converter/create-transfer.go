@@ -10,22 +10,24 @@ import (
 	"time"
 )
 
+// CreateTransferInputVOToModel - converts input.CreateTransferInputVO to model.Transfer
 func CreateTransferInputVOToModel(transferInputVO input.CreateTransferInputVO) model.Transfer {
 	return model.Transfer{
-		Id:                   model.TransferID(common.NewUUID()),
-		AccountOriginId:      model.AccountID(transferInputVO.AccountOriginId),
-		AccountDestinationId: model.AccountID(transferInputVO.AccountDestinationId),
+		ID:                   model.TransferID(common.NewUUID()),
+		AccountOriginID:      model.AccountID(transferInputVO.AccountOriginID),
+		AccountDestinationID: model.AccountID(transferInputVO.AccountDestinationID),
 		Amount:               types.Money(transferInputVO.Amount),
 		CreatedAt:            time.Now(),
 	}
 }
 
+// ModelToCreateTransferOutputVO - converts model.Transfer to input.CreateTransferOutputVO
 func ModelToCreateTransferOutputVO(transfer *model.Transfer) output.CreateTransferOutputVO {
 	return output.CreateTransferOutputVO{
-		Id:                   string(transfer.Id),
-		AccountOriginID:      string(transfer.AccountOriginId),
-		AccountDestinationID: string(transfer.AccountDestinationId),
-		Amount:               types.Money(transfer.Amount).GetFloat64(),
+		ID:                   string(transfer.ID),
+		AccountOriginID:      string(transfer.AccountOriginID),
+		AccountDestinationID: string(transfer.AccountDestinationID),
+		Amount:               types.Money(transfer.Amount).ToFloat64(),
 		CreatedAt:            util.FormatDate(transfer.CreatedAt),
 	}
 }

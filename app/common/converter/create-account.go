@@ -10,9 +10,10 @@ import (
 	"time"
 )
 
+// CreateAccountInputVOToModel - converts input.CreateAccountInputVO to model.Account
 func CreateAccountInputVOToModel(accountInputVO input.CreateAccountInputVO) model.Account {
 	return model.Account{
-		Id:        model.AccountID(common.NewUUID()),
+		ID:        model.AccountID(common.NewUUID()),
 		Name:      accountInputVO.Name,
 		Cpf:       util.NumbersOnly(accountInputVO.Cpf),
 		Secret:    util.EncryptPassword(accountInputVO.Secret),
@@ -21,11 +22,12 @@ func CreateAccountInputVOToModel(accountInputVO input.CreateAccountInputVO) mode
 	}
 }
 
+// ModelToCreateAccountOutputVO - converts model.Account to input.CreateAccountInputVO
 func ModelToCreateAccountOutputVO(account *model.Account) output.CreateAccountOutputVO {
 	return output.CreateAccountOutputVO{
 		Name:      account.Name,
 		Cpf:       util.FormatCpf(account.Cpf),
-		Balance:   account.Balance.GetFloat64(),
+		Balance:   account.Balance.ToFloat64(),
 		CreatedAt: util.FormatDate(account.CreatedAt),
 	}
 }

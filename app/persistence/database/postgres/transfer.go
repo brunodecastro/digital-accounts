@@ -13,6 +13,7 @@ type transferRepositoryImpl struct {
 	transactionHelper TransactionHelper
 }
 
+// NewTransferRepository - transfer repository instance
 func NewTransferRepository(dataBasePool *pgxpool.Pool, transactionHelper TransactionHelper) repository.TransferRepository {
 	return &transferRepositoryImpl{
 		dataBasePool:      dataBasePool,
@@ -20,6 +21,7 @@ func NewTransferRepository(dataBasePool *pgxpool.Pool, transactionHelper Transac
 	}
 }
 
+// Create - creates a new transfer
 func (repositoryImpl transferRepositoryImpl) Create(ctx context.Context, transfer model.Transfer) (*model.Transfer, error) {
 	tx := repositoryImpl.transactionHelper.GetTransactionFromContext(ctx)
 
@@ -33,9 +35,9 @@ func (repositoryImpl transferRepositoryImpl) Create(ctx context.Context, transfe
 	_, err := tx.Exec(
 		ctx,
 		sqlQuery,
-		transfer.Id,
-		transfer.AccountOriginId,
-		transfer.AccountDestinationId,
+		transfer.ID,
+		transfer.AccountOriginID,
+		transfer.AccountDestinationID,
 		transfer.Amount,
 		transfer.CreatedAt,
 	)
@@ -46,6 +48,7 @@ func (repositoryImpl transferRepositoryImpl) Create(ctx context.Context, transfe
 	return &transfer, nil
 }
 
+// FindAll - list all transfers
 func (repositoryImpl transferRepositoryImpl) FindAll(ctx context.Context, accountOriginId string) ([]model.Transfer, error) {
 	var sqlQuery = `
 		SELECT 
@@ -67,9 +70,9 @@ func (repositoryImpl transferRepositoryImpl) FindAll(ctx context.Context, accoun
 		var transfer = model.Transfer{}
 
 		err = rows.Scan(
-			&transfer.Id,
-			&transfer.AccountOriginId,
-			&transfer.AccountDestinationId,
+			&transfer.ID,
+			&transfer.AccountOriginID,
+			&transfer.AccountDestinationID,
 			&transfer.Amount,
 			&transfer.CreatedAt)
 		if err != nil {

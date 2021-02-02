@@ -11,16 +11,19 @@ import (
 	"net/http"
 )
 
+// TransferController - struct of Transfer Controller
 type TransferController struct {
 	service service.TransferService
 }
 
+// NewTransferController - new Transfer Controller instance
 func NewTransferController(service service.TransferService) TransferController {
 	return TransferController{
 		service: service,
 	}
 }
 
+// Create - creates a new account
 func (controller TransferController) Create(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
@@ -37,7 +40,7 @@ func (controller TransferController) Create(w http.ResponseWriter, r *http.Reque
 	}
 
 	// get the account origin id from the auth token
-	transferInputVO.AccountOriginId = auth.GetAccountIdFromToken(r)
+	transferInputVO.AccountOriginID = auth.GetAccountIDFromToken(r)
 
 	transferCreated, err := controller.service.Create(r.Context(), transferInputVO)
 	if err != nil {
@@ -48,12 +51,13 @@ func (controller TransferController) Create(w http.ResponseWriter, r *http.Reque
 	response.CreateSuccessResponse(w, http.StatusCreated, transferCreated)
 }
 
+// FindAll - list all accounts
 func (controller TransferController) FindAll(w http.ResponseWriter, r *http.Request) {
 
 	// get the account id from the auth token
-	accountOriginId := auth.GetAccountIdFromToken(r)
+	accountOriginID := auth.GetAccountIDFromToken(r)
 
-	transfers, err := controller.service.FindAll(r.Context(), accountOriginId)
+	transfers, err := controller.service.FindAll(r.Context(), accountOriginID)
 	if err != nil {
 		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return

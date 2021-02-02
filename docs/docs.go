@@ -43,7 +43,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Account Id",
+                        "description": "Account ID",
                         "name": "account_id",
                         "in": "path",
                         "required": true

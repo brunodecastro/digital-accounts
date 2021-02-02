@@ -1,6 +1,7 @@
 package output
 
+// FindAccountBalanceOutputVO - vo that represents the output values of findAccountBalance
 type FindAccountBalanceOutputVO struct {
-	Id      string  `json:"id"`
+	ID      string  `json:"id"`
 	Balance float64 `json:"balance"`
 }

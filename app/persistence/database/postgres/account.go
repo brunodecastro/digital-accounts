@@ -15,6 +15,7 @@ type accountRepositoryImpl struct {
 	transactionHelper TransactionHelper
 }
 
+// NewAccountRepository - instance of account repository
 func NewAccountRepository(dataBasePool *pgxpool.Pool, transactionHelper TransactionHelper) repository.AccountRepository {
 	return &accountRepositoryImpl{
 		dataBasePool:      dataBasePool,
@@ -22,6 +23,7 @@ func NewAccountRepository(dataBasePool *pgxpool.Pool, transactionHelper Transact
 	}
 }
 
+// Create - creates a new account
 func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account model.Account) (*model.Account, error) {
 	tx := repositoryImpl.transactionHelper.GetTransactionFromContext(ctx)
 
@@ -35,7 +37,7 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 	_, err := tx.Exec(
 		ctx,
 		sqlQuery,
-		account.Id,
+		account.ID,
 		account.Name,
 		account.Cpf,
 		account.Secret,
@@ -49,6 +51,7 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 	return &account, nil
 }
 
+// UpdateBalance - updates the account balance
 func (repositoryImpl accountRepositoryImpl) UpdateBalance(ctx context.Context, accountOriginId model.AccountID, balance types.Money) (int64, error) {
 	tx := repositoryImpl.transactionHelper.GetTransactionFromContext(ctx)
 
@@ -72,6 +75,7 @@ func (repositoryImpl accountRepositoryImpl) UpdateBalance(ctx context.Context, a
 	return result.RowsAffected(), nil
 }
 
+// FindAll - list all accounts
 func (repositoryImpl accountRepositoryImpl) FindAll(ctx context.Context) ([]model.Account, error) {
 	var sqlQuery = `
 		SELECT
@@ -91,7 +95,7 @@ func (repositoryImpl accountRepositoryImpl) FindAll(ctx context.Context) ([]mode
 		var account = model.Account{}
 
 		err = rows.Scan(
-			&account.Id,
+			&account.ID,
 			&account.Name,
 			&account.Cpf,
 			&account.Secret,
@@ -110,6 +114,7 @@ func (repositoryImpl accountRepositoryImpl) FindAll(ctx context.Context) ([]mode
 	return accounts, nil
 }
 
+// GetBalance - gets the account balance
 func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, accountId string) (*model.Account, error) {
 	var sqlQuery = `
 		SELECT
@@ -122,7 +127,7 @@ func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, acco
 	var account = model.Account{}
 
 	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, accountId)
-	err := row.Scan(&account.Id, &account.Balance)
+	err := row.Scan(&account.ID, &account.Balance)
 
 	if err != nil && err != pgx.ErrNoRows {
 		return nil, errors.Wrap(err, "error scanning accounts balance")
@@ -131,6 +136,7 @@ func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, acco
 	return &account, nil
 }
 
+// FindByCpf - find an account by cpf
 func (repositoryImpl accountRepositoryImpl) FindByCpf(ctx context.Context, cpf string) (*model.Account, error) {
 	var sqlQuery = `
 		SELECT
@@ -144,7 +150,7 @@ func (repositoryImpl accountRepositoryImpl) FindByCpf(ctx context.Context, cpf s
 
 	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, cpf)
 	err := row.Scan(
-		&account.Id,
+		&account.ID,
 		&account.Name,
 		&account.Cpf,
 		&account.Secret,
@@ -157,6 +163,7 @@ func (repositoryImpl accountRepositoryImpl) FindByCpf(ctx context.Context, cpf s
 	return &account, nil
 }
 
+// FindById - find an account by the id
 func (repositoryImpl accountRepositoryImpl) FindById(ctx context.Context, accountId string) (*model.Account, error) {
 	var sqlQuery = `
 		SELECT
@@ -170,7 +177,7 @@ func (repositoryImpl accountRepositoryImpl) FindById(ctx context.Context, accoun
 
 	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, accountId)
 	err := row.Scan(
-		&account.Id,
+		&account.ID,
 		&account.Name,
 		&account.Cpf,
 		&account.Secret,

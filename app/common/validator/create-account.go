@@ -6,6 +6,7 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/util"
 )
 
+// ValidateCreateAccountInput - validates the input.CreateAccountInputVO to create a new account
 func ValidateCreateAccountInput(createAccountInputVO input.CreateAccountInputVO) error {
 
 	if createAccountInputVO.Cpf == "" {

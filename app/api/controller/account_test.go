@@ -21,7 +21,7 @@ import (
 )
 
 var (
-	urlApi                string
+	urlAPI                string
 	transactionHelperMock postgres.MockTransactionHelper
 )
 
@@ -29,7 +29,7 @@ func init() {
 	// Initialize app configs
 	apiConfig := config.LoadConfigs()
 
-	urlApi = apiConfig.WebServerConfig.GetWebServerAddress()
+	urlAPI = apiConfig.WebServerConfig.GetWebServerAddress()
 
 	transactionHelperMock = postgres.MockTransactionHelper{
 		Result: context.Background(),
@@ -40,7 +40,7 @@ func init() {
 func TestAccountController_Create(t *testing.T) {
 	t.Parallel()
 
-	endPoint := fmt.Sprintf("%s/accounts", urlApi)
+	endPoint := fmt.Sprintf("%s/accounts", urlAPI)
 
 	accountInputVOTest := input.CreateAccountInputVO{
 		Cpf:     "008.012.461-56",
@@ -56,7 +56,7 @@ func TestAccountController_Create(t *testing.T) {
 	accountOutputVO := output.CreateAccountOutputVO{
 		Cpf:       util.FormatCpf(accountInputVOTest.Cpf),
 		Name:      accountInputVOTest.Name,
-		Balance:   types.Money(accountInputVOTest.Balance).GetFloat64(),
+		Balance:   types.Money(accountInputVOTest.Balance).ToFloat64(),
 		CreatedAt: util.FormatDate(time.Time{}),
 	}
 
@@ -143,20 +143,20 @@ func TestAccountController_Create(t *testing.T) {
 func TestAccountController_GetAll(t *testing.T) {
 	t.Parallel()
 
-	endPoint := fmt.Sprintf("%s/accounts", urlApi)
+	endPoint := fmt.Sprintf("%s/accounts", urlAPI)
 	rec := httptest.NewRecorder()
 	resp := httptest.NewRequest(http.MethodGet, endPoint, nil)
 
 	accountsOutputVO := []output.FindAllAccountOutputVO{
 		{
-			Id:        "0001",
+			ID:        "0001",
 			Cpf:       "008.012.461-56",
 			Name:      "Bruno 1",
 			Balance:   15,
 			CreatedAt: util.FormatDate(time.Time{}),
 		},
 		{
-			Id:        "0002",
+			ID:        "0002",
 			Cpf:       "00801246157",
 			Name:      "Bruno 2",
 			Balance:   25.5,
@@ -225,14 +225,14 @@ func TestAccountController_GetAll(t *testing.T) {
 func TestAccountController_GetBalance(t *testing.T) {
 	t.Parallel()
 
-	var accountId = "0001"
-	endPoint := fmt.Sprintf("%s/account/%s/balance", urlApi, accountId)
+	var accountID = "0001"
+	endPoint := fmt.Sprintf("%s/account/%s/balance", urlAPI, accountID)
 	rec := httptest.NewRecorder()
 	resp := httptest.NewRequest(http.MethodGet, endPoint, nil)
 
 	accountOutputVO := output.FindAccountBalanceOutputVO{
-		Id:      accountId,
-		Balance: types.Money(250).GetFloat64(),
+		ID:      accountID,
+		Balance: types.Money(250).ToFloat64(),
 	}
 
 	type fields struct {
@@ -275,7 +275,7 @@ func TestAccountController_GetBalance(t *testing.T) {
 			controller := NewAccountController(tt.fields.service)
 
 			params := []httprouter.Param{
-				{Key: "account_id", Value: accountId},
+				{Key: "account_id", Value: accountID},
 			}
 			controller.GetBalance(tt.args.w, tt.args.r, params)
 

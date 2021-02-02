@@ -10,7 +10,7 @@ var (
 	cpfSecondDigitTable = []int{11, 10, 9, 8, 7, 6, 5, 4, 3, 2}
 )
 
-// IsValid returns if CPF is a valid CPF document
+// IsCpfValid - returns if CPF is a valid CPF document
 func IsCpfValid(cpfStr string) bool {
 	return validateCPF(NumbersOnly(cpfStr))
 }

@@ -10,7 +10,7 @@ func FormatDate(date time.Time) string {
 	return FormatDateLayout(date, constants.DateDefaultLayout)
 }
 
-// FormatDatePattern format date with layout
+// FormatDateLayout format date with layout
 func FormatDateLayout(date time.Time, layout string) string {
 	return date.Format(layout)
 }

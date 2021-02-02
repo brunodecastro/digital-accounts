@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Server - struct that represents the server api
 type Server struct {
 	Server                   http.Server
 	Router                   *httprouter.Router
@@ -17,6 +18,7 @@ type Server struct {
 	transferController       controller.TransferController
 }
 
+// NewServer - server api instance
 func NewServer(
 	authenticationController controller.AuthenticationController,
 	accountController controller.AccountController,
@@ -29,23 +31,25 @@ func NewServer(
 		transferController:       transferController,
 	}
 
-	// Set the api routes
-	server.setRoutes()
+	// Config the api routes
+	server.configRoutes()
 
 	return server
 }
 
+// indexPage - index page off api
 func indexPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Redirect to swagger ui page
 	http.Redirect(w, r, "/swagger", http.StatusSeeOther)
 }
 
-
+// healthCheck - used to check if the app is alive
 func healthCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (server *Server) setRoutes() {
+// configRoutes - config the api routes
+func (server *Server) configRoutes() {
 	router := server.Router
 	router.GET("/", indexPage)
 	router.GET("/health-check", healthCheck)
@@ -60,6 +64,7 @@ func (server *Server) setRoutes() {
 	router.HandlerFunc(http.MethodGet, "/swagger/*any", httpSwagger.WrapHandler)
 }
 
+// ListenAndServe - listen and serve the api on host and port
 func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {
 	return http.ListenAndServe(webServerConfig.GetWebServerAddress(), server.Router)
 }

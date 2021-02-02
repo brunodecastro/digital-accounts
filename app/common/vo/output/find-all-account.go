@@ -1,7 +1,8 @@
 package output
 
+// FindAllAccountOutputVO - vo that represents the output values of findAllAccounts
 type FindAllAccountOutputVO struct {
-	Id        string  `json:"id"`
+	ID        string  `json:"id"`
 	Cpf       string  `json:"cpf"`
 	Name      string  `json:"name"`
 	Balance   float64 `json:"balance"`

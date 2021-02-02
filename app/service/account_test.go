@@ -56,7 +56,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
-						Id:        "0001",
+						ID:        "0001",
 						Cpf:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
@@ -89,8 +89,8 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			name: "Create Account test service Error - repository error",
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
-					Result: model.Account{},
-					Err:    custom_errors.ErrorCreateAccount,
+					Result:          model.Account{},
+					Err:             custom_errors.ErrorCreateAccount,
 					ResultFindByCpf: nil,
 				},
 				transactionHelper: transactionHelperMock,
@@ -113,7 +113,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
-						Id:        "0001",
+						ID:        "0001",
 						Cpf:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
@@ -121,7 +121,7 @@ func Test_accountServiceImpl_Create(t *testing.T) {
 						CreatedAt: time.Time{},
 					},
 					ResultFindByCpf: &model.Account{
-						Id:        "0001",
+						ID:        "0001",
 						Cpf:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
@@ -185,7 +185,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 				repository: repository.MockAccountRepositoryImpl{
 					Results: []model.Account{
 						{
-							Id:        "0001",
+							ID:        "0001",
 							Cpf:       "00801246156",
 							Name:      "Bruno 1",
 							Secret:    "65O6G91K651",
@@ -193,7 +193,7 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 							CreatedAt: time.Time{},
 						},
 						{
-							Id:        "0002",
+							ID:        "0002",
 							Cpf:       "00801246157",
 							Name:      "Bruno 2",
 							Secret:    "65O6G91K6510",
@@ -210,17 +210,17 @@ func Test_accountServiceImpl_GetAll(t *testing.T) {
 			},
 			want: []output.FindAllAccountOutputVO{
 				{
-					Id:        "0001",
+					ID:        "0001",
 					Cpf:       util.FormatCpf("00801246156"),
 					Name:      "Bruno 1",
-					Balance:   types.Money(100).GetFloat64(),
+					Balance:   types.Money(100).ToFloat64(),
 					CreatedAt: util.FormatDate(time.Time{}),
 				},
 				{
-					Id:        "0002",
+					ID:        "0002",
 					Cpf:       util.FormatCpf("00801246157"),
 					Name:      "Bruno 2",
-					Balance:   types.Money(250).GetFloat64(),
+					Balance:   types.Money(250).ToFloat64(),
 					CreatedAt: util.FormatDate(time.Time{}),
 				},
 			},
@@ -269,7 +269,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 	}
 	type args struct {
 		ctx       context.Context
-		accountId string
+		accountID string
 	}
 	tests := []struct {
 		name         string
@@ -284,7 +284,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			fields: fields{
 				repository: repository.MockAccountRepositoryImpl{
 					Result: model.Account{
-						Id:        "0001",
+						ID:        "0001",
 						Cpf:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    "65O6G91K651",
@@ -297,11 +297,11 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			},
 			args: args{
 				ctx:       context.Background(),
-				accountId: "0001",
+				accountID: "0001",
 			},
 			want: output.FindAccountBalanceOutputVO{
-				Id:      "0001",
-				Balance: types.Money(100).GetFloat64(),
+				ID:      "0001",
+				Balance: types.Money(100).ToFloat64(),
 			},
 			wantErr: false,
 		},
@@ -316,7 +316,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			},
 			args: args{
 				ctx:       context.Background(),
-				accountId: "0001",
+				accountID: "0001",
 			},
 			want:         output.FindAccountBalanceOutputVO{},
 			wantErr:      true,
@@ -333,7 +333,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			},
 			args: args{
 				ctx:       context.Background(),
-				accountId: "0001",
+				accountID: "0001",
 			},
 			want:         output.FindAccountBalanceOutputVO{},
 			wantErr:      true,
@@ -345,7 +345,7 @@ func Test_accountServiceImpl_GetBalance(t *testing.T) {
 			serviceImpl := accountServiceImpl{
 				repository: tt.fields.repository,
 			}
-			got, err := serviceImpl.GetBalance(tt.args.ctx, tt.args.accountId)
+			got, err := serviceImpl.GetBalance(tt.args.ctx, tt.args.accountID)
 			if tt.wantErr && err.Error() != tt.wantErrorMsg {
 				t.Errorf("GetBalance() error = %v, wantErr %v", err, tt.wantErr)
 				return

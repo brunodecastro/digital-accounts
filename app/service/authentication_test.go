@@ -42,7 +42,7 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			fields: fields{
 				accountRepository: repository.MockAccountRepositoryImpl{
 					ResultFindByCpf: &model.Account{
-						Id:        "0001",
+						ID:        "0001",
 						Cpf:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    util.EncryptPassword("65O6G91K651"),
@@ -61,7 +61,7 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			},
 			want: vo.CredentialVO{
 				Cpf:       "00801246156",
-				AccountId: "0001",
+				AccountID: "0001",
 				Username:  "Bruno 1",
 			},
 			wantErr:      false,
@@ -91,7 +91,7 @@ func Test_authenticationServiceImpl_Authenticate(t *testing.T) {
 			fields: fields{
 				accountRepository: repository.MockAccountRepositoryImpl{
 					ResultFindByCpf: &model.Account{
-						Id:        "0001",
+						ID:        "0001",
 						Cpf:       "00801246156",
 						Name:      "Bruno 1",
 						Secret:    util.EncryptPassword("65O6G91K651"),

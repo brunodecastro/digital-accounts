@@ -5,9 +5,10 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/common/vo/input"
 )
 
+// ValidateCreateTransferInput - validates the input.CreateTransferInputVO to create a new transfer
 func ValidateCreateTransferInput(createTransferInputVO input.CreateTransferInputVO) error {
 
-	if createTransferInputVO.AccountDestinationId == "" {
+	if createTransferInputVO.AccountDestinationID == "" {
 		return custom_errors.ErrorAccountDestinationIdRequired
 	}
 

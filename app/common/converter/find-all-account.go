@@ -6,14 +6,15 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/util"
 )
 
+// AccountModelToFindAllAccountOutputVO - converts []model.Account to []output.FindAllAccountOutputVO
 func AccountModelToFindAllAccountOutputVO(accounts []model.Account) []output.FindAllAccountOutputVO {
 	var accountsOutputVO = make([]output.FindAllAccountOutputVO, 0)
 	for _, account := range accounts {
 		accountsOutputVO = append(accountsOutputVO, output.FindAllAccountOutputVO{
-			Id:        string(account.Id),
+			ID:        string(account.ID),
 			Cpf:       util.FormatCpf(account.Cpf),
 			Name:      account.Name,
-			Balance:   account.Balance.GetFloat64(),
+			Balance:   account.Balance.ToFloat64(),
 			CreatedAt: util.FormatDate(account.CreatedAt),
 		})
 	}

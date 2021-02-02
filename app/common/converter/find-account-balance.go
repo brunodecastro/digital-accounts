@@ -5,9 +5,10 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/model"
 )
 
+// ModelToFindAccountBalanceOutputVO - converts model.Account to input.FindAccountBalanceOutputVO
 func ModelToFindAccountBalanceOutputVO(account *model.Account) output.FindAccountBalanceOutputVO {
 	return output.FindAccountBalanceOutputVO{
-		Id:      string(account.Id),
-		Balance: account.Balance.GetFloat64(),
+		ID:      string(account.ID),
+		Balance: account.Balance.ToFloat64(),
 	}
 }

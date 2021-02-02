@@ -26,7 +26,7 @@ func mockRequestHandler(
 		// Creates a token by credential
 		token := auth.GenerateToken(vo.CredentialClaimsVO{
 			Username:  "Bruno",
-			AccountId: "0001",
+			AccountID: "0001",
 			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
 		})
 		req.Header.Set("Authorization", "Bearer "+token)
@@ -49,7 +49,7 @@ func mockRequestHandlerFunc(req *http.Request, method string, strPath string, au
 		// Creates a token by credential
 		token := auth.GenerateToken(vo.CredentialClaimsVO{
 			Username:  "Bruno",
-			AccountId: "0001",
+			AccountID: "0001",
 			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
 		})
 		req.Header.Set("Authorization", "Bearer "+token)

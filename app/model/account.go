@@ -7,8 +7,9 @@ import (
 
 type AccountID string
 
+// Account - struct of account entity
 type Account struct {
-	Id        AccountID
+	ID        AccountID
 	Cpf       string
 	Name      string
 	Secret    string

@@ -9,6 +9,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+// UpMigrations - up the database migrations
 func UpMigrations(databasePostgresConfig *config.DatabasePostgresConfig) error {
 	databaseConnection, err := sql.Open("postgres", databasePostgresConfig.GetDatabaseURL())
 	util.MaybeFatal(err, "Unable to open postgres connection to run migrations")
@@ -20,7 +21,7 @@ func UpMigrations(databasePostgresConfig *config.DatabasePostgresConfig) error {
 		return err
 	}
 
-	migrateInstance, err := migrate.NewWithDatabaseInstance("file://migrations", databasePostgresConfig.DatabaseName, databaseDriver)
+	migrateInstance, err := migrate.NewWithDatabaseInstance("file://app/persistence/database/postgres/migrations", databasePostgresConfig.DatabaseName, databaseDriver)
 	defer migrateInstance.Close()
 
 	if err != nil {

@@ -51,9 +51,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				transferRepository: repository.MockATransferRepositoryImpl{
 					Result: model.Transfer{
-						Id:                   "0001",
-						AccountOriginId:      "0001",
-						AccountDestinationId: "0002",
+						ID:                   "0001",
+						AccountOriginID:      "0001",
+						AccountDestinationID: "0002",
 						Amount:               10,
 						CreatedAt:            time.Time{},
 					},
@@ -61,7 +61,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
 					ResultFindById: &model.Account{
-						Id:        "0002",
+						ID:        "0002",
 						Cpf:       "00801246157",
 						Name:      "Bruno 2",
 						Secret:    "65O6G91K651",
@@ -76,16 +76,16 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				transferInputVO: input.CreateTransferInputVO{
-					AccountOriginId:      "0001",
-					AccountDestinationId: "0002",
+					AccountOriginID:      "0001",
+					AccountDestinationID: "0002",
 					Amount:               10,
 				},
 			},
 			want: output.CreateTransferOutputVO{
-				Id:                   "0001",
+				ID:                   "0001",
 				AccountOriginID:      "0001",
 				AccountDestinationID: "0002",
-				Amount:               types.Money(10).GetFloat64(),
+				Amount:               types.Money(10).ToFloat64(),
 				CreatedAt:            util.FormatDate(time.Time{}),
 			},
 			wantErr:      false,
@@ -96,9 +96,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				transferRepository: repository.MockATransferRepositoryImpl{
 					Result: model.Transfer{
-						Id:                   "0001",
-						AccountOriginId:      "0001",
-						AccountDestinationId: "0002",
+						ID:                   "0001",
+						AccountOriginID:      "0001",
+						AccountDestinationID: "0002",
 						Amount:               10,
 						CreatedAt:            time.Time{},
 					},
@@ -106,7 +106,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
 					ResultFindById: &model.Account{
-						Id:        "0002",
+						ID:        "0002",
 						Cpf:       "00801246157",
 						Name:      "Bruno 2",
 						Secret:    "65O6G91K651",
@@ -121,8 +121,8 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				transferInputVO: input.CreateTransferInputVO{
-					AccountOriginId:      "0001",
-					AccountDestinationId: "0002",
+					AccountOriginID:      "0001",
+					AccountDestinationID: "0002",
 					Amount:               10,
 				},
 			},
@@ -135,9 +135,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				transferRepository: repository.MockATransferRepositoryImpl{
 					Result: model.Transfer{
-						Id:                   "0001",
-						AccountOriginId:      "0001",
-						AccountDestinationId: "0002",
+						ID:                   "0001",
+						AccountOriginID:      "0001",
+						AccountDestinationID: "0002",
 						Amount:               10,
 						CreatedAt:            time.Time{},
 					},
@@ -152,8 +152,8 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				transferInputVO: input.CreateTransferInputVO{
-					AccountOriginId:      "0001",
-					AccountDestinationId: "0002",
+					AccountOriginID:      "0001",
+					AccountDestinationID: "0002",
 					Amount:               10,
 				},
 			},
@@ -166,9 +166,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				transferRepository: repository.MockATransferRepositoryImpl{
 					Result: model.Transfer{
-						Id:                   "0001",
-						AccountOriginId:      "0001",
-						AccountDestinationId: "0002",
+						ID:                   "0001",
+						AccountOriginID:      "0001",
+						AccountDestinationID: "0002",
 						Amount:               10,
 						CreatedAt:            time.Time{},
 					},
@@ -183,8 +183,8 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				transferInputVO: input.CreateTransferInputVO{
-					AccountOriginId:      "0001",
-					AccountDestinationId: "0002",
+					AccountOriginID:      "0001",
+					AccountDestinationID: "0002",
 					Amount:               0,
 				},
 			},
@@ -197,9 +197,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				transferRepository: repository.MockATransferRepositoryImpl{
 					Result: model.Transfer{
-						Id:                   "0001",
-						AccountOriginId:      "0001",
-						AccountDestinationId: "0002",
+						ID:                   "0001",
+						AccountOriginID:      "0001",
+						AccountDestinationID: "0002",
 						Amount:               10000,
 						CreatedAt:            time.Time{},
 					},
@@ -207,7 +207,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
 					ResultFindById: &model.Account{
-						Id:        "0002",
+						ID:        "0002",
 						Cpf:       "00801246157",
 						Name:      "Bruno 2",
 						Secret:    "65O6G91K651",
@@ -221,8 +221,8 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				transferInputVO: input.CreateTransferInputVO{
-					AccountOriginId:      "0001",
-					AccountDestinationId: "0002",
+					AccountOriginID:      "0001",
+					AccountDestinationID: "0002",
 					Amount:               1000,
 				},
 			},
@@ -235,9 +235,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				transferRepository: repository.MockATransferRepositoryImpl{
 					Result: model.Transfer{
-						Id:                   "0001",
-						AccountOriginId:      "0001",
-						AccountDestinationId: "0002",
+						ID:                   "0001",
+						AccountOriginID:      "0001",
+						AccountDestinationID: "0002",
 						Amount:               10,
 						CreatedAt:            time.Time{},
 					},
@@ -252,8 +252,8 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				transferInputVO: input.CreateTransferInputVO{
-					AccountOriginId:      "0001",
-					AccountDestinationId: "0002",
+					AccountOriginID:      "0001",
+					AccountDestinationID: "0002",
 					Amount:               0,
 				},
 			},
@@ -276,8 +276,8 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				transferInputVO: input.CreateTransferInputVO{
-					AccountOriginId:      "0001",
-					AccountDestinationId: "0001",
+					AccountOriginID:      "0001",
+					AccountDestinationID: "0001",
 					Amount:               10,
 				},
 			},
@@ -290,9 +290,9 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			fields: fields{
 				transferRepository: repository.MockATransferRepositoryImpl{
 					Result: model.Transfer{
-						Id:                   "0001",
-						AccountOriginId:      "0001",
-						AccountDestinationId: "0002",
+						ID:                   "0001",
+						AccountOriginID:      "0001",
+						AccountDestinationID: "0002",
 						Amount:               10,
 						CreatedAt:            time.Time{},
 					},
@@ -300,7 +300,7 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 				},
 				accountRepository: repository.MockAccountRepositoryImpl{
 					ResultFindById: &model.Account{
-						Id:        "0002",
+						ID:        "0002",
 						Cpf:       "00801246157",
 						Name:      "Bruno 2",
 						Secret:    "65O6G91K651",
@@ -315,8 +315,8 @@ func Test_transferServiceImpl_Create(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				transferInputVO: input.CreateTransferInputVO{
-					AccountOriginId:      "0001",
-					AccountDestinationId: "0002",
+					AccountOriginID:      "0001",
+					AccountDestinationID: "0002",
 					Amount:               10,
 				},
 			},
@@ -359,7 +359,7 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 	}
 	type args struct {
 		ctx       context.Context
-		accountId string
+		accountID string
 	}
 	tests := []struct {
 		name         string
@@ -375,16 +375,16 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 				transferRepository: repository.MockATransferRepositoryImpl{
 					Results: []model.Transfer{
 						{
-							Id:                   "0001",
-							AccountOriginId:      "0001",
-							AccountDestinationId: "0002",
+							ID:                   "0001",
+							AccountOriginID:      "0001",
+							AccountDestinationID: "0002",
 							Amount:               10,
 							CreatedAt:            time.Time{},
 						},
 						{
-							Id:                   "0002",
-							AccountOriginId:      "0001",
-							AccountDestinationId: "0002",
+							ID:                   "0002",
+							AccountOriginID:      "0001",
+							AccountDestinationID: "0002",
 							Amount:               15,
 							CreatedAt:            time.Time{},
 						},
@@ -399,17 +399,17 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 			},
 			want: []output.FindAllTransferOutputVO{
 				{
-					Id:                   "0001",
+					ID:                   "0001",
 					AccountOriginID:      "0001",
 					AccountDestinationID: "0002",
-					Amount:               types.Money(10).GetFloat64(),
+					Amount:               types.Money(10).ToFloat64(),
 					CreatedAt:            util.FormatDate(time.Time{}),
 				},
 				{
-					Id:                   "0002",
+					ID:                   "0002",
 					AccountOriginID:      "0001",
 					AccountDestinationID: "0002",
-					Amount:               types.Money(15).GetFloat64(),
+					Amount:               types.Money(15).ToFloat64(),
 					CreatedAt:            util.FormatDate(time.Time{}),
 				},
 			},
@@ -428,7 +428,7 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 			},
 			args: args{
 				ctx:       context.Background(),
-				accountId: "0001",
+				accountID: "0001",
 			},
 			want:         []output.FindAllTransferOutputVO{},
 			wantErr:      true,
@@ -442,7 +442,7 @@ func Test_transferServiceImpl_FindAll(t *testing.T) {
 				accountRepository:  tt.fields.accountRepository,
 				transactionHelper:  tt.fields.transactionHelper,
 			}
-			got, err := serviceImpl.FindAll(tt.args.ctx, tt.args.accountId)
+			got, err := serviceImpl.FindAll(tt.args.ctx, tt.args.accountID)
 			if tt.wantErr && err.Error() != tt.wantErrorMsg {
 				t.Errorf("FindAll() error = %v, wantErr %v", err, tt.wantErr)
 				return

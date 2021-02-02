@@ -1,7 +1,8 @@
 package input
 
+// CreateTransferInputVO - vo that represents the input values of createTransfer resource
 type CreateTransferInputVO struct {
-	AccountOriginId      string
-	AccountDestinationId string `json:"account_destination_id"`
+	AccountOriginID      string
+	AccountDestinationID string `json:"account_destination_id"`
 	Amount               int64  `json:"amount"`
 }

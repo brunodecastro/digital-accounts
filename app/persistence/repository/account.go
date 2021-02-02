@@ -6,6 +6,7 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/model"
 )
 
+// AccountRepository - interface of account repository
 type AccountRepository interface {
 	Create(ctx context.Context, account model.Account) (*model.Account, error)
 	UpdateBalance(ctx context.Context, accountOriginId model.AccountID, balance types.Money) (int64, error)

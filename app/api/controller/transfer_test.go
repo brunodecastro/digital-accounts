@@ -31,17 +31,17 @@ func TestTransferController_Create_Success(t *testing.T) {
 	t.Parallel()
 
 	var transferInputVO = input.CreateTransferInputVO{
-		AccountOriginId:      "0001",
-		AccountDestinationId: "0002",
+		AccountOriginID:      "0001",
+		AccountDestinationID: "0002",
 		Amount:               100,
 	}
 	body, _ := json.Marshal(transferInputVO)
 
 	var transferOutputVO = output.CreateTransferOutputVO{
-		Id:                   "0001",
+		ID:                   "0001",
 		AccountOriginID:      "0001",
 		AccountDestinationID: "0002",
-		Amount:               types.Money(100).GetFloat64(),
+		Amount:               types.Money(100).ToFloat64(),
 		CreatedAt:            util.FormatDate(time.Time{}),
 	}
 	controller := NewTransferController(service.MockTransferService{
@@ -73,8 +73,8 @@ func TestTransferController_Create_Error_Validation(t *testing.T) {
 	t.Parallel()
 
 	var transferInputVO = input.CreateTransferInputVO{
-		AccountOriginId:      "0001",
-		AccountDestinationId: "0002",
+		AccountOriginID:      "0001",
+		AccountDestinationID: "0002",
 		Amount:               0,
 	}
 	body, _ := json.Marshal(transferInputVO)
@@ -99,7 +99,7 @@ func TestTransferController_Create_Error_Validation(t *testing.T) {
 	}
 
 	// Check result response
-	var responseError response.HttpErrorResponse
+	var responseError response.HTTPErrorResponse
 	_ = json.Unmarshal(rec.Body.Bytes(), &responseError)
 
 	if wantErr && responseError.Error.Message != wantErrorMsg {
@@ -112,8 +112,8 @@ func TestTransferController_Create_Error_Service(t *testing.T) {
 	t.Parallel()
 
 	var transferInputVO = input.CreateTransferInputVO{
-		AccountOriginId:      "0001",
-		AccountDestinationId: "0002",
+		AccountOriginID:      "0001",
+		AccountDestinationID: "0002",
 		Amount:               100,
 	}
 	body, _ := json.Marshal(transferInputVO)
@@ -138,7 +138,7 @@ func TestTransferController_Create_Error_Service(t *testing.T) {
 	}
 
 	// Check result response
-	var responseError response.HttpErrorResponse
+	var responseError response.HTTPErrorResponse
 	_ = json.Unmarshal(rec.Body.Bytes(), &responseError)
 
 	if wantErr && responseError.Error.Message != wantErrorMsg {
@@ -152,17 +152,17 @@ func TestTransferController_FindAll_Success(t *testing.T) {
 
 	var transfersOutputVO = []output.FindAllTransferOutputVO{
 		{
-			Id:                   "0001",
+			ID:                   "0001",
 			AccountOriginID:      "0001",
 			AccountDestinationID: "0002",
-			Amount:               types.Money(100).GetFloat64(),
+			Amount:               types.Money(100).ToFloat64(),
 			CreatedAt:            util.FormatDate(time.Time{}),
 		},
 		{
-			Id:                   "0002",
+			ID:                   "0002",
 			AccountOriginID:      "0003",
 			AccountDestinationID: "0003",
-			Amount:               types.Money(150).GetFloat64(),
+			Amount:               types.Money(150).ToFloat64(),
 			CreatedAt:            util.FormatDate(time.Time{}),
 		},
 	}
@@ -214,7 +214,7 @@ func TestTransferController_FindAll_Error(t *testing.T) {
 	}
 
 	// Check result response
-	var responseError response.HttpErrorResponse
+	var responseError response.HTTPErrorResponse
 	_ = json.Unmarshal(rec.Body.Bytes(), &responseError)
 
 	if wantErr && responseError.Error.Message != wantErrorMsg {

@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-// PoolConfig gets the pool configuration from the database.
+// ConnectPoolConfig - gets the pool configuration from the database.
 func ConnectPoolConfig(databaseConfig *config.DatabasePostgresConfig) *pgxpool.Pool {
 	databaseConnectionConfig, err := pgxpool.ParseConfig(databaseConfig.GetDatabaseDSN())
 	util.MaybeFatal(err, "Unable to parse the pool config")

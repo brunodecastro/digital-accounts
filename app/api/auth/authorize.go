@@ -15,6 +15,7 @@ import (
 	"strings"
 )
 
+// AuthorizeMiddleware middleware to authorize the access to resource
 func AuthorizeMiddleware(next http.HandlerFunc) httprouter.Handle {
 	return func(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 		authorizationHeader := req.Header.Get("Authorization")
@@ -30,7 +31,7 @@ func AuthorizeMiddleware(next http.HandlerFunc) httprouter.Handle {
 				if token.Valid {
 					claims, _ := token.Claims.(jwt.MapClaims)
 					credentialClaims := vo.CredentialClaimsVO{
-						AccountId: claims["account_id"].(string),
+						AccountID: claims["account_id"].(string),
 						Username:  claims["username"].(string),
 					}
 					// create a new context with credential claims value
@@ -46,11 +47,12 @@ func AuthorizeMiddleware(next http.HandlerFunc) httprouter.Handle {
 	}
 }
 
+// parse the bearer jwt token
 func parseBearerToken(bearerToken string) (*jwt.Token, error) {
 	return jwt.Parse(bearerToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("error on jwt parse")
 		}
-		return []byte(constants.JwtSecretKey), nil
+		return []byte(constants.JWTSecretKey), nil
 	})
 }

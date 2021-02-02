@@ -7,10 +7,11 @@ import (
 
 type TransferID string
 
+// Transfer - struct of transfer entity
 type Transfer struct {
-	Id                   TransferID
-	AccountOriginId      AccountID
-	AccountDestinationId AccountID
+	ID                   TransferID
+	AccountOriginID      AccountID
+	AccountDestinationID AccountID
 	Amount               types.Money // Brazilian real cents
 	CreatedAt            time.Time
 }

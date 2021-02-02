@@ -11,10 +11,12 @@ import (
 	"net/http"
 )
 
+// AccountController - struct of Account Controller
 type AccountController struct {
 	service service.AccountService
 }
 
+// NewAccountController - new Account Controller instance
 func NewAccountController(service service.AccountService) AccountController {
 	return AccountController{
 		service: service,
@@ -29,10 +31,10 @@ func NewAccountController(service service.AccountService) AccountController {
 // @Produce  json
 // @Param account body input.CreateAccountInputVO true "Account Input"
 // @Success 201 {object} output.CreateAccountOutputVO
-// @Failure 400,500 {object} response.HttpErrorResponse
+// @Failure 400,500 {object} response.HTTPErrorResponse
 // @Router /accounts [post]
 //
-// CreateAccount creates a new account
+// Create - creates a new account
 func (controller AccountController) Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	defer r.Body.Close()
 
@@ -63,7 +65,7 @@ func (controller AccountController) Create(w http.ResponseWriter, r *http.Reques
 // @tags accounts
 // @Produce  json
 // @Success 200 {object} output.FindAllAccountOutputVO
-// @Failure 500 {object} response.HttpErrorResponse
+// @Failure 500 {object} response.HTTPErrorResponse
 // @Router /accounts [get]
 //
 // FindAll list all accounts
@@ -82,22 +84,22 @@ func (controller AccountController) FindAll(w http.ResponseWriter, r *http.Reque
 // @tags accounts
 // @Accept  json
 // @Produce  json
-// @Param account_id path string true "Account Id"
+// @Param account_id path string true "Account ID"
 // @Success 200 {object} output.FindAccountBalanceOutputVO
-// @Failure 400,500 {object} response.HttpErrorResponse
+// @Failure 400,500 {object} response.HTTPErrorResponse
 // @Router /account/{account_id}/balance [get]
 //
-// GetBalance Gets the account balance
+// GetBalance - Gets the account balance
 func (controller AccountController) GetBalance(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	var accountId = params.ByName("account_id")
+	var accountID = params.ByName("account_id")
 
 	// Validate input fields
-	if err := validator.ValidateFindAccountBalanceInput(accountId); err != nil {
+	if err := validator.ValidateFindAccountBalanceInput(accountID); err != nil {
 		response.CreateErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	account, err := controller.service.GetBalance(r.Context(), accountId)
+	account, err := controller.service.GetBalance(r.Context(), accountID)
 	if err != nil {
 		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return

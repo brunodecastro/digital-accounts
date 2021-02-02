@@ -6,6 +6,7 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/util"
 )
 
+// ValidateAuthenticate -  validates the input.CredentialInputVO for authenticate
 func ValidateAuthenticate(credentialInput input.CredentialInputVO) error {
 
 	if credentialInput.Cpf == "" {
