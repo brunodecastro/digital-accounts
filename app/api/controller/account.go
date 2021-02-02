@@ -31,7 +31,8 @@ func NewAccountController(service service.AccountService) AccountController {
 // @Produce  json
 // @Param account body input.CreateAccountInputVO true "Account Input"
 // @Success 201 {object} output.CreateAccountOutputVO
-// @Failure 400,500 {object} response.HTTPErrorResponse
+// @Failure 400 {object} response.HTTPErrorResponse
+// @Failure 500 {object} response.HTTPErrorResponse
 // @Router /accounts [post]
 //
 // Create - creates a new account
@@ -86,7 +87,8 @@ func (controller AccountController) FindAll(w http.ResponseWriter, r *http.Reque
 // @Produce  json
 // @Param account_id path string true "Account ID"
 // @Success 200 {object} output.FindAccountBalanceOutputVO
-// @Failure 400,500 {object} response.HTTPErrorResponse
+// @Failure 400 {object} response.HTTPErrorResponse
+// @Failure 500 {object} response.HTTPErrorResponse
 // @Router /account/{account_id}/balance [get]
 //
 // GetBalance - Gets the account balance

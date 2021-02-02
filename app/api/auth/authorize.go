@@ -26,7 +26,7 @@ func AuthorizeMiddleware(next http.HandlerFunc) httprouter.Handle {
 				token, err := parseBearerToken(bearerToken[1])
 				if err != nil {
 					logger.GetLogger().Error("error parsing the token", zap.Error(err))
-					response.CreateErrorResponse(w, http.StatusBadRequest, custom_errors.ErrInvalidToken.Error())
+					response.CreateErrorResponse(w, http.StatusUnauthorized, custom_errors.ErrInvalidToken.Error())
 					return
 				}
 				if token.Valid {

@@ -63,7 +63,7 @@ var doc = `{
                         }
                     },
                     "500": {
-                        "description": "Bad Request",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
@@ -133,7 +133,7 @@ var doc = `{
                         }
                     },
                     "500": {
-                        "description": "Bad Request",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
@@ -184,7 +184,7 @@ var doc = `{
                         }
                     },
                     "403": {
-                        "description": "Bad Request",
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
@@ -264,7 +264,7 @@ var doc = `{
                         }
                     },
                     "500": {
-                        "description": "Bad Request",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
@@ -294,9 +294,6 @@ var doc = `{
         "input.CreateTransferInputVO": {
             "type": "object",
             "properties": {
-                "accountOriginID": {
-                    "type": "string"
-                },
                 "account_destination_id": {
                     "type": "string"
                 },
@@ -309,10 +306,12 @@ var doc = `{
             "type": "object",
             "properties": {
                 "cpf": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "00801246156"
                 },
                 "secret": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456789"
                 }
             }
         },

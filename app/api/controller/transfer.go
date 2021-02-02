@@ -31,7 +31,8 @@ func NewTransferController(service service.TransferService) TransferController {
 // @Produce  json
 // @Param account body input.CreateTransferInputVO true "Transfer Input"
 // @Success 201 {object} output.CreateTransferOutputVO
-// @Failure 400,500 {object} response.HTTPErrorResponse
+// @Failure 400 {object} response.HTTPErrorResponse
+// @Failure 500 {object} response.HTTPErrorResponse
 // @Security ApiKeyAuth
 // @Router /transfers [post]
 //

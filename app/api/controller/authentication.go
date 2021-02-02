@@ -33,7 +33,8 @@ func NewAuthenticationController(service service.AuthenticationService) Authenti
 // @Produce  json
 // @Param credential body input.CredentialInputVO true "Credential Input"
 // @Success 201 {object} output.CreateTransferOutputVO
-// @Failure 400,403 {object} response.HTTPErrorResponse
+// @Failure 400 {object} response.HTTPErrorResponse
+// @Failure 403 {object} response.HTTPErrorResponse
 // @Security ApiKeyAuth
 // @Router /login [post]
 //

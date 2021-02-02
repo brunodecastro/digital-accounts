@@ -14,16 +14,16 @@ definitions:
     properties:
       account_destination_id:
         type: string
-      accountOriginID:
-        type: string
       amount:
         type: integer
     type: object
   input.CredentialInputVO:
     properties:
       cpf:
+        example: "00801246156"
         type: string
       secret:
+        example: "123456789"
         type: string
     type: object
   output.CreateAccountOutputVO:
@@ -127,7 +127,7 @@ paths:
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
         "500":
-          description: Bad Request
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
       summary: Gets the account balance
@@ -173,7 +173,7 @@ paths:
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
         "500":
-          description: Bad Request
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
       summary: Creates a new account
@@ -203,7 +203,7 @@ paths:
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
         "403":
-          description: Bad Request
+          description: Forbidden
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
       security:
@@ -253,7 +253,7 @@ paths:
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
         "500":
-          description: Bad Request
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
       security:

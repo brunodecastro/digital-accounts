@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/common/vo"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"net/http/httptest"
@@ -27,7 +28,9 @@ func mockRequestHandler(
 		token := auth.GenerateToken(vo.CredentialClaimsVO{
 			Username:  "Bruno",
 			AccountID: "0001",
-			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
+			StandardClaims: jwt.StandardClaims{
+				ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
+			},
 		})
 		req.Header.Set("Authorization", "Bearer "+token)
 	}
@@ -50,7 +53,9 @@ func mockRequestHandlerFunc(req *http.Request, method string, strPath string, au
 		token := auth.GenerateToken(vo.CredentialClaimsVO{
 			Username:  "Bruno",
 			AccountID: "0001",
-			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
+			StandardClaims: jwt.StandardClaims{
+				ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
+			},
 		})
 		req.Header.Set("Authorization", "Bearer "+token)
 	}
