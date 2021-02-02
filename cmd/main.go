@@ -42,7 +42,9 @@ func main() {
 
 	server := createServer(databaseConnection, apiConfig)
 	logger.GetLogger().Info(fmt.Sprintf("Server running on %s ...", apiConfig.WebServerConfig.GetWebServerAddress()))
-	err = server.ListenAndServe(&apiConfig.WebServerConfig)
+
+	// Start server
+	err = server.ListenAndServe()
 	util.MaybeFatal(err, "Unable to start the web server.")
 }
 

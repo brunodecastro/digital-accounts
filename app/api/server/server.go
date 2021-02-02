@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/api/controller"
 	"github.com/brunodecastro/digital-accounts/app/config"
@@ -65,6 +66,7 @@ func (server *Server) configRoutes() {
 }
 
 // ListenAndServe - listen and serve the api on host and port
-func (server *Server) ListenAndServe(webServerConfig *config.WebServerConfig) error {
-	return http.ListenAndServe(webServerConfig.GetWebServerAddress(), server.Router)
+func (server *Server) ListenAndServe() error {
+	host := fmt.Sprintf(":%s", config.GetAPIConfigs().WebServerConfig.Port)
+	return http.ListenAndServe(host, server.Router)
 }
