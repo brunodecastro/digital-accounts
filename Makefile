@@ -1,3 +1,9 @@
+
+# A valid GOPATH is required to use the `go get` command.
+# If $GOPATH is not specified, $HOME/go will be used by default
+GOPATH := $(if $(GOPATH),$(GOPATH),~/go)
+
+
 .PHONY: build
 build:
 	@echo "Building Digital Accounts Api"
@@ -21,11 +27,18 @@ test-coverage:
 
 .PHONY: fmt
 fmt:
+	@echo "Running go fmt"
 	go fmt ./...
 
 .PHONY: vet
 vet:
+	@echo "Running go vet"
 	go vet ./...
+
+.PHONY: build-swagger
+build-swagger:
+	@echo "Building swagger doc files"
+	swag init -g cmd\main.go
 
 .PHONY: start
 start:
@@ -40,6 +53,14 @@ stop:
 	@docker-compose -f docker/docker-compose.yml down
 
 
+install-swag:
+ifeq (,$(wildcard test -f $(GOPATH)/bin/swag))
+	@echo "  >  Installing swagger"
+	@-bash -c "go get github.com/swaggo/swag/cmd/swag"
+endif
+
+swag: install-swag
+	@bash -c "$(GOPATH)/bin/swag init --parseDependency -g ./cmd/api/main.go -o ./docs"
 
 
 
