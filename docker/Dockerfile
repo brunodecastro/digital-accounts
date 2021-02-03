@@ -9,19 +9,22 @@ ENV GO111MODULE=on \
 # app workdir
 WORKDIR /go/src/app
 
+# copy go.mo and go.sum to download dependencies
 COPY go.mod go.sum ./
 
-# get go dependancies
+# get go dependencies
 RUN go mod download
 
 # copy project to container
 COPY . .
 
 # Test before running
-RUN go test -v ./...
+# RUN go test -v ./...
+RUN make test
 
 # build the go app
-RUN go build -o build/digital-accounts cmd/main.go
+# RUN go build -o build/digital-accounts cmd/main.go
+RUN make build
 
 # Expose port to the outside world
 EXPOSE 9090
