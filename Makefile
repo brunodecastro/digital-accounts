@@ -60,7 +60,7 @@ ifeq (,$(wildcard test -f $(GOPATH)/bin/swag))
 endif
 
 swag: install-swag
-	@bash -c "$(GOPATH)/bin/swag init --parseDependency -g ./cmd/api/main.go -o ./docs"
+	@bash -c "$(GOPATH)/bin/swag init --parseDependency -g ./cmd/main.go"
 
 
 

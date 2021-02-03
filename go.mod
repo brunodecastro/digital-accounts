@@ -16,7 +16,7 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/moby/term v0.0.0-20201216013528-df9cb8a40635 // indirect
-	github.com/ory/dockertest/v3 v3.6.3 // indirect
+	github.com/ory/dockertest/v3 v3.6.3
 	github.com/pkg/errors v0.9.1
 	github.com/swaggo/http-swagger v1.0.0
 	github.com/swaggo/swag v1.7.0
