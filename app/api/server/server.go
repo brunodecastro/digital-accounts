@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/brunodecastro/digital-accounts/app/api/auth"
 	"github.com/brunodecastro/digital-accounts/app/api/controller"
+	"github.com/brunodecastro/digital-accounts/app/common/constants"
 	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/julienschmidt/httprouter"
 	httpSwagger "github.com/swaggo/http-swagger"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -49,6 +51,20 @@ func healthCheck(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// redoc - api documentation with redoc
+func redoc(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Header().Set("Content-Type", constants.HTMLContentType)
+	contents, _ := ioutil.ReadFile("docs/redoc.html")
+	w.Write(contents)
+}
+
+// swaggerJson - returns swagger.json for redoc documentation
+func swaggerJson(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	w.Header().Set("Content-Type", constants.JSONContentType)
+	contents, _ := ioutil.ReadFile("docs/swagger.json")
+	w.Write(contents)
+}
+
 // configRoutes - config the api routes
 func (server *Server) configRoutes() {
 	router := server.Router
@@ -61,8 +77,12 @@ func (server *Server) configRoutes() {
 	router.GET("/transfers", auth.AuthorizeMiddleware(server.transferController.FindAll))
 	router.POST("/login", server.authenticationController.Authenticate)
 
-	// Swagger UI
+	// Swagger UI - api documentation and interaction
 	router.HandlerFunc(http.MethodGet, "/swagger/*any", httpSwagger.WrapHandler)
+
+	// Redoc - api documentation
+	router.GET("/redoc", redoc)
+	router.GET("/doc/swagger-json", swaggerJson)
 }
 
 // ListenAndServe - listen and serve the api on host and port

@@ -17,9 +17,6 @@ logs:
 
 .PHONY: test
 test:
-    go test -cover ./...
+    go test -v ./...
 
-.PHONY: code-review
-code-review:
-    fmt vet test
 

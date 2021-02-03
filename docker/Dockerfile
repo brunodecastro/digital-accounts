@@ -23,9 +23,6 @@ RUN go test -v ./...
 # build the go app
 RUN go build -o build/digital-accounts cmd/main.go
 
-# build the go app
-#RUN make build
-
 # Expose port to the outside world
 EXPOSE 9090
 

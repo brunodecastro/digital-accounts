@@ -23,7 +23,7 @@ definitions:
         example: "00801246156"
         type: string
       secret:
-        example: "123456789"
+        example: "123456"
         type: string
     type: object
   output.CreateAccountOutputVO:

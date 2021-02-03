@@ -311,7 +311,7 @@ var doc = `{
                 },
                 "secret": {
                     "type": "string",
-                    "example": "123456789"
+                    "example": "123456"
                 }
             }
         },

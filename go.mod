@@ -3,7 +3,10 @@ module github.com/brunodecastro/digital-accounts
 go 1.15
 
 require (
+	github.com/Microsoft/go-winio v0.4.16 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
+	github.com/containerd/continuity v0.0.0-20201208142359-180525291bb7 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-openapi/spec v0.20.2 // indirect
 	github.com/golang-migrate/migrate/v4 v4.14.1
@@ -12,6 +15,8 @@ require (
 	github.com/jackc/pgx/v4 v4.10.1
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/moby/term v0.0.0-20201216013528-df9cb8a40635 // indirect
+	github.com/ory/dockertest/v3 v3.6.3 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/swaggo/http-swagger v1.0.0
 	github.com/swaggo/swag v1.7.0
