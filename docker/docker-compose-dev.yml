@@ -4,19 +4,6 @@ volumes:
   postgres-volume:
 
 services:
-  api:
-    container_name: "digital-accounts"
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
-    ports:
-      - 9090:9090
-    depends_on:
-      - postgres
-    environment:
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      APP_SERVER_PORT: 9090
 
   postgres:
     container_name: "postgres"

@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"github.com/brunodecastro/digital-accounts/app/config"
 	"github.com/brunodecastro/digital-accounts/app/util"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/ory/dockertest/v3"
@@ -50,7 +49,7 @@ func StartDockerTestPostgresDataBase() (*pgxpool.Pool, func() error, error) {
 	}
 
 	// run migrations
-	err = UpMigrations(&config.GetAPIConfigs().DatabaseConfig)
+	err = UpMigrations2(pgURI)
 	util.MaybeFatal(err, "Unable to execute postgres migrations.")
 
 	return pgxPool, func() error { return dockerPool.Purge(resource) }, nil

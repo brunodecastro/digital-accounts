@@ -7,6 +7,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file" // driver to get migrations file
+	"log"
 )
 
 // UpMigrations - up the database migrations
@@ -35,3 +36,21 @@ func UpMigrations(databasePostgresConfig *config.DatabasePostgresConfig) error {
 
 	return nil
 }
+
+func UpMigrations2(pgURI string) error {
+	migrateInstance, err := migrate.New("file://migrations", pgURI)
+	defer migrateInstance.Close()
+	if err != nil && err.Error() != "no change" {
+		log.Fatalf("couldn't run migrations: %v", err)
+		return err
+	}
+
+	err = migrateInstance.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		log.Fatalf("couldn't up migrations: %v", err)
+		return err
+	}
+
+	return nil
+}
+

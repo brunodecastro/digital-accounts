@@ -12,10 +12,10 @@ var (
 	doOnce    sync.Once
 )
 
-// WebServerConfig - configs of web server
-type WebServerConfig struct {
-	Host string `envconfig:"WEB_SERVER_HOST" default:"localhost"`
-	Port string `envconfig:"WEB_SERVER_PORT" default:"9090"`
+// AppServerConfig - configs of app server
+type AppServerConfig struct {
+	Host string `envconfig:"APP_SERVER_HOST" default:"localhost"`
+	Port string `envconfig:"APP_SERVER_PORT" default:"9090"`
 }
 
 // DatabasePostgresConfig - configs of database
@@ -40,7 +40,7 @@ type AuthConfig struct {
 type Config struct {
 	Profile         string `envconfig:"PROFILE" default:"dev"`
 	AuthConfig      AuthConfig
-	WebServerConfig WebServerConfig
+	WebServerConfig AppServerConfig
 	DatabaseConfig  DatabasePostgresConfig
 }
 
@@ -60,7 +60,7 @@ func GetAPIConfigs() *Config {
 }
 
 // GetWebServerAddress - returns the web server address
-func (webServerConfig WebServerConfig) GetWebServerAddress() string {
+func (webServerConfig AppServerConfig) GetWebServerAddress() string {
 	return fmt.Sprintf(
 		"%s:%s",
 		webServerConfig.Host,

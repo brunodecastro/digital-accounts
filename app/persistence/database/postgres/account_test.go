@@ -16,7 +16,6 @@ import (
 var (
 	dataBasePool      *pgxpool.Pool
 	transactionHelper TransactionHelper
-	//accountRepository repository.AccountRepository
 	doOnce sync.Once
 )
 
@@ -29,8 +28,8 @@ func TestMain(m *testing.M) {
 		log.Fatalf("error setting up docker db: %v", err)
 	}
 
-	// setup repository
-	setupRepository(pgxPool)
+	// setup data repository
+	setupDataRepository(pgxPool)
 
 	// run tests
 	runCode := m.Run()
@@ -71,11 +70,11 @@ func TestAccountRepositoryImpl_Create(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    model.Account
+		want    *model.Account
 		wantErr bool
 	}{
 		{
-			name: "valid",
+			name: "create account persistence - success",
 			args: args{
 				ctx:     context.Background(),
 				account: accountInput,
@@ -84,30 +83,34 @@ func TestAccountRepositoryImpl_Create(t *testing.T) {
 				dataBasePool:      dataBasePool,
 				transactionHelper: transactionHelper,
 			},
-			want:    accountInput,
+			want:    &accountInput,
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
+			ctx, err := tt.fields.transactionHelper.StartTransaction(tt.args.ctx)
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+
 			accountRepository := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
 
-			accountCreated, err := accountRepository.Create(tt.args.ctx, tt.args.account)
+			accountCreated, err := accountRepository.Create(ctx, tt.args.account)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			if !reflect.DeepEqual(accountCreated, tt.want) {
-				t.Errorf("Create() got = %v, want %v", accountCreated, tt.want)
+			if !reflect.DeepEqual(*accountCreated, *tt.want) {
+				t.Errorf("Create() got = %v, want %v", *accountCreated, *tt.want)
 			}
 		})
 	}
 }
 
-func setupRepository(pgxPool *pgxpool.Pool) {
+func setupDataRepository(pgxPool *pgxpool.Pool) {
 	doOnce.Do(func() {
 		dataBasePool = pgxPool
 		transactionHelper = NewTransactionHelper(pgxPool)
-		//accountRepository = NewAccountRepository(pgxPool, transactionHelper)
 	})
 }

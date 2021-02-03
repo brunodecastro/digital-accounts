@@ -23,6 +23,7 @@ import (
 // @in header
 // @name Authorization
 func main() {
+	
 	// Initialize app configs
 	apiConfig := config.GetAPIConfigs()
 
