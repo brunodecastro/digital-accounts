@@ -17,7 +17,7 @@ func SignedTokenString(credentialOutput vo.CredentialVO) string {
 	if err != nil {
 		logger.GetLogger().Error("error parsing the token max live time", zap.Error(err))
 	}
-	tokenExpirationTime := time.Now().Add(maxTokenLiveTime * time.Second)
+	tokenExpirationTime := time.Now().Add(maxTokenLiveTime)
 
 	credentialClaims := vo.CredentialClaimsVO{
 		Username:  credentialOutput.Username,

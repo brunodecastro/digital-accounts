@@ -15,9 +15,11 @@ stop:
 logs:
     @docker-compose logs -f
 
+.PHONY: test
 test:
     go test -cover ./...
 
+.PHONY: code-review
 code-review:
     fmt vet test
 

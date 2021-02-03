@@ -33,7 +33,7 @@ type DatabasePostgresConfig struct {
 // AuthConfig - configs of authentication
 type AuthConfig struct {
 	JWTSecretKey     string `envconfig:"JWT_SECRET_KEY" default:"jwt-digital-accounts-secret-key"`
-	MaxTokenLiveTime string `envconfig:"JWT_MAX_TOKEN_LIVE_TIME" default:"10"` // Minutes
+	MaxTokenLiveTime string `envconfig:"JWT_MAX_TOKEN_LIVE_TIME" default:"10m"` // 10 minutes in Duration format
 }
 
 // Config - configs of api
