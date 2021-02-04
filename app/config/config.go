@@ -39,6 +39,7 @@ type AuthConfig struct {
 // Config - configs of api
 type Config struct {
 	Profile         string `envconfig:"PROFILE" default:"dev"`
+	MigrationPath   string `envconfig:"MIGRATION_PATH" default:"app/persistence/database/postgres/migrations"`
 	AuthConfig      AuthConfig
 	WebServerConfig AppServerConfig
 	DatabaseConfig  DatabasePostgresConfig
@@ -83,8 +84,8 @@ func (databaseConfig DatabasePostgresConfig) GetDatabaseDSN() string {
 	)
 }
 
-// GetDatabaseURL - returns the database url
-func (databaseConfig DatabasePostgresConfig) GetDatabaseURL() string {
+// GetDatabaseURI - returns the database uri
+func (databaseConfig DatabasePostgresConfig) GetDatabaseURI() string {
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		databaseConfig.UserName,

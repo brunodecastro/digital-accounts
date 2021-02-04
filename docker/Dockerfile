@@ -4,7 +4,8 @@ FROM golang:alpine AS builder
 
 ENV GO111MODULE=on \
     GOOS=linux \
-    GOARCH=amd64
+    GOARCH=amd64 \
+    CGO_ENABLED=0
 
 # app workdir
 WORKDIR /go/app
@@ -19,12 +20,10 @@ RUN go mod download
 COPY . .
 
 # Test before running
-# RUN go test -v ./...
-#RUN make test
+#RUN go test -v ./...
 
 # build the go app
-RUN go build -o /build/digital-accounts github.com/brunodecastro/digital-accounts/cmd
-#RUN make build
+RUN go build -o build/digital-accounts cmd/main.go
 
 
 ###################################
@@ -37,11 +36,17 @@ LABEL maintainer="Bruno de Castro Oliveira <brunnodecastro@gmail.com>"
 WORKDIR /app
 
 # copy the build app to final image
-COPY --from=builder /go/app/build/digital-accounts /digital-accounts
+COPY --from=builder /go/app/build/digital-accounts .
+
+# copy migration files
+COPY app/persistence/database/postgres/migrations ./migrations
+
+# copy doc files
+COPY docs/ ./docs
 
 # Expose port to the outside world
 EXPOSE $APP_SERVER_PORT
 
 # run the app executable
-ENTRYPOINT ["./digital-accounts"]
+ENTRYPOINT ./digital-accounts
 

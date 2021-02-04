@@ -12,7 +12,7 @@ import (
 // StartDockerTestPostgresDataBase is a helper method to automatically start a postgres docker instance via dockertest.
 func StartDockerTestPostgresDataBase() (*pgxpool.Pool, func() error, error) {
 	var pgxPool *pgxpool.Pool
-	var pgURI string
+	var postgresURI string
 
 	// create dockertest pool
 	dockerPool, err := dockertest.NewPool("")
@@ -29,11 +29,11 @@ func StartDockerTestPostgresDataBase() (*pgxpool.Pool, func() error, error) {
 	// 10 second wait time to connect to the db
 	dockerPool.MaxWait = time.Second * 10
 	err = dockerPool.Retry(func() error {
-		pgURI = fmt.Sprintf(
+		postgresURI = fmt.Sprintf(
 			"postgres://postgres:secret@localhost:%s/postgres?sslmode=disable",
 			resource.GetPort("5432/tcp"),
 		)
-		pgxPool, err = pgxpool.Connect(context.Background(), pgURI)
+		pgxPool, err = pgxpool.Connect(context.Background(), postgresURI)
 		if err != nil {
 			return err
 		}
@@ -49,7 +49,7 @@ func StartDockerTestPostgresDataBase() (*pgxpool.Pool, func() error, error) {
 	}
 
 	// run migrations
-	err = UpMigrations2(pgURI)
+	err = UpMigrations(postgresURI, "migrations")
 	util.MaybeFatal(err, "Unable to execute postgres migrations.")
 
 	return pgxPool, func() error { return dockerPool.Purge(resource) }, nil

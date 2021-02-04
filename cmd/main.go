@@ -23,33 +23,33 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	
-	// Initialize app configs
-	apiConfig := config.GetAPIConfigs()
 
 	// Initialize app log implementation
 	logger.GetLogger().Info("Starting Digital Accounts API...")
 
 	// Swagger configs.
-	docs.SwaggerInfo.Host = apiConfig.WebServerConfig.GetWebServerAddress()
+	docs.SwaggerInfo.Host = config.GetAPIConfigs().WebServerConfig.GetWebServerAddress()
 	docs.SwaggerInfo.BasePath = "/"
 
 	// Configure database pool connection
-	databaseConnection := postgres.ConnectPoolConfig(&apiConfig.DatabaseConfig)
+	databaseConnection := postgres.ConnectPoolConfig()
 	defer databaseConnection.Close()
 
-	err := postgres.UpMigrations(&apiConfig.DatabaseConfig)
+	err := postgres.UpMigrations(
+		config.GetAPIConfigs().DatabaseConfig.GetDatabaseURI(),
+		config.GetAPIConfigs().MigrationPath,
+	)
 	util.MaybeFatal(err, "Unable to execute postgres migrations.")
 
-	server := createServer(databaseConnection, apiConfig)
-	logger.GetLogger().Info(fmt.Sprintf("Server running on %s ...", apiConfig.WebServerConfig.GetWebServerAddress()))
+	server := createServer(databaseConnection)
+	logger.GetLogger().Info(fmt.Sprintf("Server running on %s ...", config.GetAPIConfigs().WebServerConfig.GetWebServerAddress()))
 
 	// Start server
 	err = server.ListenAndServe()
 	util.MaybeFatal(err, "Unable to start the web server.")
 }
 
-func createServer(databaseConnection *pgxpool.Pool, apiConfig *config.Config) *server.Server {
+func createServer(databaseConnection *pgxpool.Pool) *server.Server {
 	transactionHelper := postgres.NewTransactionHelper(databaseConnection)
 
 	// Account services

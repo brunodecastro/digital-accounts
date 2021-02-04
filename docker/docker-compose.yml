@@ -17,6 +17,7 @@ services:
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
       APP_SERVER_PORT: 9090
+      MIGRATION_PATH: migrations
 
   postgres:
     container_name: "postgres"

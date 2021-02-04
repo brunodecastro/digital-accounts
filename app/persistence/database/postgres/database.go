@@ -10,8 +10,8 @@ import (
 )
 
 // ConnectPoolConfig - gets the pool configuration from the database.
-func ConnectPoolConfig(databaseConfig *config.DatabasePostgresConfig) *pgxpool.Pool {
-	databaseConnectionConfig, err := pgxpool.ParseConfig(databaseConfig.GetDatabaseDSN())
+func ConnectPoolConfig() *pgxpool.Pool {
+	databaseConnectionConfig, err := pgxpool.ParseConfig(config.GetAPIConfigs().DatabaseConfig.GetDatabaseDSN())
 	util.MaybeFatal(err, "Unable to parse the pool config")
 
 	databaseConnectionConfig.ConnConfig.Logger = zapadapter.NewLogger(logger.GetLogger())

@@ -16,7 +16,7 @@ import (
 var (
 	dataBasePool      *pgxpool.Pool
 	transactionHelper TransactionHelper
-	doOnce sync.Once
+	doOnce            sync.Once
 )
 
 // TestMain test dockertest database setup
@@ -90,14 +90,19 @@ func TestAccountRepositoryImpl_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			ctx, err := tt.fields.transactionHelper.StartTransaction(tt.args.ctx)
+			accountRepository := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
+
+			transactionContext, err := tt.fields.transactionHelper.StartTransaction(tt.args.ctx)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
 
-			accountRepository := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
+			accountCreated, err := accountRepository.Create(transactionContext, tt.args.account)
+			if err != nil {
+				t.Errorf("Error on create account")
+			}
+			tt.fields.transactionHelper.CommitTransaction(transactionContext)
 
-			accountCreated, err := accountRepository.Create(ctx, tt.args.account)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 			}
