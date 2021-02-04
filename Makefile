@@ -17,12 +17,12 @@ run:
 .PHONY: test
 test:
 	@echo "Running tests"
-	go test -cover ./...
+	go test -v -cover ./...
 
 .PHONY: test-coverage-report
 test-coverage-report:
 	@echo "Running tests with coverage report"
-	go test -coverprofile=coverage.out ./...
+	go test -v -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out -o coverage.html
 
 .PHONY: fmt
