@@ -20,4 +20,5 @@ deploy:
   provider: heroku
   api_key: "5159627c-f611-48bf-905b-ccb1223201df"
   app: digital-accounts
-    on: master
+    on:
+      branch: master
