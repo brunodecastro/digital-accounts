@@ -184,7 +184,10 @@ func (repositoryImpl accountRepositoryImpl) FindByID(ctx context.Context, accoun
 		&account.Balance,
 		&account.CreatedAt)
 
-	if err != nil && err != pgx.ErrNoRows {
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
 		return nil, errors.Wrap(err, "error scanning find account by cpf")
 	}
 	return &account, nil
