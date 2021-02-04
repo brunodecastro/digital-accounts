@@ -33,5 +33,5 @@ deploy:
     docker push brunodecastroo/digital-accounts:v1;
     docker push registry.heroku.com/$HEROKU_APP/web;
     heroku container:release web --app $HEROKU_APP
-  on:
-    branch: master
+  #on:
+  #  branch: master
