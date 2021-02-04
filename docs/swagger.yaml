@@ -2,12 +2,16 @@ definitions:
   input.CreateAccountInputVO:
     properties:
       balance:
+        example: 1000
         type: integer
       cpf:
+        example: 008.012.461-56
         type: string
       name:
+        example: Bruno de Castro Oliveira
         type: string
       secret:
+        example: "123456"
         type: string
     type: object
   input.CreateTransferInputVO:
@@ -250,6 +254,10 @@ paths:
             $ref: '#/definitions/output.CreateTransferOutputVO'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/response.HTTPErrorResponse'
+        "422":
+          description: Unprocessable Entity
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
         "500":

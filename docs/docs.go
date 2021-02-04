@@ -263,6 +263,12 @@ var doc = `{
                             "$ref": "#/definitions/response.HTTPErrorResponse"
                         }
                     },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.HTTPErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -278,16 +284,20 @@ var doc = `{
             "type": "object",
             "properties": {
                 "balance": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1000
                 },
                 "cpf": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "008.012.461-56"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Bruno de Castro Oliveira"
                 },
                 "secret": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456"
                 }
             }
         },
