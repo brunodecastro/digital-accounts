@@ -36,7 +36,7 @@ vet:
 	go vet ./...
 
 .PHONY: review-code-and-test
-review-code-and-test: fmt vet test
+review-code-and-test: fmt vet 
 
 .PHONY: build-swagger
 build-swagger:
