@@ -285,9 +285,9 @@ func Test_accountRepositoryImpl_UpdateBalance(t *testing.T) {
 				log.Fatal(err.Error())
 			}
 
-			rowsAfeccted, err := repositoryImpl.UpdateBalance(transactionContext, tt.args.accountID, tt.args.balance)
+			rowsAffected, err := repositoryImpl.UpdateBalance(transactionContext, tt.args.accountID, tt.args.balance)
 
-			if err != nil || rowsAfeccted < 1 {
+			if err != nil || rowsAffected < 1 {
 				t.Errorf("Error on update account balance")
 				tt.fields.transactionHelper.RollbackTransaction(transactionContext)
 			}

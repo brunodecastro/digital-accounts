@@ -51,7 +51,7 @@ func (repositoryImpl accountRepositoryImpl) Create(ctx context.Context, account 
 	return &account, nil
 }
 
-// UpdateBalance - updates the account balance
+// UpdateBalance - updates the account balance, return affected rows
 func (repositoryImpl accountRepositoryImpl) UpdateBalance(ctx context.Context, accountID model.AccountID, balance types.Money) (int64, error) {
 	tx := repositoryImpl.transactionHelper.GetTransactionFromContext(ctx)
 
