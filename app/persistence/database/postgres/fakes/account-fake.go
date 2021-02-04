@@ -29,7 +29,7 @@ var (
 	}
 )
 
-// GetFakeAccounts returns the accounts fake
+// GetFakeAccounts returns fake accounts
 func GetFakeAccounts() *[]model.Account {
 	return &fakeAccounts
 }
@@ -39,12 +39,12 @@ func GetFakeAccount1() model.Account {
 	return fakeAccounts[0]
 }
 
-// GetFakeAccount2 returns fake account represents by 1
+// GetFakeAccount2 returns fake account represents by 2
 func GetFakeAccount2() model.Account {
 	return fakeAccounts[1]
 }
 
-// GenerateNewFakeAccount generates a new account fake
+// GenerateNewFakeAccount generates a new fake account
 func GenerateNewFakeAccount(name string) model.Account {
 	return model.Account{
 		ID:        model.AccountID(common.NewUUID()),

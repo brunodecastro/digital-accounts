@@ -81,3 +81,28 @@ func SetupFakeAccounts(pgxPool *pgxpool.Pool) error {
 	}
 	return nil
 }
+
+// SetupFakeTransfers - inserts fake transfers in the database to test with dockertest
+func SetupFakeTransfers(pgxPool *pgxpool.Pool) error {
+	transactionHelper := NewTransactionHelper(pgxPool)
+	repositoryImpl := NewTransferRepository(pgxPool, transactionHelper)
+
+	for _, transferFake := range *fakes.GetFakeTransfers() {
+
+		transactionContext, err := transactionHelper.StartTransaction(context.Background())
+		if err != nil {
+			return errors.Wrap(err, "error on start transaction")
+		}
+
+		_, err = repositoryImpl.Create(transactionContext, transferFake)
+		if err != nil {
+			transactionHelper.RollbackTransaction(transactionContext)
+			return errors.Wrap(err, "error on create fake transfer")
+		}
+		transactionHelper.CommitTransaction(transactionContext)
+		if err != nil {
+			return errors.Wrap(err, "error on commit transaction")
+		}
+	}
+	return nil
+}
