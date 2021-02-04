@@ -1,0 +1,11 @@
+language:  go
+
+go:
+  - 1.15.x
+
+env:
+  - GO111MODULE=on
+
+script:
+  - make review-code-and-test
+  - make test-coverage-report

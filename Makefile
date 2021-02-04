@@ -17,11 +17,11 @@ run:
 .PHONY: test
 test:
 	@echo "Running tests"
-	go test -v ./...
+	go test -cover ./...
 
-.PHONY: test-coverage
-test-coverage:
-	@echo "Running tests with coverage"
+.PHONY: test-coverage-report
+test-coverage-report:
+	@echo "Running tests with coverage report"
 	go test -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out -o coverage.html
 
@@ -34,6 +34,9 @@ fmt:
 vet:
 	@echo "Running go vet"
 	go vet ./...
+
+.PHONY: review-code-and-test
+review-code-and-test: fmt vet test
 
 .PHONY: build-swagger
 build-swagger:
