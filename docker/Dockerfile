@@ -19,9 +19,6 @@ RUN go mod download
 # copy project to container
 COPY . .
 
-# Test before running
-#RUN go test -v ./...
-
 # build the go app
 RUN go build -o build/digital-accounts cmd/main.go
 

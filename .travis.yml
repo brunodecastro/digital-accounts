@@ -1,4 +1,4 @@
-language:  go
+language: go
 
 go:
   - 1.15.x
@@ -15,3 +15,9 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+deploy:
+  provider: heroku
+  api_key: "5159627c-f611-48bf-905b-ccb1223201df"
+  app: digital-accounts
+    on: master
