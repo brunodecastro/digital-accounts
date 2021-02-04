@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	accounts = []model.Account{
+	fakeAccounts = []model.Account{
 		{
 			ID:        model.AccountID(common.NewUUID()),
 			CPF:       util.GenerateCPFOnlyNumbers(),
@@ -31,19 +31,20 @@ var (
 
 // GetFakeAccounts returns the accounts fake
 func GetFakeAccounts() *[]model.Account {
-	return &accounts
+	return &fakeAccounts
 }
 
-// GetAccountFake1 returns fake account represents by 1
-func GetAccountFake1() model.Account {
-	return accounts[0]
+// GetFakeAccount1 returns fake account represents by 1
+func GetFakeAccount1() model.Account {
+	return fakeAccounts[0]
 }
 
-// GetAccountFake2 returns fake account represents by 1
-func GetAccountFake2() model.Account {
-	return accounts[1]
+// GetFakeAccount2 returns fake account represents by 1
+func GetFakeAccount2() model.Account {
+	return fakeAccounts[1]
 }
 
+// GenerateNewFakeAccount generates a new account fake
 func GenerateNewFakeAccount(name string) model.Account {
 	return model.Account{
 		ID:        model.AccountID(common.NewUUID()),

@@ -98,7 +98,7 @@ func Test_accountRepositoryImpl_FindAll(t *testing.T) {
 
 func Test_accountRepositoryImpl_FindByCPF(t *testing.T) {
 
-	accountFake1 := fakes.GetAccountFake1()
+	accountFake1 := fakes.GetFakeAccount1()
 
 	type fields struct {
 		dataBasePool      *pgxpool.Pool
@@ -146,6 +146,8 @@ func Test_accountRepositoryImpl_FindByCPF(t *testing.T) {
 }
 
 func Test_accountRepositoryImpl_FindByID(t *testing.T) {
+	accountFake1 := fakes.GetFakeAccount1()
+
 	type fields struct {
 		dataBasePool      *pgxpool.Pool
 		transactionHelper TransactionHelper
@@ -161,14 +163,24 @@ func Test_accountRepositoryImpl_FindByID(t *testing.T) {
 		want    *model.Account
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "find account by id test - success",
+			fields: fields{
+				dataBasePool:      dataBasePool,
+				transactionHelper: transactionHelper,
+			},
+			args: args{
+				ctx:       context.Background(),
+				accountID: string(accountFake1.ID),
+			},
+			want:    &accountFake1,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repositoryImpl := accountRepositoryImpl{
-				dataBasePool:      tt.fields.dataBasePool,
-				transactionHelper: tt.fields.transactionHelper,
-			}
+			repositoryImpl := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
+
 			got, err := repositoryImpl.FindByID(tt.args.ctx, tt.args.accountID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FindByID() error = %v, wantErr %v", err, tt.wantErr)
@@ -182,6 +194,8 @@ func Test_accountRepositoryImpl_FindByID(t *testing.T) {
 }
 
 func Test_accountRepositoryImpl_GetBalance(t *testing.T) {
+	accountFake1 := fakes.GetFakeAccount1()
+
 	type fields struct {
 		dataBasePool      *pgxpool.Pool
 		transactionHelper TransactionHelper
@@ -194,23 +208,33 @@ func Test_accountRepositoryImpl_GetBalance(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    *model.Account
+		want    int64
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "find account balance - success",
+			fields: fields{
+				dataBasePool:      dataBasePool,
+				transactionHelper: transactionHelper,
+			},
+			args: args{
+				ctx:       context.Background(),
+				accountID: string(accountFake1.ID),
+			},
+			want:    accountFake1.Balance.ToInt64(),
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repositoryImpl := accountRepositoryImpl{
-				dataBasePool:      tt.fields.dataBasePool,
-				transactionHelper: tt.fields.transactionHelper,
-			}
+			repositoryImpl := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
+
 			got, err := repositoryImpl.GetBalance(tt.args.ctx, tt.args.accountID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetBalance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if got.Balance.ToInt64() != tt.want {
 				t.Errorf("GetBalance() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -218,6 +242,9 @@ func Test_accountRepositoryImpl_GetBalance(t *testing.T) {
 }
 
 func Test_accountRepositoryImpl_UpdateBalance(t *testing.T) {
+
+	accountFake2 := fakes.GetFakeAccount2()
+
 	type fields struct {
 		dataBasePool      *pgxpool.Pool
 		transactionHelper TransactionHelper
@@ -234,21 +261,47 @@ func Test_accountRepositoryImpl_UpdateBalance(t *testing.T) {
 		want    int64
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update account balance - success",
+			fields: fields{
+				dataBasePool:      dataBasePool,
+				transactionHelper: transactionHelper,
+			},
+			args: args{
+				ctx:       context.Background(),
+				accountID: accountFake2.ID,
+				balance:   900,
+			},
+			want:    900,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repositoryImpl := accountRepositoryImpl{
-				dataBasePool:      tt.fields.dataBasePool,
-				transactionHelper: tt.fields.transactionHelper,
+			repositoryImpl := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
+
+			transactionContext, err := tt.fields.transactionHelper.StartTransaction(tt.args.ctx)
+			if err != nil {
+				log.Fatal(err.Error())
 			}
-			got, err := repositoryImpl.UpdateBalance(tt.args.ctx, tt.args.accountID, tt.args.balance)
+
+			rowsAfeccted, err := repositoryImpl.UpdateBalance(transactionContext, tt.args.accountID, tt.args.balance)
+
+			if err != nil || rowsAfeccted < 1 {
+				t.Errorf("Error on update account balance")
+				tt.fields.transactionHelper.RollbackTransaction(transactionContext)
+			}
+			tt.fields.transactionHelper.CommitTransaction(transactionContext)
+
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UpdateBalance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
-				t.Errorf("UpdateBalance() got = %v, want %v", got, tt.want)
+
+			accountBalanceUpdated, err := repositoryImpl.FindByID(context.Background(), string(tt.args.accountID))
+
+			if err != nil && (accountBalanceUpdated == nil || accountBalanceUpdated.Balance.ToInt64() != tt.want) {
+				t.Errorf("UpdateBalance() got = %v, want %v", accountBalanceUpdated.Balance.ToInt64(), tt.want)
 			}
 		})
 	}
@@ -257,7 +310,6 @@ func Test_accountRepositoryImpl_UpdateBalance(t *testing.T) {
 func Test_accountRepositoryImpl_Create(t *testing.T) {
 
 	accountFake := fakes.GenerateNewFakeAccount("Fake Created")
-
 	type fields struct {
 		dataBasePool      *pgxpool.Pool
 		transactionHelper TransactionHelper
@@ -300,6 +352,7 @@ func Test_accountRepositoryImpl_Create(t *testing.T) {
 			accountCreated, err := repositoryImpl.Create(transactionContext, tt.args.account)
 			if err != nil {
 				t.Errorf("Error on create account")
+				tt.fields.transactionHelper.RollbackTransaction(transactionContext)
 			}
 			tt.fields.transactionHelper.CommitTransaction(transactionContext)
 

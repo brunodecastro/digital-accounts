@@ -7,6 +7,7 @@ import (
 	"github.com/brunodecastro/digital-accounts/app/util"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/ory/dockertest/v3"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -18,13 +19,13 @@ func StartDockerTestPostgresDataBase() (*pgxpool.Pool, func() error, error) {
 	// create dockertest pool
 	dockerPool, err := dockertest.NewPool("")
 	if err != nil {
-		return nil, nil, fmt.Errorf("error creating new pool: %v", err)
+		return nil, nil, errors.Wrap(err, "error creating new pool in dockertest database")
 	}
 
 	// pulls an image, creates a container based on it and runs it
 	resource, err := dockerPool.Run("postgres", "latest", []string{"POSTGRES_PASSWORD=secret"})
 	if err != nil {
-		return nil, nil, fmt.Errorf("error creating resource: %v", err)
+		return nil, nil, errors.Wrap(err, "error creating resource dockertest database")
 	}
 
 	// 10 second wait time to connect to the db
@@ -46,7 +47,7 @@ func StartDockerTestPostgresDataBase() (*pgxpool.Pool, func() error, error) {
 		return conn.Conn().Ping(context.Background())
 	})
 	if err != nil {
-		return nil, nil, fmt.Errorf("error connecting: %v", err)
+		return nil, nil, errors.Wrap(err, "error connecting to dockertest database")
 	}
 
 	// run migrations
@@ -65,19 +66,17 @@ func SetupFakeAccounts(pgxPool *pgxpool.Pool) error {
 
 		transactionContext, err := transactionHelper.StartTransaction(context.Background())
 		if err != nil {
-			fmt.Errorf("error on start transaction: %v", err)
-			return err
+			return errors.Wrap(err, "error on start transaction")
 		}
 
 		_, err = repositoryImpl.Create(transactionContext, accountFake)
 		if err != nil {
-			fmt.Errorf("error on create fake account: %v", err)
-			return err
+			transactionHelper.RollbackTransaction(transactionContext)
+			return errors.Wrap(err, "error on create fake account")
 		}
 		transactionHelper.CommitTransaction(transactionContext)
 		if err != nil {
-			fmt.Errorf("error on commit transaction: %v", err)
-			return err
+			return errors.Wrap(err, "error on commit transaction")
 		}
 	}
 	return nil
