@@ -58,8 +58,8 @@ func redoc(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Write(contents)
 }
 
-// swaggerJson - returns swagger.json for redoc documentation
-func swaggerJson(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// swaggerJSON - returns swagger.json for redoc documentation
+func swaggerJSON(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", constants.JSONContentType)
 	contents, _ := ioutil.ReadFile("docs/swagger.json")
 	w.Write(contents)
@@ -82,7 +82,7 @@ func (server *Server) configRoutes() {
 
 	// Redoc - api documentation
 	router.GET("/redoc", redoc)
-	router.GET("/doc/swagger-json", swaggerJson)
+	router.GET("/doc/swagger-json", swaggerJSON)
 }
 
 // ListenAndServe - listen and serve the api on host and port

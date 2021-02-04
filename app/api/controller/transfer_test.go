@@ -17,7 +17,6 @@ import (
 	"time"
 )
 
-
 func TestTransferController_Create_Success(t *testing.T) {
 	t.Parallel()
 

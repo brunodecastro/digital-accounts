@@ -2,15 +2,15 @@ package postgres
 
 import (
 	"context"
-	"github.com/brunodecastro/digital-accounts/app/common"
+	"github.com/brunodecastro/digital-accounts/app/common/types"
 	"github.com/brunodecastro/digital-accounts/app/model"
+	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres/fakes"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"log"
 	"os"
 	"reflect"
 	"sync"
 	"testing"
-	"time"
 )
 
 var (
@@ -31,6 +31,9 @@ func TestMain(m *testing.M) {
 	// setup data repository
 	setupDataRepository(pgxPool)
 
+	// setup fake accounts in the database
+	SetupFakeAccounts(pgxPool)
+
 	// run tests
 	runCode := m.Run()
 
@@ -46,17 +49,214 @@ func TestMain(m *testing.M) {
 	os.Exit(runCode)
 }
 
-func TestAccountRepositoryImpl_Create(t *testing.T) {
-	t.Parallel()
+func Test_accountRepositoryImpl_FindAll(t *testing.T) {
 
-	accountInput := model.Account{
-		ID:        model.AccountID(common.NewUUID()),
-		CPF:       "00801246156",
-		Name:      "Bruno de Castro Oliveira",
-		Secret:    "123456",
-		Balance:   1000,
-		CreatedAt: time.Time{},
+	fakeAccounts := fakes.GetFakeAccounts()
+
+	type fields struct {
+		dataBasePool      *pgxpool.Pool
+		transactionHelper TransactionHelper
 	}
+	type args struct {
+		ctx context.Context
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    []model.Account
+		wantErr bool
+	}{
+		{
+			name: "find all accounts persistence - success",
+			fields: fields{
+				dataBasePool:      dataBasePool,
+				transactionHelper: transactionHelper,
+			},
+			args: args{
+				ctx: context.Background(),
+			},
+			want:    *fakeAccounts,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repositoryImpl := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
+
+			got, err := repositoryImpl.FindAll(tt.args.ctx)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindAll() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FindAll() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_accountRepositoryImpl_FindByCPF(t *testing.T) {
+
+	accountFake1 := fakes.GetAccountFake1()
+
+	type fields struct {
+		dataBasePool      *pgxpool.Pool
+		transactionHelper TransactionHelper
+	}
+	type args struct {
+		ctx context.Context
+		cpf string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    *model.Account
+		wantErr bool
+	}{
+		{
+			name: "find by cpf test - success",
+			fields: fields{
+				dataBasePool:      dataBasePool,
+				transactionHelper: transactionHelper,
+			},
+			args: args{
+				ctx: context.Background(),
+				cpf: accountFake1.CPF,
+			},
+			want:    &accountFake1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repositoryImpl := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
+
+			got, err := repositoryImpl.FindByCPF(tt.args.ctx, tt.args.cpf)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindByCPF() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FindByCPF() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_accountRepositoryImpl_FindByID(t *testing.T) {
+	type fields struct {
+		dataBasePool      *pgxpool.Pool
+		transactionHelper TransactionHelper
+	}
+	type args struct {
+		ctx       context.Context
+		accountID string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    *model.Account
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repositoryImpl := accountRepositoryImpl{
+				dataBasePool:      tt.fields.dataBasePool,
+				transactionHelper: tt.fields.transactionHelper,
+			}
+			got, err := repositoryImpl.FindByID(tt.args.ctx, tt.args.accountID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FindByID() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_accountRepositoryImpl_GetBalance(t *testing.T) {
+	type fields struct {
+		dataBasePool      *pgxpool.Pool
+		transactionHelper TransactionHelper
+	}
+	type args struct {
+		ctx       context.Context
+		accountID string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    *model.Account
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repositoryImpl := accountRepositoryImpl{
+				dataBasePool:      tt.fields.dataBasePool,
+				transactionHelper: tt.fields.transactionHelper,
+			}
+			got, err := repositoryImpl.GetBalance(tt.args.ctx, tt.args.accountID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetBalance() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetBalance() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_accountRepositoryImpl_UpdateBalance(t *testing.T) {
+	type fields struct {
+		dataBasePool      *pgxpool.Pool
+		transactionHelper TransactionHelper
+	}
+	type args struct {
+		ctx       context.Context
+		accountID model.AccountID
+		balance   types.Money
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    int64
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repositoryImpl := accountRepositoryImpl{
+				dataBasePool:      tt.fields.dataBasePool,
+				transactionHelper: tt.fields.transactionHelper,
+			}
+			got, err := repositoryImpl.UpdateBalance(tt.args.ctx, tt.args.accountID, tt.args.balance)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateBalance() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("UpdateBalance() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_accountRepositoryImpl_Create(t *testing.T) {
+
+	accountFake := fakes.GenerateNewFakeAccount("Fake Created")
 
 	type fields struct {
 		dataBasePool      *pgxpool.Pool
@@ -75,29 +275,29 @@ func TestAccountRepositoryImpl_Create(t *testing.T) {
 	}{
 		{
 			name: "create account persistence - success",
-			args: args{
-				ctx:     context.Background(),
-				account: accountInput,
-			},
 			fields: fields{
 				dataBasePool:      dataBasePool,
 				transactionHelper: transactionHelper,
 			},
-			want:    &accountInput,
+			args: args{
+				ctx:     context.Background(),
+				account: accountFake,
+			},
+			want:    &accountFake,
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			accountRepository := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
+			repositoryImpl := NewAccountRepository(tt.fields.dataBasePool, tt.fields.transactionHelper)
 
 			transactionContext, err := tt.fields.transactionHelper.StartTransaction(tt.args.ctx)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
 
-			accountCreated, err := accountRepository.Create(transactionContext, tt.args.account)
+			accountCreated, err := repositoryImpl.Create(transactionContext, tt.args.account)
 			if err != nil {
 				t.Errorf("Error on create account")
 			}
@@ -106,8 +306,10 @@ func TestAccountRepositoryImpl_Create(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			if !reflect.DeepEqual(*accountCreated, *tt.want) {
-				t.Errorf("Create() got = %v, want %v", *accountCreated, *tt.want)
+
+			accountFindByID, err := repositoryImpl.FindByID(context.Background(), string(accountCreated.ID))
+			if !reflect.DeepEqual(*accountCreated, *accountFindByID) {
+				t.Errorf("Create() got = %v, want %v", *accountCreated, *accountFindByID)
 			}
 		})
 	}

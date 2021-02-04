@@ -2,7 +2,11 @@ package util
 
 import (
 	"fmt"
+	"github.com/brunodecastro/digital-accounts/app/common/constants"
+	"math/rand"
+	"regexp"
 	"strconv"
+	"time"
 )
 
 var (
@@ -61,4 +65,43 @@ func sumDigit(s string, table []int) int {
 		}
 	}
 	return sum
+}
+
+// FormatCpf format a cpf number
+func FormatCpf(cpfString string) string {
+	reg, err := regexp.Compile(constants.CPFFormatPattern)
+	MaybeError(err, "error when compile cpf format regex")
+	return reg.ReplaceAllString(cpfString, "$1.$2.$3-$4")
+}
+
+// GenerateCPFOnlyNumbers - generate a cpf with only numbers
+func GenerateCPFOnlyNumbers() (cpfString string) {
+	rand.Seed(time.Now().UTC().UnixNano())
+	cpf := rand.Perm(9)
+	cpf = append(cpf, verify(cpf, len(cpf)))
+	cpf = append(cpf, verify(cpf, len(cpf)))
+
+	for _, c := range cpf {
+		cpfString += strconv.Itoa(c)
+	}
+	return
+}
+
+// GenerateCPFFormatted - generate a cpf formatted
+func GenerateCPFFormatted() (cpf string) {
+	return FormatCpf(GenerateCPFOnlyNumbers())
+}
+
+func verify(data []int, n int) int {
+	var total int
+
+	for i := 0; i < n; i++ {
+		total += data[i] * (n + 1 - i)
+	}
+
+	total = total % 11
+	if total < 2 {
+		return 0
+	}
+	return 11 - total
 }

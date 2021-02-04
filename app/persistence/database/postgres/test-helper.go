@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"github.com/brunodecastro/digital-accounts/app/persistence/database/postgres/fakes"
 	"github.com/brunodecastro/digital-accounts/app/util"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/ory/dockertest/v3"
@@ -53,4 +54,31 @@ func StartDockerTestPostgresDataBase() (*pgxpool.Pool, func() error, error) {
 	util.MaybeFatal(err, "Unable to execute postgres migrations.")
 
 	return pgxPool, func() error { return dockerPool.Purge(resource) }, nil
+}
+
+// SetupFakeAccounts - inserts fake accounts in the database to test with dockertest
+func SetupFakeAccounts(pgxPool *pgxpool.Pool) error {
+	transactionHelper := NewTransactionHelper(pgxPool)
+	repositoryImpl := NewAccountRepository(pgxPool, transactionHelper)
+
+	for _, accountFake := range *fakes.GetFakeAccounts() {
+
+		transactionContext, err := transactionHelper.StartTransaction(context.Background())
+		if err != nil {
+			fmt.Errorf("error on start transaction: %v", err)
+			return err
+		}
+
+		_, err = repositoryImpl.Create(transactionContext, accountFake)
+		if err != nil {
+			fmt.Errorf("error on create fake account: %v", err)
+			return err
+		}
+		transactionHelper.CommitTransaction(transactionContext)
+		if err != nil {
+			fmt.Errorf("error on commit transaction: %v", err)
+			return err
+		}
+	}
+	return nil
 }
