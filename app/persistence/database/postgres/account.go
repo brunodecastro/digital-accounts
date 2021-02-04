@@ -129,7 +129,10 @@ func (repositoryImpl accountRepositoryImpl) GetBalance(ctx context.Context, acco
 	row := repositoryImpl.dataBasePool.QueryRow(ctx, sqlQuery, accountID)
 	err := row.Scan(&account.ID, &account.Balance)
 
-	if err != nil && err != pgx.ErrNoRows {
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
 		return nil, errors.Wrap(err, "error scanning accounts balance")
 	}
 
@@ -157,7 +160,10 @@ func (repositoryImpl accountRepositoryImpl) FindByCPF(ctx context.Context, cpf s
 		&account.Balance,
 		&account.CreatedAt)
 
-	if err != nil && err != pgx.ErrNoRows {
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
 		return nil, errors.Wrap(err, "error scanning find account by cpf")
 	}
 	return &account, nil
