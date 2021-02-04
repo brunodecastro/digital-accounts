@@ -32,6 +32,7 @@ func NewTransferController(service service.TransferService) TransferController {
 // @Param account body input.CreateTransferInputVO true "Transfer Input"
 // @Success 201 {object} output.CreateTransferOutputVO
 // @Failure 400 {object} response.HTTPErrorResponse
+// @Failure 422 {object} response.HTTPErrorResponse
 // @Failure 500 {object} response.HTTPErrorResponse
 // @Security ApiKeyAuth
 // @Router /transfers [post]
@@ -57,6 +58,15 @@ func (controller TransferController) Create(w http.ResponseWriter, r *http.Reque
 
 	transferCreated, err := controller.service.Create(r.Context(), transferInputVO)
 	if err != nil {
+		switch err {
+		case custom_errors.ErrorInsufficientBalance:
+			response.CreateErrorResponse(w, http.StatusUnprocessableEntity, err.Error())
+		case custom_errors.ErrorTransferAmountValue,
+			custom_errors.ErrorTransferSameAccount,
+			custom_errors.ErrorAccountOriginNotFound,
+			custom_errors.ErrorAccountDestinationNotFound:
+			response.CreateErrorResponse(w, http.StatusBadRequest, err.Error())
+		}
 		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
