@@ -112,9 +112,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: Gets the account balance
+      description: Obtém o saldo da conta
       parameters:
-      - description: Account ID
+      - description: ID da conta
         in: path
         name: account_id
         required: true
@@ -134,12 +134,12 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
-      summary: Gets the account balance
+      summary: Obtém o saldo da conta
       tags:
       - Accounts
   /accounts:
     get:
-      description: List all accounts
+      description: Obtém a lista de contas
       produces:
       - application/json
       responses:
@@ -151,15 +151,15 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
-      summary: List all accounts
+      summary: Obtém a lista de contas
       tags:
       - Accounts
     post:
       consumes:
       - application/json
-      description: Creates a new account
+      description: Cria uma conta
       parameters:
-      - description: Account Input
+      - description: Dados da Conta
         in: body
         name: account
         required: true
@@ -180,16 +180,16 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.HTTPErrorResponse'
-      summary: Creates a new account
+      summary: Cria uma conta
       tags:
       - Accounts
   /login:
     post:
       consumes:
       - application/json
-      description: authenticate the user in the api
+      description: Autentica o usuário
       parameters:
-      - description: Credential Input
+      - description: Dados do usuário
         in: body
         name: credential
         required: true
@@ -212,12 +212,12 @@ paths:
             $ref: '#/definitions/response.HTTPErrorResponse'
       security:
       - ApiKeyAuth: []
-      summary: authenticate the user
+      summary: Autentica o usuário
       tags:
       - Authentication
   /transfers:
     get:
-      description: List all transfers
+      description: Obtém a lista de transferências do usuário autenticado
       produces:
       - application/json
       responses:
@@ -231,15 +231,15 @@ paths:
             $ref: '#/definitions/response.HTTPErrorResponse'
       security:
       - ApiKeyAuth: []
-      summary: List all transfers
+      summary: Obtém a lista de transferências do usuário autenticado
       tags:
       - Transfers
     post:
       consumes:
       - application/json
-      description: Creates a new transfer
+      description: Faz transferencia de uma conta para outra
       parameters:
-      - description: Transfer Input
+      - description: Dados da transferência
         in: body
         name: account
         required: true
@@ -266,7 +266,7 @@ paths:
             $ref: '#/definitions/response.HTTPErrorResponse'
       security:
       - ApiKeyAuth: []
-      summary: Creates a new transfer
+      summary: Faz transferencia de uma conta para outra
       tags:
       - Transfers
 securityDefinitions:

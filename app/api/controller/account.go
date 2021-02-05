@@ -24,12 +24,12 @@ func NewAccountController(service service.AccountService) AccountController {
 }
 
 // Create godoc
-// @Summary Creates a new account
-// @Description Creates a new account
+// @Summary Cria uma conta
+// @Description Cria uma conta
 // @tags Accounts
 // @Accept  json
 // @Produce  json
-// @Param account body input.CreateAccountInputVO true "Account Input"
+// @Param account body input.CreateAccountInputVO true "Dados da Conta"
 // @Success 201 {object} output.CreateAccountOutputVO
 // @Failure 400 {object} response.HTTPErrorResponse
 // @Failure 500 {object} response.HTTPErrorResponse
@@ -61,8 +61,8 @@ func (controller AccountController) Create(w http.ResponseWriter, r *http.Reques
 }
 
 // FindAll godoc
-// @Summary List all accounts
-// @Description List all accounts
+// @Summary Obtém a lista de contas
+// @Description Obtém a lista de contas
 // @tags Accounts
 // @Produce  json
 // @Success 200 {object} output.FindAllAccountOutputVO
@@ -80,12 +80,12 @@ func (controller AccountController) FindAll(w http.ResponseWriter, r *http.Reque
 }
 
 // GetBalance godoc
-// @Summary Gets the account balance
-// @Description Gets the account balance
+// @Summary Obtém o saldo da conta
+// @Description Obtém o saldo da conta
 // @tags Accounts
 // @Accept  json
 // @Produce  json
-// @Param account_id path string true "Account ID"
+// @Param account_id path string true "ID da conta"
 // @Success 200 {object} output.FindAccountBalanceOutputVO
 // @Failure 400 {object} response.HTTPErrorResponse
 // @Failure 500 {object} response.HTTPErrorResponse

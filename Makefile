@@ -45,7 +45,7 @@ build-swagger:
 
 .PHONY: start
 start:
-	@docker-compose -f docker/docker-compose.yml up -d
+	@docker-compose -f docker-compose.yml up -d
 
 .PHONY: start-build
 start-build:

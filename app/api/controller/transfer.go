@@ -24,12 +24,12 @@ func NewTransferController(service service.TransferService) TransferController {
 }
 
 // Create godoc
-// @Summary Creates a new transfer
-// @Description Creates a new transfer
+// @Summary Faz transferencia de uma conta para outra
+// @Description Faz transferencia de uma conta para outra
 // @tags Transfers
 // @Accept  json
 // @Produce  json
-// @Param account body input.CreateTransferInputVO true "Transfer Input"
+// @Param account body input.CreateTransferInputVO true "Dados da transferência"
 // @Success 201 {object} output.CreateTransferOutputVO
 // @Failure 400 {object} response.HTTPErrorResponse
 // @Failure 422 {object} response.HTTPErrorResponse
@@ -77,8 +77,8 @@ func (controller TransferController) Create(w http.ResponseWriter, r *http.Reque
 }
 
 // FindAll godoc
-// @Summary List all transfers
-// @Description List all transfers
+// @Summary Obtém a lista de transferências do usuário autenticado
+// @Description Obtém a lista de transferências do usuário autenticado
 // @tags Transfers
 // @Produce  json
 // @Success 200 {object} output.FindAllTransferOutputVO

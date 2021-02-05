@@ -26,12 +26,12 @@ func NewAuthenticationController(service service.AuthenticationService) Authenti
 }
 
 // Authenticate godoc
-// @Summary authenticate the user
-// @Description authenticate the user in the api
+// @Summary Autentica o usuário
+// @Description Autentica o usuário
 // @tags Authentication
 // @Accept  json
 // @Produce  json
-// @Param credential body input.CredentialInputVO true "Credential Input"
+// @Param credential body input.CredentialInputVO true "Dados do usuário"
 // @Success 201 {object} output.CreateTransferOutputVO
 // @Failure 400 {object} response.HTTPErrorResponse
 // @Failure 403 {object} response.HTTPErrorResponse

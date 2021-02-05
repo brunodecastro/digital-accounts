@@ -29,7 +29,7 @@ var doc = `{
     "paths": {
         "/account/{account_id}/balance": {
             "get": {
-                "description": "Gets the account balance",
+                "description": "Obtém o saldo da conta",
                 "consumes": [
                     "application/json"
                 ],
@@ -39,11 +39,11 @@ var doc = `{
                 "tags": [
                     "Accounts"
                 ],
-                "summary": "Gets the account balance",
+                "summary": "Obtém o saldo da conta",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Account ID",
+                        "description": "ID da conta",
                         "name": "account_id",
                         "in": "path",
                         "required": true
@@ -73,14 +73,14 @@ var doc = `{
         },
         "/accounts": {
             "get": {
-                "description": "List all accounts",
+                "description": "Obtém a lista de contas",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Accounts"
                 ],
-                "summary": "List all accounts",
+                "summary": "Obtém a lista de contas",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -97,7 +97,7 @@ var doc = `{
                 }
             },
             "post": {
-                "description": "Creates a new account",
+                "description": "Cria uma conta",
                 "consumes": [
                     "application/json"
                 ],
@@ -107,10 +107,10 @@ var doc = `{
                 "tags": [
                     "Accounts"
                 ],
-                "summary": "Creates a new account",
+                "summary": "Cria uma conta",
                 "parameters": [
                     {
-                        "description": "Account Input",
+                        "description": "Dados da Conta",
                         "name": "account",
                         "in": "body",
                         "required": true,
@@ -148,7 +148,7 @@ var doc = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "authenticate the user in the api",
+                "description": "Autentica o usuário",
                 "consumes": [
                     "application/json"
                 ],
@@ -158,10 +158,10 @@ var doc = `{
                 "tags": [
                     "Authentication"
                 ],
-                "summary": "authenticate the user",
+                "summary": "Autentica o usuário",
                 "parameters": [
                     {
-                        "description": "Credential Input",
+                        "description": "Dados do usuário",
                         "name": "credential",
                         "in": "body",
                         "required": true,
@@ -199,14 +199,14 @@ var doc = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "List all transfers",
+                "description": "Obtém a lista de transferências do usuário autenticado",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Transfers"
                 ],
-                "summary": "List all transfers",
+                "summary": "Obtém a lista de transferências do usuário autenticado",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -228,7 +228,7 @@ var doc = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Creates a new transfer",
+                "description": "Faz transferencia de uma conta para outra",
                 "consumes": [
                     "application/json"
                 ],
@@ -238,10 +238,10 @@ var doc = `{
                 "tags": [
                     "Transfers"
                 ],
-                "summary": "Creates a new transfer",
+                "summary": "Faz transferencia de uma conta para outra",
                 "parameters": [
                     {
-                        "description": "Transfer Input",
+                        "description": "Dados da transferência",
                         "name": "account",
                         "in": "body",
                         "required": true,
