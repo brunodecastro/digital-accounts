@@ -11,7 +11,7 @@ import (
 
 // ConnectPoolConfig - gets the pool configuration from the database.
 func ConnectPoolConfig() *pgxpool.Pool {
-	
+
 	databaseConnectionConfig, err := pgxpool.ParseConfig(config.GetAPIConfigs().DatabaseConfig.GetDatabaseDSN())
 	util.MaybeFatal(err, "Unable to parse the pool config")
 

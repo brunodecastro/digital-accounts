@@ -92,7 +92,7 @@ func TestAuthenticationController_Authenticate_Error_Invalid_Token(t *testing.T)
 
 	endPoint := "/login"
 	req, _ := http.NewRequest(http.MethodPost, endPoint, bytes.NewReader(body))
-	req.Header.Set("Authorization", "Bearer " + "INVALID_TOKEN_SIMULATION")
+	req.Header.Set("Authorization", "Bearer "+"INVALID_TOKEN_SIMULATION")
 	handlerFunc := func(w http.ResponseWriter, r *http.Request) {}
 	rec := mockRequestHandler(req, http.MethodPost, endPoint, false, auth.AuthorizeMiddleware(handlerFunc))
 
