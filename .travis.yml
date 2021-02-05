@@ -29,3 +29,7 @@ deploy:
     heroku container:release web --app $HEROKU_APP
   on:
     branch: master
+
+after_success:
+  - heroku container:login
+  - heroku container:release web --app $HEROKU_APP_NAME
