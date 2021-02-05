@@ -94,27 +94,6 @@ func TestAccountController_Create(t *testing.T) {
 			wantResult:     accountOutputVO,
 			wantErr:        false,
 		},
-		/*{
-			name: "Create account controller error",
-			fields: fields{
-				service: service.MockAccountService{
-					ResultCreateAccount: output.CreateAccountOutputVO{},
-					Err:                 errors.New("error on create account controller"),
-				},
-			},
-			args: args{
-				w: rec,
-				r: resp,
-			},
-			wantStatusCode: http.StatusInternalServerError,
-			wantResult: response.ApiHttpResponse{
-				Error: &response.ErrorResponse{
-					Message: "error on create account controller",
-				},
-				StatusCode: http.StatusInternalServerError,
-			},
-			wantErr: true,
-		},*/
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

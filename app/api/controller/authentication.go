@@ -54,14 +54,22 @@ func (controller AuthenticationController) Authenticate(w http.ResponseWriter, r
 	}
 
 	// Validate credentials
-	credentialOutputVO, err := controller.service.Authenticate(req.Context(), credentialInput)
+	credentialVO, err := controller.service.Authenticate(req.Context(), credentialInput)
 	if err != nil {
+		switch err {
+		case custom_errors.ErrorCredentialWrongSecret,
+			custom_errors.ErrorAccountNotFound,
+			custom_errors.ErrorCpfInvalid,
+			custom_errors.ErrorAccountDestinationNotFound:
+			response.CreateErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
 		response.CreateErrorResponse(w, http.StatusForbidden, custom_errors.ErrInvalidAccessCredentials.Error())
 		return
 	}
 
 	response.CreateSuccessResponse(w, http.StatusOK, output.CredentialOutputVO{
-		Token: auth.SignedTokenString(credentialOutputVO),
+		Token: auth.SignedTokenString(credentialVO),
 	})
 	return
 }

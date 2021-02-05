@@ -61,11 +61,13 @@ func (controller TransferController) Create(w http.ResponseWriter, r *http.Reque
 		switch err {
 		case custom_errors.ErrorInsufficientBalance:
 			response.CreateErrorResponse(w, http.StatusUnprocessableEntity, err.Error())
+			return
 		case custom_errors.ErrorTransferAmountValue,
 			custom_errors.ErrorTransferSameAccount,
 			custom_errors.ErrorAccountOriginNotFound,
 			custom_errors.ErrorAccountDestinationNotFound:
 			response.CreateErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
 		}
 		response.CreateErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
