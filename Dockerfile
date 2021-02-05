@@ -42,7 +42,7 @@ COPY app/persistence/database/postgres/migrations ./migrations
 COPY docs/ ./docs
 
 # Expose port to the outside world
-EXPOSE $APP_SERVER_PORT
+EXPOSE $PORT
 
 # run the app executable
 ENTRYPOINT ./digital-accounts

@@ -11,17 +11,8 @@ import (
 
 // ConnectPoolConfig - gets the pool configuration from the database.
 func ConnectPoolConfig() *pgxpool.Pool {
-	var databaseConnectionString string
-
-	var databaseURLConfig = config.GetAPIConfigs().DatabaseConfig.DatabaseURL
-	if  databaseURLConfig != "" {
-		// if DatabaseURL is set, then returns the complete url
-		databaseConnectionString = databaseURLConfig
-	} else {
-		databaseConnectionString = config.GetAPIConfigs().DatabaseConfig.GetDatabaseDSN()
-	}
 	
-	databaseConnectionConfig, err := pgxpool.ParseConfig(databaseConnectionString)
+	databaseConnectionConfig, err := pgxpool.ParseConfig(config.GetAPIConfigs().DatabaseConfig.GetDatabaseDSN())
 	util.MaybeFatal(err, "Unable to parse the pool config")
 
 	databaseConnectionConfig.ConnConfig.Logger = zapadapter.NewLogger(logger.GetLogger())

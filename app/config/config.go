@@ -14,8 +14,8 @@ var (
 
 // AppServerConfig - configs of app server
 type AppServerConfig struct {
-	Host string `envconfig:"APP_SERVER_HOST" default:"localhost"`
-	Port string `envconfig:"APP_SERVER_PORT" default:"9090"`
+	Host string `envconfig:"HOST" default:"localhost"`
+	Port string `envconfig:"PORT" default:"9090"`
 }
 
 // DatabasePostgresConfig - configs of database
@@ -72,6 +72,12 @@ func (webServerConfig AppServerConfig) GetWebServerAddress() string {
 
 // GetDatabaseDSN - returns the database dsn
 func (databaseConfig DatabasePostgresConfig) GetDatabaseDSN() string {
+
+	// if DatabaseURL is set, then returns the complete url
+	if databaseConfig.DatabaseURL != "" {
+		return databaseConfig.DatabaseURL
+	}
+
 	return fmt.Sprintf(
 		"user=%s password=%s host=%s port=%s dbname=%s sslmode=%s pool_min_conns=%s pool_max_conns=%s",
 		databaseConfig.UserName,
@@ -89,7 +95,7 @@ func (databaseConfig DatabasePostgresConfig) GetDatabaseDSN() string {
 func (databaseConfig DatabasePostgresConfig) GetDatabaseURI() string {
 
 	// if DatabaseURL is set, then returns the complete url
-	if  databaseConfig.DatabaseURL != "" {
+	if databaseConfig.DatabaseURL != "" {
 		return databaseConfig.DatabaseURL
 	}
 
