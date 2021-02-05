@@ -55,6 +55,10 @@ start-build:
 stop:
 	@docker-compose -f docker-compose.yml down
 
+.PHONY: logs
+logs:
+	@docker-compose -f docker-compose.yml logs -f
+
 
 install-swag:
 ifeq (,$(wildcard test -f $(GOPATH)/bin/swag))

@@ -12,7 +12,7 @@ API de transferência entre contas internas de um banco digital.
 * JWT (JSON Web Token para autenticação)
 * Docker
 * Dockertest (para testes de repository)
-* Travis (Teste e CD/CD)
+* Travis (Teste e CI/CD)
 
 
 ### Dependências:
@@ -33,6 +33,12 @@ Desligar a API:
 
 ``` sh
 make stop
+```
+
+Logs da API:
+
+``` sh
+make logs
 ```
 
 Testar a API:
