@@ -15,6 +15,7 @@ func ConnectPoolConfig() *pgxpool.Pool {
 
 	var databaseURLConfig = config.GetAPIConfigs().DatabaseConfig.DatabaseURL
 	if  databaseURLConfig != "" {
+		// if DatabaseURL is set, then returns the complete url
 		databaseConnectionString = databaseURLConfig
 	} else {
 		databaseConnectionString = config.GetAPIConfigs().DatabaseConfig.GetDatabaseDSN()

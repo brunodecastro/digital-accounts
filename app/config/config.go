@@ -87,6 +87,12 @@ func (databaseConfig DatabasePostgresConfig) GetDatabaseDSN() string {
 
 // GetDatabaseURI - returns the database uri
 func (databaseConfig DatabasePostgresConfig) GetDatabaseURI() string {
+
+	// if DatabaseURL is set, then returns the complete url
+	if  databaseConfig.DatabaseURL != "" {
+		return databaseConfig.DatabaseURL
+	}
+
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		databaseConfig.UserName,
