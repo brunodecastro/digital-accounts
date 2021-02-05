@@ -78,9 +78,7 @@ http://localhost:9090/redoc
 
 ### Documentação interativa (Swagger):
 
-https://digital-accounts.herokuapp.com
-
-ou local (api inicializada com os valores padrões):
+local (api inicializada com os valores padrões):
 
 http://localhost:9090
 
