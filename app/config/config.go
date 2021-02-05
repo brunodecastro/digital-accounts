@@ -20,6 +20,7 @@ type AppServerConfig struct {
 
 // DatabasePostgresConfig - configs of database
 type DatabasePostgresConfig struct {
+	DatabaseURL  string `envconfig:"DATABASE_URL"`
 	Host         string `envconfig:"DATABASE_HOST" default:"localhost"`
 	Port         string `envconfig:"DATABASE_PORT" default:"5439"`
 	UserName     string `envconfig:"DATABASE_USER" default:"postgres"`
