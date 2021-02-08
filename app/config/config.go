@@ -39,11 +39,12 @@ type AuthConfig struct {
 
 // Config - configs of api
 type Config struct {
-	Profile         string `envconfig:"PROFILE" default:"dev"`
-	MigrationPath   string `envconfig:"MIGRATION_PATH" default:"app/persistence/database/postgres/migrations"`
-	AuthConfig      AuthConfig
-	WebServerConfig AppServerConfig
-	DatabaseConfig  DatabasePostgresConfig
+	Profile          string `envconfig:"PROFILE" default:"dev"`
+	ExecuteMigration bool `envconfig:"EXECUTE_MIGRATION" default:"true"`
+	MigrationPath    string `envconfig:"MIGRATION_PATH" default:"app/persistence/database/postgres/migrations"`
+	AuthConfig       AuthConfig
+	WebServerConfig  AppServerConfig
+	DatabaseConfig   DatabasePostgresConfig
 }
 
 // GetAPIConfigs loads and get environment variables to configure the api

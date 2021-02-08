@@ -35,17 +35,19 @@ func main() {
 	databaseConnection := postgres.ConnectPoolConfig()
 	defer databaseConnection.Close()
 
-	err := postgres.UpMigrations(
-		config.GetAPIConfigs().DatabaseConfig.GetDatabaseURI(),
-		config.GetAPIConfigs().MigrationPath,
-	)
-	util.MaybeFatal(err, "Unable to execute postgres migrations.")
+	if config.GetAPIConfigs().ExecuteMigration {
+		err := postgres.UpMigrations(
+			config.GetAPIConfigs().DatabaseConfig.GetDatabaseURI(),
+			config.GetAPIConfigs().MigrationPath,
+		)
+		util.MaybeFatal(err, "Unable to execute postgres migrations.")
+	}
 
 	server := createServer(databaseConnection)
 	logger.GetLogger().Info(fmt.Sprintf("Server running on %s ...", config.GetAPIConfigs().WebServerConfig.GetWebServerAddress()))
 
 	// Start server
-	err = server.ListenAndServe()
+	err := server.ListenAndServe()
 	util.MaybeFatal(err, "Unable to start the web server.")
 }
 
