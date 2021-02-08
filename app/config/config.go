@@ -14,8 +14,9 @@ var (
 
 // AppServerConfig - configs of app server
 type AppServerConfig struct {
-	Host string `envconfig:"HOST" default:"localhost"`
+	Host string `envconfig:"HOST" default:"localhost:"`
 	Port string `envconfig:"PORT" default:"9090"`
+	SwaggerHost string `envconfig:"SWAGGER_HOST" default:"localhost:9090"`
 }
 
 // DatabasePostgresConfig - configs of database

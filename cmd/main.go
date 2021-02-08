@@ -28,7 +28,7 @@ func main() {
 	logger.GetLogger().Info("Starting Digital Accounts API...")
 
 	// Swagger configs.
-	docs.SwaggerInfo.Host = config.GetAPIConfigs().WebServerConfig.GetWebServerAddress()
+	docs.SwaggerInfo.Host = config.GetAPIConfigs().WebServerConfig.SwaggerHost
 	docs.SwaggerInfo.BasePath = "/"
 
 	// Configure database pool connection

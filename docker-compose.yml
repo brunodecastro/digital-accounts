@@ -17,6 +17,7 @@ services:
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
       PORT: 9090
+      SWAGGER_HOST: locahost:9090
       MIGRATION_PATH: migrations
 
   postgres:
