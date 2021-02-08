@@ -5,14 +5,19 @@ API de transferência entre contas internas de um banco digital.
 
 ### A API utiliza-se das seguintes tecnologias / pacotes / frameworks:
 
-* Go v1.15
-* Postgres
-* Postgres Driver (package jackc/pgx)
-* Swagger (package swag)
-* JWT (JSON Web Token para autenticação)
-* Docker
-* Dockertest (para testes de repository)
-* Travis (Teste e CI/CD)
+* Go v1.15 [golang](https://golang.org/)
+* Postgres [postgres](https://www.postgresql.org/)
+* Postgres Driver [jackc/pgx](https://github.com/jackc/pgx)
+* Migração de Banco de Dados [golang-migrate/migrate](github.com/golang-migrate/migrate)
+* Configuração de variáveis de ambiente [kelseyhightower/envconfig](https://github.com/kelseyhightower/envconfig)
+* HTTP router [julienschmidt/httprouter](https://github.com/julienschmidt/httprouter)
+* Logs [uber-go/zap](https://github.com/uber-go/zap)
+* Swagger [swaggo/swag](https://github.com/swaggo/swag)
+* JWT (JSON Web Token para autenticação) [dgrijalva/jwt-go](https://github.com/dgrijalva/jwt-go)
+* Docker [Docker](https://docs.docker.com/engine/install/)
+* Dockertest (para testes de repository) [ory/dockertest](https://github.com/ory/dockertest/v3)
+* Travis (Teste e CI/CD) [travis](https://travis-ci.org/)
+* Heroku (Deploy da aplicação) [heroku](http://www.heroku.com)
 
 
 ### Dependências:
@@ -78,6 +83,8 @@ http://localhost:9090/redoc
 
 ### Documentação interativa (Swagger):
 
+https://digital-accounts.herokuapp.com
+ou 
 local (api inicializada com os valores padrões):
 
 http://localhost:9090
