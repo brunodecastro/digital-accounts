@@ -84,8 +84,8 @@ http://localhost:9090/redoc
 ### Documentação interativa (Swagger):
 
 https://digital-accounts.herokuapp.com
-ou 
-local (api inicializada com os valores padrões):
+
+ou local (api inicializada com os valores padrões):
 
 http://localhost:9090
 
@@ -99,6 +99,7 @@ Por padrão a API utiliza as variáveis de ambiente sitadas abaixo. Modifique ap
 # Web Config
 HOST="localhost"
 PORT="9090"
+SWAGGER_HOST="localhost:9090"
 
 # Database Config
 DATABASE_HOST="localhost"
@@ -116,6 +117,7 @@ JWT_MAX_TOKEN_LIVE_TIME="50m"
 
 # API Config
 PROFILE="dev"
+EXECUTE_MIGRATION=true
 MIGRATION_PATH="app/persistence/database/postgres/migrations"
 
 ```
