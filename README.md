@@ -8,7 +8,7 @@ API de transferência entre contas internas de um banco digital.
 * Go v1.15 [golang](https://golang.org/)
 * Postgres [postgres](https://www.postgresql.org/)
 * Postgres Driver [jackc/pgx](https://github.com/jackc/pgx)
-* Migração de Banco de Dados [golang-migrate/migrate](github.com/golang-migrate/migrate)
+* Migração de Banco de Dados [golang-migrate/migrate](https://github.com/golang-migrate/migrate)
 * Configuração de variáveis de ambiente [kelseyhightower/envconfig](https://github.com/kelseyhightower/envconfig)
 * HTTP router [julienschmidt/httprouter](https://github.com/julienschmidt/httprouter)
 * Logs [uber-go/zap](https://github.com/uber-go/zap)
